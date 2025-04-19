@@ -1,0 +1,72 @@
+===============================
+World MD 安装与使用指南
+===============================
+
+感谢您使用World MD！本文件将指导您如何安装和使用本工具。
+
+一、安装要求
+--------------
+- Python 3.7 或更高版本
+- 所需依赖包：
+  - python-docx
+  - markdown
+  - beautifulsoup4
+  - opencc-python-reimplemented
+  - pyyaml
+  - lxml
+
+二、安装步骤
+--------------
+1. 安装Python依赖包：
+   ```
+   pip install -r requirements.txt
+   ```
+   或单独安装所需的包：
+   ```
+   pip install python-docx markdown beautifulsoup4 opencc-python-reimplemented pyyaml lxml
+   ```
+
+2. 下载World MD源码或可执行文件
+
+三、使用方法
+--------------
+1. 使用源码运行：
+   ```
+   python run.py -i input.md -o output.docx
+   ```
+
+2. 批量处理整个目录：
+   ```
+   python run.py -i markdown目录 -o word目录 -b
+   ```
+
+3. 使用自定义配置文件：
+   ```
+   python run.py -i input.md -o output.docx -c config_example.yaml
+   ```
+
+4. 可选参数：
+   - `-s, --simplified`：保持简体中文（不转换为繁体）
+   - `-d, --debug`：启用调试模式
+   - `-n, --no-html`：不保留中间HTML文件
+
+四、配置文件说明
+--------------
+配置文件为YAML格式，主要包含以下配置项：
+
+- 字体配置：设置默认字体、代码字体和标题字体
+- 段落配置：设置行间距、段前/段后间距和首行缩进
+- 中文配置：是否转换为繁体中文、中英文间自动添加空格等
+- 表格样式：表格行背景色、表头样式等
+
+完整配置请参考`config_example.yaml`文件。
+
+五、故障排除
+--------------
+1. 如果遇到中文显示问题，请确保您的系统已安装相应的中文字体。
+2. 如果遇到转换错误，尝试使用`--debug`参数获取更详细的错误信息。
+3. 如需帮助，请参考README文档或提交问题到项目仓库。
+
+===============================
+祝您使用愉快！
+=============================== 

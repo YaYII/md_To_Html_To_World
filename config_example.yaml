@@ -11,7 +11,7 @@ fonts:
 # 大小配置
 sizes:
   default: 12
-  code: 12
+  code: 11
   heading1: 18
   heading2: 16
   heading3: 14
@@ -28,7 +28,7 @@ colors:
 
 # 段落配置
 paragraph:
-  line_spacing: 1.15
+  line_spacing: 1.5
   space_before: 6
   space_after: 6
 
@@ -53,7 +53,7 @@ enhanced_table_styles:
   width: 16.0
   border: true
   border_size: 1
-  border_color: '#000000'
+  border_color: '#dddddd'
   header_bg_color: '#E7E6E6'
   even_row_color: '#F2F2F2'
   text_align: left
@@ -65,7 +65,7 @@ enhanced_table_styles:
   keep_header_visible: true
   row_height:
     default: 0.95
-    header: 1.1
+    header: 0.95
     min: 0.5
     max: 5.0
     auto_adjust: true

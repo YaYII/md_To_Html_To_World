@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "world_md"
+version = "0.1.0"
+description = "将Markdown文件转换为Word文档的工具"
+authors = [
+    {name = "World MD Team", email = "example@example.com"}
+]
+requires-python = ">=3.7"
+dependencies = [
+    "python-docx>=0.8.10",
+    "markdown>=3.3.0",
+    "beautifulsoup4>=4.9.0",
+    "opencc-python-reimplemented>=0.1.6",
+    "pyyaml>=5.3.0",
+    "requests>=2.25.0",
+    "lxml==4.9.3",
+    "pyinstaller>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/world_md"
+
+[project.scripts]
+world-md = "run:main"
+
+[tool.setuptools]
+packages = ["src", "src.modules", "src.modules.html_to_word", "src.modules.html_to_word.processors"]
+include-package-data = true
+
+[tool.pyinstaller]
+options = ["--name=world_md", "--onefile", "--noconsole", "--add-data=src/config_example.yaml:.", "--icon=icon.ico"] 

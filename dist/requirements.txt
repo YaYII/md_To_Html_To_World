@@ -1,0 +1,7 @@
+python-docx>=0.8.10
+markdown>=3.3.0
+beautifulsoup4>=4.9.0
+opencc-python-reimplemented>=0.1.6
+pyyaml>=5.3.0
+requests>=2.25.0
+lxml==4.9.3 
