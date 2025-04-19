@@ -1,0 +1,159 @@
+<html><head><style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1em;
+            border: 1px solid #dddddd;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            vertical-align: middle;
+            height: 0.95em;
+            border: 1px solid #dddddd;
+        }
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        </style></head><body><h1>Markdown 示例文档</h1>
+<p>这是一个用于测试 World MD 转换功能的 Markdown 示例文档。本文档包含了各种 Markdown 元素，用于验证转换效果。</p>
+<h2>1. 基本文本格式</h2>
+<p>这是普通段落文本。Markdown 允许我们使用 <strong>粗体</strong> 或者 <em>斜体</em> 来强调文本。也可以同时使用 <strong><em>粗体和斜体</em></strong>。</p>
+<p>你也可以使用 ~~删除线~~ 来表示已废弃的内容。</p>
+<h2>2. 标题</h2>
+<p>Markdown 支持六级标题，从 <code>#</code> 到 <code>######</code>。</p>
+<h3>2.1 三级标题示例</h3>
+<h4>2.1.1 四级标题示例</h4>
+<h5>2.1.1.1 五级标题示例</h5>
+<h6>2.1.1.1.1 六级标题示例</h6>
+<h2>3. 列表</h2>
+<h3>3.1 无序列表</h3>
+<ul>
+<li>苹果</li>
+<li>香蕉</li>
+<li>橙子</li>
+<li>脐橙</li>
+<li>血橙</li>
+<li>葡萄</li>
+</ul>
+<h3>3.2 有序列表</h3>
+<ol>
+<li>第一步</li>
+<li>第二步</li>
+<li>第三步</li>
+<li>子步骤 1</li>
+<li>子步骤 2</li>
+<li>第四步</li>
+</ol>
+<h3>3.3 任务列表</h3>
+<ul>
+<li>[x] 已完成任务</li>
+<li>[ ] 未完成任务</li>
+<li>[ ] 另一个未完成任务</li>
+</ul>
+<h2>4. 引用</h2>
+<blockquote>
+<p>这是一个引用块。</p>
+<p>引用可以包含多个段落。</p>
+<blockquote>
+<p>这是嵌套引用。</p>
+</blockquote>
+</blockquote>
+<h2>5. 代码</h2>
+<h3>5.1 行内代码</h3>
+<p>使用 <code>print("Hello, World!")</code> 函数可以在控制台输出文本。</p>
+<h3>5.2 代码块</h3>
+<pre class="codehilite"><code class="language-python">def greet(name):
+    """简单的问候函数"""
+    return f"你好，{name}！"
+
+# 调用函数
+message = greet("小明")
+print(message)  # 输出: 你好，小明！
+</code></pre>
+<h2>6. 链接和图片</h2>
+<h3>6.1 链接</h3>
+<p>这是一个<a href="https://www.example.com">链接</a>，指向 example.com。</p>
+<h3>6.2 图片</h3>
+<p>下面是一个图片示例（注意：在转换中可能不会显示实际图片）：</p>
+<p><img alt="示例图片" src="https://via.placeholder.com/150"/></p>
+<h2>7. 表格</h2>
+<table class="styled-table">
+<thead>
+<tr>
+<th style="vertical-align: middle; text-align: center; font-weight: bold;">姓名</th>
+<th style="vertical-align: middle; text-align: center; font-weight: bold;">年龄</th>
+<th style="vertical-align: middle; text-align: center; font-weight: bold;">职业</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align: middle; word-break: break-word;">张三</td>
+<td style="vertical-align: middle; word-break: break-word;">28</td>
+<td style="vertical-align: middle; word-break: break-word;">软件工程师</td>
+</tr>
+<tr>
+<td style="vertical-align: middle; word-break: break-word;">李四</td>
+<td style="vertical-align: middle; word-break: break-word;">32</td>
+<td style="vertical-align: middle; word-break: break-word;">产品经理</td>
+</tr>
+<tr>
+<td style="vertical-align: middle; word-break: break-word;">王五</td>
+<td style="vertical-align: middle; word-break: break-word;">24</td>
+<td style="vertical-align: middle; word-break: break-word;">设计师</td>
+</tr>
+</tbody>
+</table>
+<h2>8. 水平线</h2>
+<p>下面是一条水平线：</p>
+<hr/>
+<h2>9. 数学公式</h2>
+<p>当 $a \ne 0$ 时，方程 $ax^2 + bx + c = 0$ 有两个解，它们是：</p>
+<p>$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</p>
+<h2>10. 脚注</h2>
+<p>这里有一个脚注引用<a href="这是脚注内容。">^1</a>，点击可以跳转到脚注内容。</p>
+<h2>11. 定义列表</h2>
+<p>术语 1
+: 定义 1</p>
+<p>术语 2
+: 定义 2a
+: 定义 2b</p>
+<h2>12. 中英文混排示例</h2>
+<p>HTML5 是构建 Web 内容的一种语言，它是互联网的核心技术之一。与 HTML4 相比，HTML5 引入了许多新元素和 API，使 Web 应用程序更加强大和灵活。</p>
+<p>React 是 Facebook 开发的 JavaScript 库，用于构建用户界面。它允许开发者创建大型应用，其中数据可以随时间变化而不需要重新加载页面。</p>
+<p>Python 是一种易于学习且功能强大的编程语言。它有高效率的高级数据结构，也有简单有效的面向对象编程方法。</p>
+<h2>13. 复杂嵌套示例</h2>
+<blockquote>
+<p>引用中的<strong>粗体文本</strong>和<em>斜体文本</em>，以及<code>行内代码</code>。</p>
+<ol>
+<li>引用中的有序列表项 1</li>
+<li>引用中的有序列表项 2</li>
+<li>嵌套的无序列表项</li>
+<li>另一个无序列表项</li>
+</ol>
+<p><code>引用中的代码块</code></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th style="vertical-align: middle; text-align: center; font-weight: bold;">表头 1</th>
+<th style="vertical-align: middle; text-align: center; font-weight: bold;">表头 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align: middle; word-break: break-word;">数据 1</td>
+<td style="vertical-align: middle; word-break: break-word;">数据 2</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>祝您使用愉快！ </p></body></html>

@@ -1,0 +1,77 @@
+<html><head><style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1em;
+            border: 1px solid #dddddd;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            vertical-align: middle;
+            height: 0.95em;
+            border: 1px solid #dddddd;
+        }
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        </style></head><body><h1>有序列表编号对齐测试</h1>
+<h2>基本有序列表</h2>
+<ol>
+<li>这是第一个有序列表项</li>
+<li>这是第二个有序列表项</li>
+<li>这是第三个有序列表项</li>
+<li>这是第四个有序列表项</li>
+<li>这是第五个有序列表项，需要有较长的文本内容来测试当编号超过一位数时的对齐情况，这里我们添加一些额外的文本以确保换行效果。</li>
+<li>这是第六个有序列表项</li>
+<li>这是第七个有序列表项</li>
+<li>这是第八个有序列表项</li>
+<li>这是第九个有序列表项</li>
+<li>这是第十个有序列表项，现在编号有两位数了，测试对齐效果</li>
+<li>这是第十一个有序列表项</li>
+<li>这是第十二个有序列表项</li>
+</ol>
+<h2>嵌套有序列表</h2>
+<ol>
+<li>一级列表项</li>
+<li>二级列表项</li>
+<li>二级列表项<ol>
+<li>三级列表项</li>
+<li>三级列表项</li>
+<li>三级列表项</li>
+</ol>
+</li>
+<li>二级列表项</li>
+<li>一级列表项</li>
+<li>二级列表项</li>
+<li>二级列表项</li>
+</ol>
+<h2>有序列表中的加粗文本</h2>
+<ol>
+<li>普通列表项</li>
+<li>包含<strong>加粗文本</strong>的列表项</li>
+<li><strong>起始加粗</strong>文本的列表项</li>
+<li>最后有<strong>加粗文本</strong></li>
+<li><strong>整个列表项都是加粗的</strong></li>
+<li>多处<strong>加粗</strong>的<strong>列表项</strong></li>
+</ol>
+<h2>嵌套有序列表加粗</h2>
+<ol>
+<li>一级普通列表项</li>
+<li>二级<strong>加粗</strong>列表项</li>
+<li>二级列表项<ol>
+<li>三级<strong>加粗</strong>列表项</li>
+<li><strong>整个三级列表项加粗</strong></li>
+<li>三级列表项 </li>
+</ol>
+</li>
+</ol></body></html>

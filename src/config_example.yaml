@@ -1,0 +1,87 @@
+# World MD 配置文件示例
+
+# 字体配置
+fonts:
+  default: "宋体"
+  code: "Courier New"
+  headings: "黑体"
+
+# 大小配置
+sizes:
+  default: 12
+  code: 10
+  heading1: 18
+  heading2: 16
+  heading3: 14
+  heading4: 12
+  heading5: 11
+  heading6: 10
+
+# 颜色配置
+colors:
+  default: "#000000"
+  headings: "#000000"
+  code: "#333333"
+  link: "#0563C1"
+
+# 段落配置
+paragraph:
+  line_spacing: 1.15
+  space_before: 6
+  space_after: 6
+
+# 中文配置
+chinese:
+  convert_to_traditional: false  # 是否转换为繁体中文
+  punctuation_spacing: true      # 标点符号处理
+  auto_spacing: true             # 中英文间自动添加空格
+
+# 表格样式配置
+table_styles:
+  even_row_color: "#f2f2f2"      # 偶数行背景色
+  odd_row_color: "#ffffff"       # 奇数行背景色
+  header_bg_color: "#e0e0e0"     # 表头背景色
+  border_color: "#dddddd"        # 边框颜色
+  cell_height: "0.95em"          # 单元格高度
+  table_width: "100%"            # 表格宽度
+
+# 增强表格样式配置（Word文档）
+enhanced_table_styles:
+  style: "Table Grid"            # Word表格样式名称
+  width: 16.0                    # 表格宽度（厘米）
+  border: true                   # 是否显示边框
+  border_size: 1                 # 边框宽度（磅）
+  border_color: "#000000"        # 边框颜色
+  header_bg_color: "#E7E6E6"     # 表头背景色
+  even_row_color: "#F2F2F2"      # 偶数行背景色（留空则不应用）
+  text_align: "left"             # 单元格文本对齐方式: left, center, right, justify
+  vertical_align: "center"       # 单元格垂直对齐方式: top, center, bottom
+  cell_padding: 2                # 单元格内边距（磅）
+  autofit: false                 # 是否自动调整宽度
+  first_row_as_header: true      # 是否将第一行作为表头
+  keep_header_visible: true      # 表头在分页时保持可见
+
+# Markdown解析配置
+markdown:
+  extensions:
+    - tables
+    - fenced_code
+    - codehilite
+    - toc
+    - footnotes
+    - nl2br
+  extension_configs:
+    codehilite:
+      linenums: false
+      use_pygments: true
+
+# 文档配置
+document:
+  page_size: "A4"
+  margin_top: 2.54    # 厘米
+  margin_bottom: 2.54 # 厘米
+  margin_left: 3.18   # 厘米
+  margin_right: 3.18  # 厘米
+  header: ""          # 页眉内容
+  footer: ""          # 页脚内容
+  generate_toc: true  # 是否生成目录 
