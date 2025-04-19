@@ -74,12 +74,20 @@ class MarkdownToHtml:
         if self.debug_mode:
             self.logger.debug(f"表格样式配置: 头部背景={self.header_bg_color}, 偶数行背景={self.even_row_color}, 奇数行背景={self.odd_row_color}")
         
+        # 获取简繁转换配置
+        chinese_config = self.config.get('chinese', {})
+        convert_to_traditional = chinese_config.get('convert_to_traditional', False)
+        
+        # 输出详细配置信息
+        self.logger.info(f"中文配置详情: {chinese_config}")
+        self.logger.info(f"简繁转换设置: {'启用' if convert_to_traditional else '禁用'}")
+        
         # 修复opencc初始化
         try:
-            convert_to_traditional = self.config.get('chinese', {}).get('convert_to_traditional', True)
             conversion_config = 's2t' if convert_to_traditional else 's2s'
+            self.logger.info(f"OpenCC转换配置: {conversion_config}")
             self.cc = opencc.OpenCC(conversion_config)
-            self.logger.info(f"中文转换配置: {'简体转繁体' if convert_to_traditional else '不转换'}")
+            self.logger.info(f"中文转换配置: {'简体转繁体' if convert_to_traditional else '保持简体'}")
         except Exception as e:
             self.logger.error(f"OpenCC初始化失败: {str(e)}")
             # 创建一个简单的替代对象，防止代码崩溃
@@ -201,7 +209,10 @@ class MarkdownToHtml:
         html_content = self._beautify_tables(html_content)
             
         # 进行简繁转换
-        if self.config.get('chinese', {}).get('convert_to_traditional', True):
+        convert_to_traditional = self.config.get('chinese', {}).get('convert_to_traditional', False)
+        self.logger.info(f"简繁转换设置: {'启用' if convert_to_traditional else '禁用'}")
+        
+        if convert_to_traditional:
             self.logger.info("执行简体到繁体中文转换")
             html_content = self.cc.convert(html_content)
             

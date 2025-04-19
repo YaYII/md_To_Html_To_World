@@ -129,6 +129,25 @@ enhanced_table_styles:
     auto_adjust: true            # 自动调整行高
 ```
 
+### 配置文件使用说明
+
+程序会按照以下顺序查找配置文件：
+
+1. 命令行参数 `--config` 指定的配置文件
+2. 当前工作目录下的 `config_example.yaml` 文件
+3. `src` 目录下的 `config_example.yaml` 文件
+4. 程序可执行文件所在目录下的 `config_example.yaml` 文件
+
+如果没有找到任何配置文件，将使用内置默认配置。
+
+如果需要创建自己的配置文件，可以运行以下命令导出默认配置：
+
+```bash
+python export_config.py
+```
+
+然后编辑生成的 `config_example.yaml` 文件，修改所需的配置项。
+
 ## 特性支持
 
 ### Markdown元素支持

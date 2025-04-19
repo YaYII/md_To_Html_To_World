@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_INPUT_DIR = "md"  # 默认输入目录
 DEFAULT_OUTPUT_DIR = "world"  # 默认输出目录
 DEFAULT_KEEP_HTML = True  # 默认保存HTML文件
+DEFAULT_CONFIG_FILE = "config_example.yaml"  # 默认配置文件名
 
 # 为了防止导入问题，我们直接在这里实现main函数
 def setup_logging(log_level=logging.INFO):
@@ -30,6 +31,29 @@ def setup_logging(log_level=logging.INFO):
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[logging.StreamHandler()]
     )
+
+def find_config_file():
+    """
+    查找配置文件
+    
+    返回找到的配置文件路径或None
+    """
+    # 首先检查当前目录
+    if os.path.exists(DEFAULT_CONFIG_FILE):
+        return DEFAULT_CONFIG_FILE
+    
+    # 检查src目录
+    src_config = os.path.join("src", DEFAULT_CONFIG_FILE)
+    if os.path.exists(src_config):
+        return src_config
+    
+    # 检查可执行文件所在目录
+    exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    exe_config = os.path.join(exe_dir, DEFAULT_CONFIG_FILE)
+    if os.path.exists(exe_config):
+        return exe_config
+    
+    return None
 
 def parse_args():
     """
@@ -65,12 +89,27 @@ def main():
     
     # 加载配置
     config = Config()
+    
+    # 首先检查命令行指定的配置文件
     if args.config:
-        config.load_from_file(args.config)
+        if os.path.exists(args.config):
+            logger.info(f'从命令行指定的配置文件加载: {args.config}')
+            config.load_from_file(args.config)
+        else:
+            logger.warning(f'命令行指定的配置文件不存在: {args.config}')
+    else:
+        # 尝试加载默认配置文件
+        default_config = find_config_file()
+        if default_config:
+            logger.info(f'从默认位置加载配置文件: {default_config}')
+            config.load_from_file(default_config)
+        else:
+            logger.info('未找到配置文件，使用默认配置')
     
     # 设置简繁转换选项
     if args.simplified:
         config.set('chinese.convert_to_traditional', False)
+        logger.info('设置为保持简体中文')
     
     # 确保输入路径存在
     input_path = Path(args.input)

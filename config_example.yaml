@@ -1,36 +1,53 @@
+# World MD 配置文件
+# 此文件包含World MD工具的所有配置项
+# 您可以根据需要修改这些设置
+
+# 字体配置
 fonts:
-  default: 宋体
+  default: 蒙纳宋体
   code: Courier New
-  headings: 黑体
+  headings: 蒙纳宋体
+
+# 大小配置
 sizes:
   default: 12
-  code: 10
+  code: 12
   heading1: 18
   heading2: 16
   heading3: 14
   heading4: 12
-  heading5: 11
-  heading6: 10
+  heading5: 12
+  heading6: 12
+
+# 颜色配置
 colors:
   default: '#000000'
   headings: '#000000'
   code: '#333333'
   link: '#0563C1'
+
+# 段落配置
 paragraph:
   line_spacing: 1.15
   space_before: 6
   space_after: 6
+
+# 中文配置
 chinese:
-  convert_to_traditional: true
-  punctuation_spacing: true
-  auto_spacing: true
+  convert_to_traditional: true  # 是否转换为繁体中文，设置为false则保持简体中文
+  punctuation_spacing: true      # 标点符号处理
+  auto_spacing: true             # 中英文间自动添加空格
+
+# 表格样式配置
 table_styles:
-  even_row_color: '#f2f2f2'
-  odd_row_color: '#ffffff'
-  header_bg_color: '#e0e0e0'
-  border_color: '#dddddd'
-  cell_height: 0.95em
-  table_width: 100%
+  even_row_color: '#f2f2f2'      # 偶数行背景色
+  odd_row_color: '#ffffff'       # 奇数行背景色
+  header_bg_color: '#e0e0e0'     # 表头背景色
+  border_color: '#dddddd'        # 边框颜色
+  cell_height: 0.95em            # 单元格高度
+  table_width: 100%              # 表格宽度
+
+# 增强表格样式配置（Word文档）
 enhanced_table_styles:
   style: Table Grid
   width: 16.0
@@ -52,6 +69,8 @@ enhanced_table_styles:
     min: 0.5
     max: 5.0
     auto_adjust: true
+
+# Markdown解析配置
 markdown:
   extensions:
   - tables
@@ -64,6 +83,8 @@ markdown:
     codehilite:
       linenums: false
       use_pygments: true
+
+# 文档配置
 document:
   page_size: A4
   margin_top: 2.54
@@ -73,6 +94,8 @@ document:
   header: ''
   footer: ''
   generate_toc: true
+
+# 调试配置
 debug:
   enabled: false
   log_level: INFO

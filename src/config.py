@@ -26,7 +26,7 @@ class Config:
         self.config = {
             # 字体配置
             'fonts': {
-                'default': '宋体',
+                'default': '蒙纳宋体',
                 'code': 'Courier New',
                 'headings': '黑体',
             },
@@ -60,7 +60,7 @@ class Config:
             
             # 中文配置
             'chinese': {
-                'convert_to_traditional': False,
+                'convert_to_traditional': True,
                 'punctuation_spacing': True,
                 'auto_spacing': True,  # 自动在中英文之间添加空格
             },
