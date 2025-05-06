@@ -94,7 +94,7 @@ document:
   margin_right: 3.18
   header: ''
   footer: ''
-  generate_toc: true
+  generate_toc: false
 
 # 调试配置
 debug:

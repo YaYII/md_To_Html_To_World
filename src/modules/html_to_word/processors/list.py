@@ -7,10 +7,10 @@ from typing import Dict, Any, Optional, List, Union
 from bs4 import Tag
 from docx.text.paragraph import Paragraph
 
-from .base import BaseElementProcessor
-from .inline import InlineElementProcessor
+from .base import BaseProcessor
+from .inline import InlineProcessor
 
-class ListProcessor(BaseElementProcessor):
+class ListProcessor(BaseProcessor):
     """
     /**
      * 列表处理器
@@ -148,7 +148,7 @@ class ListProcessor(BaseElementProcessor):
         if complex_elements:
             # 处理第一个复杂元素的内容
             first_element = complex_elements[0]
-            inline_processor = InlineElementProcessor(self.document, self.style_manager)
+            inline_processor = InlineProcessor(self.document, self.style_manager)
             inline_processor.process_inline_elements(first_element, paragraph)
             
             # 其他复杂元素需要单独处理
@@ -169,7 +169,7 @@ class ListProcessor(BaseElementProcessor):
                 self._process_list_item_with_format(element, paragraph)
             else:
                 # 处理简单文本内容
-                inline_processor = InlineElementProcessor(self.document, self.style_manager)
+                inline_processor = InlineProcessor(self.document, self.style_manager)
                 inline_processor.process_inline_elements(element, paragraph)
     
     def _process_list_item_with_format(self, element: Tag, paragraph: Paragraph):
@@ -206,7 +206,7 @@ class ListProcessor(BaseElementProcessor):
                     paragraph.add_run('\n')
                 else:
                     # 使用内联处理器处理其他标签
-                    inline_processor = InlineElementProcessor(self.document, self.style_manager)
+                    inline_processor = InlineProcessor(self.document, self.style_manager)
                     inline_processor.process(content, paragraph)
             else:
                 # 处理纯文本

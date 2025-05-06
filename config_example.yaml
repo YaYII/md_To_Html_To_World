@@ -13,7 +13,7 @@ fonts:
 # 控制文档中各元素的字体大小
 sizes:
   default: 12           # 正文默认字号
-  code: 11              # 代码块字号，通常比正文小一号
+  code: 6.5              # 代码块字号，通常比正文小一号
   heading1: 18          # 一级标题字号
   heading2: 16          # 二级标题字号
   heading3: 14          # 三级标题字号
@@ -85,7 +85,7 @@ markdown:
   - tables                        # 表格支持
   - fenced_code                   # 围栏式代码块（使用```标记）
   - codehilite                    # 代码高亮
-  - toc                           # 目录生成
+  #- toc                           # 目录生成
   - footnotes                     # 脚注支持
   - nl2br                         # 将换行符转换为<br>标签
   extension_configs:              # 扩展的具体配置
@@ -103,7 +103,7 @@ document:
   margin_right: 3.18              # 右边距（厘米）
   header: ''                      # 页眉内容，留空表示无页眉
   footer: ''                      # 页脚内容，留空表示无页脚
-  generate_toc: true              # 是否生成目录
+  generate_toc: false              # 是否生成目录
 
 # 调试配置
 # 控制程序运行时的日志和调试信息

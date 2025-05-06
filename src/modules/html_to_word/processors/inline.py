@@ -7,9 +7,9 @@ from typing import Dict, Any, Optional, List
 from bs4 import Tag
 from docx.text.paragraph import Paragraph
 
-from .base import BaseElementProcessor
+from .base import BaseProcessor
 
-class InlineElementProcessor(BaseElementProcessor):
+class InlineProcessor(BaseProcessor):
     """
     /**
      * 内联元素处理器

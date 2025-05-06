@@ -12,6 +12,8 @@ import codecs
 from bs4 import BeautifulSoup, Tag
 from docx import Document
 from docx.shared import Pt, RGBColor, Inches
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 
 from .document_style import DocumentStyleManager
 from .element_factory import ElementProcessorFactory
@@ -112,6 +114,11 @@ class HtmlToWordConverter:
         self.document = self.style_manager.setup_document(self.document)
         self.logger.debug("应用文档样式设置完成")
         
+        # 检查是否需要生成目录
+        if self.config.get('document', {}).get('generate_toc', False):
+            self.logger.info("添加文档目录")
+            self._add_table_of_contents()
+        
         # 初始化处理器工厂
         self.processor_factory = ElementProcessorFactory(self.document, self.style_manager)
         self.logger.debug("初始化元素处理器工厂")
@@ -130,6 +137,63 @@ class HtmlToWordConverter:
         
         self.logger.info("HTML内容转换完成")
         return self.document
+    
+    def _add_table_of_contents(self):
+        """
+        /**
+         * 向文档添加目录
+         * 使用Word字段代码生成目录，用户需要在Word中右键更新目录
+         */
+        """
+        self.logger.debug("添加目录")
+        
+        # 添加"目录"标题段落
+        toc_title = self.document.add_paragraph("目录")
+        toc_title.alignment = 1  # 居中对齐
+        toc_title.style = self.document.styles['Heading 1']
+        
+        # 添加空段落以插入目录字段
+        paragraph = self.document.add_paragraph()
+        run = paragraph.add_run()
+        
+        # 创建目录字段开始标记
+        fldChar = OxmlElement('w:fldChar')
+        fldChar.set(qn('w:fldCharType'), 'begin')
+        
+        # 创建目录字段指令
+        instrText = OxmlElement('w:instrText')
+        instrText.set(qn('xml:space'), 'preserve')
+        # 设置目录指令：包含1-3级标题，添加超链接，显示页码
+        instrText.text = 'TOC \\o "1-3" \\h \\z \\u'
+        
+        # 创建目录字段分隔符
+        fldChar2 = OxmlElement('w:fldChar')
+        fldChar2.set(qn('w:fldCharType'), 'separate')
+        
+        # 创建提示文本
+        t_element = OxmlElement('w:t')
+        t_element.text = "右键点击此处更新目录"
+        fldChar2.append(t_element)
+        
+        # 添加自动更新字段的标记
+        updateFields = OxmlElement('w:updateFields')
+        updateFields.set(qn('w:val'), 'true')
+        
+        # 创建目录字段结束标记
+        fldChar4 = OxmlElement('w:fldChar')
+        fldChar4.set(qn('w:fldCharType'), 'end')
+        
+        # 将所有元素添加到run中
+        r_element = run._r  # 获取底层XML元素
+        r_element.append(fldChar)
+        r_element.append(instrText)
+        r_element.append(fldChar2)
+        r_element.append(updateFields)
+        r_element.append(fldChar4)
+        
+        # 添加分页符
+        self.document.add_page_break()
+        self.logger.info("目录添加完成")
     
     def _process_body(self, body: Tag):
         """
@@ -162,13 +226,6 @@ class HtmlToWordConverter:
         """
         if self.debug_mode:
             self.logger.debug(f"处理元素: <{element.name}> {element.get('id', '')} {element.get('class', '')}")
-        
-        # 检查是否是特殊处理的媒体元素
-        if element.name == 'img':
-            # 使用专门的图片处理器
-            self.logger.debug(f"处理图片元素: {element.get('src', '未知源')}")
-            self.elements_processor.process_image(element, self.document)
-            return
         
         # 获取元素处理器
         try:

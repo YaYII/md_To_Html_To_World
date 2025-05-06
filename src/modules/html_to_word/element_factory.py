@@ -9,13 +9,14 @@ from bs4 import Tag
 from docx import Document
 
 from .document_style import DocumentStyleManager
-from .processors.base import BaseElementProcessor
+from .processors.base import BaseProcessor
 from .processors.paragraph import ParagraphProcessor
 from .processors.heading import HeadingProcessor
 from .processors.list import ListProcessor
 from .processors.table import TableProcessor
-from .processors.inline import InlineElementProcessor
-from .processors.code import CodeBlockProcessor
+from .processors.inline import InlineProcessor
+from .processors.code import CodeProcessor
+from .processors.image import ImageProcessor
 
 class ElementProcessorFactory:
     """
@@ -51,8 +52,9 @@ class ElementProcessorFactory:
             'heading': HeadingProcessor(document, style_manager),
             'list': ListProcessor(document, style_manager),
             'table': TableProcessor(document, style_manager),
-            'inline': InlineElementProcessor(document, style_manager),
-            'code': CodeBlockProcessor(document, style_manager)
+            'inline': InlineProcessor(document, style_manager),
+            'code': CodeProcessor(document, style_manager),
+            'image': ImageProcessor(document, style_manager)
         }
         
         if self.debug_mode:
@@ -78,6 +80,7 @@ class ElementProcessorFactory:
             'main': self.processors['paragraph'],        # 特殊处理的段落
             'header': self.processors['paragraph'],      # 特殊处理的段落
             'footer': self.processors['paragraph'],      # 特殊处理的段落
+            'img': self.processors['image'],             # 图片处理器
         }
         
         # 内联元素由内联处理器处理
@@ -89,13 +92,13 @@ class ElementProcessorFactory:
             self.logger.debug(f"已映射 {len(self.element_map)} 种HTML元素类型到对应处理器")
             self.logger.debug("元素处理器工厂初始化完成")
     
-    def get_processor(self, element: Tag) -> Optional[BaseElementProcessor]:
+    def get_processor(self, element: Tag) -> Optional[BaseProcessor]:
         """
         /**
          * 根据元素获取对应的处理器
          * 
          * @param {Tag} element - HTML元素
-         * @returns {Optional[BaseElementProcessor]} 对应的元素处理器或None
+         * @returns {Optional[BaseProcessor]} 对应的元素处理器或None
          */
         """
         if not element or not element.name:

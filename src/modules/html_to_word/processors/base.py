@@ -12,7 +12,7 @@ from docx.text.paragraph import Paragraph
 
 from ..document_style import DocumentStyleManager
 
-class BaseElementProcessor(ABC):
+class BaseProcessor(ABC):
     """
     /**
      * 基础元素处理器

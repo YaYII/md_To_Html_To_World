@@ -10,10 +10,10 @@ from docx.text.paragraph import Paragraph
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches
 
-from .base import BaseElementProcessor
-from .inline import InlineElementProcessor
+from .base import BaseProcessor
+from .inline import InlineProcessor
 
-class ParagraphProcessor(BaseElementProcessor):
+class ParagraphProcessor(BaseProcessor):
     """
     /**
      * 段落处理器
@@ -78,7 +78,7 @@ class ParagraphProcessor(BaseElementProcessor):
                 self.logger.debug(f"应用段落对齐方式: {element['align'].lower()}")
         
         # 使用内联元素处理器处理内容
-        inline_processor = InlineElementProcessor(self.document, self.style_manager)
+        inline_processor = InlineProcessor(self.document, self.style_manager)
         inline_processor.process_inline_elements(element, p)
         
         if self.debug_mode:
@@ -111,7 +111,7 @@ class ParagraphProcessor(BaseElementProcessor):
                     p.add_run('│ ')
                     
                     # 处理段落内容
-                    inline_processor = InlineElementProcessor(self.document, self.style_manager)
+                    inline_processor = InlineProcessor(self.document, self.style_manager)
                     inline_processor.process_inline_elements(child, p)
                     
                     paragraphs.append(p)

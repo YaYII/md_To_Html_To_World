@@ -7,10 +7,10 @@ from typing import Dict, Any, Optional, Union, List
 from bs4 import Tag
 from docx.text.paragraph import Paragraph
 
-from .base import BaseElementProcessor
-from .inline import InlineElementProcessor
+from .base import BaseProcessor
+from .inline import InlineProcessor
 
-class HeadingProcessor(BaseElementProcessor):
+class HeadingProcessor(BaseProcessor):
     """
     /**
      * 标题处理器
@@ -54,7 +54,7 @@ class HeadingProcessor(BaseElementProcessor):
             self.style_manager.apply_paragraph_format(p)
             
             # 使用内联元素处理器处理内容
-            inline_processor = InlineElementProcessor(self.document, self.style_manager)
+            inline_processor = InlineProcessor(self.document, self.style_manager)
             inline_processor.process_inline_elements(element, p)
             
             # 设置字体和大小

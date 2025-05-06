@@ -11,9 +11,10 @@ from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
 from docx.shared import Pt, Cm, RGBColor, Inches
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls, qn
+from docx.document import Document
 
-from .base import BaseElementProcessor
-from .inline import InlineElementProcessor
+from .base import BaseProcessor
+from .inline import InlineProcessor
 
 # 定义边框样式常量
 class BORDER_STYLE:
@@ -33,12 +34,12 @@ class BORDER_STYLE:
     DOT_DOT_DASH = "dotDotDash"
     TRIPLE = "triple"
 
-class TableProcessor(BaseElementProcessor):
+class TableProcessor(BaseProcessor):
     """
     /**
-     * 表格处理器
+     * 表格处理器类
      * 
-     * 处理HTML表格元素，支持合并单元格和表格样式
+     * 处理HTML表格元素并将其转换为Word文档中的表格
      */
     """
     
@@ -708,7 +709,7 @@ class TableProcessor(BaseElementProcessor):
         
         if has_children:
             # 如果有子元素，使用内联处理器处理所有内容
-            inline_processor = InlineElementProcessor(self.document, self.style_manager)
+            inline_processor = InlineProcessor(self.document, self.style_manager)
             inline_processor.process_inline_elements(html_cell, paragraph)
         else:
             # 简单文本内容处理

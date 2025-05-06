@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup, Tag, NavigableString
 from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.fenced_code import FencedCodeExtension
 from markdown.extensions.tables import TableExtension
+from markdown.extensions.toc import TocExtension
 
 class MarkdownToHtml:
     """
@@ -137,9 +138,28 @@ class MarkdownToHtml:
                 self.logger.debug(f"Table配置: {table_configs}")
         extensions.append(TableExtension(**table_configs))
         
+        # 添加TOC（目录）扩展，确保它可以处理[TOC]标记
+        toc_configs = {
+            'permalink': False,  # 不添加永久链接
+            'baselevel': 1,      # 基本级别从1开始
+            'marker': '[TOC]',   # 使用[TOC]作为标记
+            'title': None,       # 不添加标题
+            'toc_class': 'toc',  # 使用toc作为CSS类
+        }
+        
+        # 加载配置文件中的TOC设置
+        if 'toc' in md_configs:
+            for key, value in md_configs['toc'].items():
+                toc_configs[key] = value
+                
+        if self.debug_mode:
+            self.logger.debug(f"TOC配置: {toc_configs}")
+            
+        extensions.append(TocExtension(**toc_configs))
+        
         # 添加其他扩展
         for ext_name, ext_configs in md_configs.items():
-            if ext_name not in ['codehilite', 'fenced_code', 'tables']:
+            if ext_name not in ['codehilite', 'fenced_code', 'tables', 'toc']:
                 if isinstance(ext_configs, dict):
                     extensions.append(ext_name)
                 else:

@@ -12,9 +12,9 @@ from docx.shared import Pt, RGBColor
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls, qn
 
-from .base import BaseElementProcessor
+from .base import BaseProcessor
 
-class CodeBlockProcessor(BaseElementProcessor):
+class CodeProcessor(BaseProcessor):
     """
     /**
      * 代码块处理器
