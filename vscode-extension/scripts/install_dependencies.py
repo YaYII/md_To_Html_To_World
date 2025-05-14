@@ -29,7 +29,8 @@ REQUIRED_PACKAGES = [
     'beautifulsoup4',
     'opencc-python-reimplemented',
     'pyyaml',
-    'lxml'
+    'lxml',
+    'requests'
 ]
 
 def check_pip_version():

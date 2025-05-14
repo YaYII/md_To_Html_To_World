@@ -14,6 +14,23 @@ import traceback
 from pathlib import Path
 import importlib
 
+# --- 导入模块查找助手 ---
+try:
+    # 尝试导入模块查找助手
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    module_finder_path = os.path.join(script_dir, 'module_finder.py')
+    
+    if os.path.exists(module_finder_path):
+        print("使用模块查找助手...")
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("module_finder", module_finder_path)
+        module_finder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module_finder)
+        module_finder.setup_module_paths()
+except Exception as e:
+    print(f"导入模块查找助手时出错: {e}")
+    # 继续使用原始路径设置方法
+
 # --- 路径设置 ---
 # 将scripts目录添加到sys.path
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +41,16 @@ if SCRIPT_DIR not in sys.path:
 SRC_DIR = os.path.join(SCRIPT_DIR, 'src')
 if os.path.exists(SRC_DIR) and SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
+
+# 将父目录添加到sys.path，以便能找到src模块
+PARENT_DIR = os.path.dirname(SCRIPT_DIR)
+if PARENT_DIR not in sys.path:
+    sys.path.insert(0, PARENT_DIR)
+
+# 添加modules目录
+MODULES_DIR = os.path.join(SRC_DIR, 'modules')
+if os.path.exists(MODULES_DIR) and MODULES_DIR not in sys.path:
+    sys.path.insert(0, MODULES_DIR)
 
 # --- 日志设置 ---
 def setup_logging(log_level=logging.INFO):
@@ -57,7 +84,8 @@ def print_diagnostics():
         ('beautifulsoup4', 'bs4'),
         ('opencc-python-reimplemented', 'opencc'),
         ('pyyaml', 'yaml'),
-        ('lxml', 'lxml')
+        ('lxml', 'lxml'),
+        ('requests', 'requests')
     ]
 
     print("\n检查依赖:", file=sys.stderr)
@@ -154,6 +182,7 @@ def parse_args():
     parser.add_argument('--simplified', '-s', action='store_true', help='保持简体中文')
     parser.add_argument('--debug', '-d', action='store_true', help='启用调试模式')
     parser.add_argument('--no-html', '-n', action='store_true', help='不保留中间HTML文件')
+    parser.add_argument('--print-html', '-p', action='store_true', help='将HTML内容输出到标准输出')
     return parser.parse_args()
 
 def import_modules():
@@ -162,20 +191,126 @@ def import_modules():
     返回导入状态和错误信息
     """
     try:
-        # 尝试导入src模块
+        # 尝试使用模块查找助手
+        try:
+            # 首先尝试使用模块查找助手找到converter模块
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            module_finder_path = os.path.join(script_dir, 'module_finder.py')
+            
+            if os.path.exists(module_finder_path):
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("module_finder", module_finder_path)
+                module_finder = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module_finder)
+                
+                # 获取Config和Converter
+                try:
+                    from src.config import Config
+                except ImportError:
+                    # 直接从文件导入
+                    config_path = os.path.join(script_dir, 'src', 'config.py')
+                    if os.path.exists(config_path):
+                        spec = importlib.util.spec_from_file_location("config", config_path)
+                        config_module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(config_module)
+                        Config = config_module.Config
+                
+                # 尝试导入converter模块
+                converter_module = module_finder.find_converter_module()
+                Converter = converter_module.Converter
+                
+                # 将模块添加到全局命名空间
+                globals()['Config'] = Config
+                globals()['Converter'] = Converter
+                
+                print("✓ 已使用模块查找助手成功导入模块")
+                return True, None
+        except Exception as module_finder_error:
+            print(f"! 使用模块查找助手导入失败: {module_finder_error}")
+            # 继续尝试常规导入
+        
+        # 尝试标准导入
         from src.config import Config
-        from src.modules.converter import Converter
+        
+        # 尝试多种导入路径
+        try:
+            from src.modules.converter import Converter
+        except ImportError:
+            try:
+                from modules.converter import Converter
+            except ImportError:
+                import converter
+                Converter = converter.Converter
+                
+        # 将模块添加到全局命名空间
+        globals()['Config'] = Config
+        globals()['Converter'] = Converter
+        
         return True, None
     except ImportError as e:
         # 尝试安装依赖
         if install_missing_dependencies():
             # 重试导入
             try:
+                # 与上面相同的导入逻辑，但在安装依赖后
+                # 尝试使用模块查找助手
+                try:
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    module_finder_path = os.path.join(script_dir, 'module_finder.py')
+                    
+                    if os.path.exists(module_finder_path):
+                        import importlib.util
+                        spec = importlib.util.spec_from_file_location("module_finder", module_finder_path)
+                        module_finder = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(module_finder)
+                        
+                        # 获取Config和Converter
+                        try:
+                            from src.config import Config
+                        except ImportError:
+                            # 直接从文件导入
+                            config_path = os.path.join(script_dir, 'src', 'config.py')
+                            if os.path.exists(config_path):
+                                spec = importlib.util.spec_from_file_location("config", config_path)
+                                config_module = importlib.util.module_from_spec(spec)
+                                spec.loader.exec_module(config_module)
+                                Config = config_module.Config
+                        
+                        # 尝试导入converter模块
+                        converter_module = module_finder.find_converter_module()
+                        Converter = converter_module.Converter
+                        
+                        # 将模块添加到全局命名空间
+                        globals()['Config'] = Config
+                        globals()['Converter'] = Converter
+                        
+                        print("✓ 已使用模块查找助手成功导入模块(安装依赖后)")
+                        return True, None
+                except Exception as module_finder_error:
+                    print(f"! 安装依赖后使用模块查找助手导入失败: {module_finder_error}")
+                
+                # 尝试标准导入
                 from src.config import Config
-                from src.modules.converter import Converter
+                
+                # 尝试多种导入路径
+                try:
+                    from src.modules.converter import Converter
+                except ImportError:
+                    try:
+                        from modules.converter import Converter
+                    except ImportError:
+                        import converter
+                        Converter = converter.Converter
+                
+                # 将模块添加到全局命名空间
+                globals()['Config'] = Config
+                globals()['Converter'] = Converter
+                
                 return True, None
             except ImportError as e2:
                 return False, f"导入失败: {e2}"
+            except Exception as e3:
+                return False, f"导入出错: {e3}"
         return False, f"导入失败: {e}"
     except Exception as e:
         return False, f"导入出错: {e}"
@@ -243,6 +378,8 @@ def main():
     
     # 决定是否保留HTML文件（默认保留，使用--no-html选项可以禁用保留）
     keep_html = not args.no_html
+    # 添加print_html参数传递
+    print_html = args.print_html
     
     logger.info('准备处理转换...')
     
@@ -256,25 +393,73 @@ def main():
             output_file = os.path.join(args.output, f"{base_name}.docx")
         else:
             output_file = args.output
-        process_single_file(args.input, output_file, config, keep_html)
+        process_single_file(args.input, output_file, config, keep_html, print_html)
     
     logger.info('转换完成')
 
-def process_single_file(input_path, output_path, config, keep_html=DEFAULT_KEEP_HTML):
+def process_single_file(input_path, output_path, config, keep_html=DEFAULT_KEEP_HTML, print_html=False):
     """
     处理单个文件
-    """
-    from src.modules.converter import Converter
     
+    Args:
+        input_path: 输入文件路径
+        output_path: 输出文件路径
+        config: 配置对象
+        keep_html: 是否保留HTML文件
+        print_html: 是否将HTML内容输出到标准输出
+    """
     logger = logging.getLogger('process_single_file')
     logger.info(f'处理文件: {input_path} -> {output_path}')
     
     # 创建转换器实例
-    converter = Converter(config.config)
+    # 使用已导入的Converter类
+    global Converter
+    if 'Converter' not in globals():
+        # 尝试多种方式导入
+        try:
+            from src.modules.converter import Converter
+        except ImportError:
+            try:
+                from modules.converter import Converter
+            except ImportError:
+                import converter
+                Converter = converter.Converter
     
     # 进行转换
     try:
-        converter.convert_file(input_path, output_path, keep_html)
+        converter = Converter(config.config)
+        
+        # 如果需要输出HTML到标准输出
+        if print_html:
+            # 先转换Markdown到HTML，但不保存到文件
+            html_content = converter.md_to_html.convert_file(input_path)
+            print(html_content)  # 直接打印HTML内容到标准输出
+            
+            # 如果不需要生成word文档，可以在这里返回
+            if not os.path.dirname(output_path):
+                return
+        
+        # 处理HTML文件路径 - 直接保存在源文件所在目录
+        if keep_html:
+            # 获取源文件所在目录
+            source_dir = os.path.dirname(input_path)
+            base_name = os.path.basename(os.path.splitext(input_path)[0])
+            # 直接在源文件目录创建HTML文件
+            html_file = os.path.join(source_dir, f"{base_name}.html")
+            logger.info(f'HTML文件将保存到: {html_file}')
+        else:
+            html_file = None
+                
+        # 调用转换函数    
+        if html_file:
+            # 直接转换并保存到指定的HTML文件路径
+            html_content = converter.md_to_html.convert_file(input_path, html_file)
+            # 继续转换HTML到Word
+            converter.html_to_word.convert_file(html_file, output_path)
+        else:
+            # 使用原始的转换流程
+            converter.convert_file(input_path, output_path, keep_html)
+            
         logger.info(f'Word文档已生成: {output_path}')
     finally:
         # 清理临时资源
@@ -284,17 +469,27 @@ def process_batch(input_dir, output_dir, config, keep_html=DEFAULT_KEEP_HTML):
     """
     批量处理目录
     """
-    from src.modules.converter import Converter
-    
     logger = logging.getLogger('process_batch')
     logger.info(f'批量处理目录: {input_dir} -> {output_dir}')
     
     # 创建转换器实例
-    converter = Converter(config.config)
+    # 使用已导入的Converter类
+    global Converter
+    if 'Converter' not in globals():
+        # 尝试多种方式导入
+        try:
+            from src.modules.converter import Converter
+        except ImportError:
+            try:
+                from modules.converter import Converter
+            except ImportError:
+                import converter
+                Converter = converter.Converter
     
     try:
         # 进行批量转换
-        results = converter.batch_convert(input_dir, output_dir, keep_html)
+        converter_instance = Converter(config.config)
+        results = converter_instance.batch_convert(input_dir, output_dir, keep_html)
         
         # 计算统计信息
         success_count = sum(1 for v in results.values() if v)
@@ -310,7 +505,8 @@ def process_batch(input_dir, output_dir, config, keep_html=DEFAULT_KEEP_HTML):
                     logger.info(f'  - {file}')
     finally:
         # 清理临时资源
-        converter.cleanup()
+        if 'converter_instance' in locals():
+            converter_instance.cleanup()
 
 if __name__ == "__main__":
     main() 

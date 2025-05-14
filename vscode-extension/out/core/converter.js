@@ -26,8 +26,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MarkdownConverter = void 0;
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
+const cp = __importStar(require("child_process"));
+const yaml = __importStar(require("js-yaml"));
 const environmentManager_1 = require("../environmentManager");
-const execUtils_1 = require("../utils/execUtils");
+const os = __importStar(require("os"));
 class MarkdownConverter {
     constructor() {
         this.envManager = environmentManager_1.EnvironmentManager.getInstance();
@@ -38,26 +40,99 @@ class MarkdownConverter {
         }
         return MarkdownConverter.instance;
     }
-    async convert(inputFile, options) {
-        const envInfo = this.envManager.getEnvironmentInfo();
-        const outputFile = options?.outputFile || inputFile.replace(/\.md$/i, '.docx');
-        const pythonScript = path.join(envInfo.extensionPath, 'scripts', 'run.py');
-        if (!fs.existsSync(pythonScript)) {
-            throw new Error(`核心脚本丢失: ${pythonScript}`);
+    async convert(inputFile, options = {}) {
+        try {
+            const envInfo = this.envManager.getEnvironmentInfo();
+            const outputDir = options.outputDirectory || path.dirname(inputFile);
+            const inputBaseName = path.basename(inputFile, '.md');
+            const outputFile = path.join(outputDir, `${inputBaseName}.docx`);
+            const pythonCmd = envInfo.pythonCmd;
+            const scriptPath = path.join(envInfo.extensionPath, 'scripts', 'run.py');
+            let args = [
+                scriptPath,
+                '--input', inputFile,
+                '--output', outputFile
+            ];
+            if (options.useConfig) {
+                const tempConfigFile = await this.createTempConfigFile(options.useConfig);
+                if (tempConfigFile) {
+                    args.push('--config', tempConfigFile);
+                }
+            }
+            if (options.onProgress) {
+                options.onProgress('正在执行转换...');
+            }
+            const result = await this.runPythonScript(pythonCmd, args);
+            if (result.success) {
+                const message = `成功将 ${inputBaseName}.md 转换为 ${path.basename(outputFile)}`;
+                if (options.onComplete) {
+                    options.onComplete({
+                        success: true,
+                        message,
+                        outputFile
+                    });
+                }
+                return {
+                    success: true,
+                    message,
+                    outputFile
+                };
+            }
+            else {
+                throw new Error(result.stderr || '转换失败，未知错误');
+            }
         }
-        const command = `${envInfo.pythonCmd} "${pythonScript}" -i "${inputFile}" -o "${outputFile}"`;
-        const result = await (0, execUtils_1.execWithDetails)(command);
-        if (!result.success) {
-            throw new Error(result.stderr || '转换失败');
+        catch (error) {
+            console.error('转换失败:', error);
+            const message = error instanceof Error ? error.message : String(error);
+            if (options.onComplete) {
+                options.onComplete({
+                    success: false,
+                    message: `转换失败: ${message}`,
+                    error: error instanceof Error ? error : new Error(String(error))
+                });
+            }
+            throw error;
         }
-        if (!fs.existsSync(outputFile)) {
-            throw new Error('转换似乎已成功完成，但在预期位置找不到生成的 Word 文件。');
+    }
+    async createTempConfigFile(config) {
+        try {
+            const yamlConfig = this.generateYamlConfig(config);
+            const tempDir = path.join(os.tmpdir(), 'markdown-to-word');
+            if (!fs.existsSync(tempDir)) {
+                fs.mkdirSync(tempDir, { recursive: true });
+            }
+            const tempFile = path.join(tempDir, `config-${Date.now()}.yaml`);
+            fs.writeFileSync(tempFile, yamlConfig, 'utf8');
+            return tempFile;
         }
-        return {
-            success: true,
-            outputFile,
-            message: '转换成功'
-        };
+        catch (error) {
+            console.error('创建临时配置文件失败:', error);
+            return null;
+        }
+    }
+    generateYamlConfig(config) {
+        return yaml.dump(config);
+    }
+    runPythonScript(pythonCmd, args) {
+        return new Promise((resolve) => {
+            const process = cp.spawn(pythonCmd, args);
+            let stdout = '';
+            let stderr = '';
+            process.stdout.on('data', (data) => {
+                stdout += data.toString();
+            });
+            process.stderr.on('data', (data) => {
+                stderr += data.toString();
+            });
+            process.on('close', (code) => {
+                resolve({
+                    success: code === 0,
+                    stdout: stdout.trim(),
+                    stderr: stderr.trim()
+                });
+            });
+        });
     }
 }
 exports.MarkdownConverter = MarkdownConverter;

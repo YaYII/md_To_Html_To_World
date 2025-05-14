@@ -1,5 +1,5 @@
 /**
- * @description 进度显示UI处理类
+ * @description 进度UI管理类
  */
 import * as vscode from 'vscode';
 import { IConversionProgress } from '../core/types';
@@ -61,21 +61,31 @@ export class ProgressUI {
 
     /**
      * @description 显示成功消息
-     * @param message 消息内容
-     * @param outputFile 输出文件路径
+     * @param message 成功消息
+     * @param outputFile 输出文件路径（可选）
      */
-    public async showSuccess(message: string, outputFile: string): Promise<void> {
-        const action = await vscode.window.showInformationMessage(
-            message,
-            { modal: false, detail: `文件已保存至: ${outputFile}` },
-            '打开文件',
-            '打开所在文件夹'
-        );
-
-        if (action === '打开文件') {
-            await vscode.env.openExternal(vscode.Uri.file(outputFile));
-        } else if (action === '打开所在文件夹') {
-            await vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(outputFile));
+    public async showSuccess(message: string, outputFile?: string): Promise<void> {
+        const actions: string[] = [];
+        
+        if (outputFile) {
+            // 根据文件扩展名决定显示的按钮文本
+            const fileExtension = outputFile.toLowerCase().split('.').pop();
+            let actionText = '打开文档';
+            
+            if (fileExtension === 'docx') {
+                actionText = '打开Word文档';
+            } else if (fileExtension === 'html') {
+                actionText = '打开HTML文档';
+            }
+            
+            actions.push(actionText);
+        }
+        
+        const result = await vscode.window.showInformationMessage(message, ...actions);
+        
+        if (result && outputFile) {
+            // 打开生成的文档
+            this.openDocument(outputFile);
         }
     }
 
@@ -84,22 +94,38 @@ export class ProgressUI {
      * @param error 错误对象
      */
     public async showError(error: Error): Promise<void> {
-        const selection = await vscode.window.showErrorMessage(
-            error.message || '转换过程中发生未知错误。',
-            '查看错误日志'
+        const message = `转换失败: ${error.message}`;
+        
+        const result = await vscode.window.showErrorMessage(
+            message,
+            '查看详情',
+            '重试'
         );
+        
+        if (result === '查看详情') {
+            // 显示详细错误信息
+            const detailedMessage = error.stack || error.message;
+            const doc = await vscode.workspace.openTextDocument({
+                content: detailedMessage,
+                language: 'plaintext'
+            });
+            await vscode.window.showTextDocument(doc);
+        }
+    }
 
-        if (selection === '查看错误日志') {
-            const channel = vscode.window.createOutputChannel('Markdown 转换器 错误日志');
-            channel.show(true);
-            channel.appendLine(`======== ${new Date().toISOString()} ========`);
-            channel.appendLine('错误详情:');
-            channel.appendLine(`  消息: ${error.message || '未知错误'}`);
-            if (error.stack) {
-                channel.appendLine('  错误堆栈:');
-                channel.appendLine(error.stack);
-            }
-            channel.appendLine('======== 日志结束 ========');
+    /**
+     * @description 打开文档
+     * @param filePath 文件路径
+     */
+    private async openDocument(filePath: string): Promise<void> {
+        try {
+            // 使用VS Code的URI打开文件（适用于Windows路径）
+            const uri = vscode.Uri.file(filePath);
+            
+            // 在操作系统默认应用中打开文件
+            vscode.env.openExternal(uri);
+        } catch (error) {
+            vscode.window.showErrorMessage(`无法打开文件: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 } 

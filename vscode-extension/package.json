@@ -1,8 +1,8 @@
 {
   "name": "markdown-to-word",
   "displayName": "Markdown to Word",
-  "description": "将Markdown文档转换为Word文档",
-  "version": "0.0.2",
+  "description": "将Markdown文档转换为Word文档:作者杨英：抖音：木易君，抖音号：YI.11.13",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/yourusername/markdown-to-word.git"
@@ -14,33 +14,49 @@
     "Other"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onLanguage:markdown",
-    "onCommand:markdown-to-word.convert",
-    "onCommand:markdown-to-word.diagnostics",
-    "onCommand:markdown-to-word.checkEnvironment",
-    "onCommand:markdown-to-word.installDependencies"
+    "onCommand:markdowntoword.markdown-to-word.convert",
+    "onCommand:markdowntoword.markdown-to-word.diagnostics",
+    "onCommand:markdowntoword.markdown-to-word.checkEnvironment",
+    "onCommand:markdowntoword.markdown-to-word.installDependencies"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "markdown-to-word.convert",
-        "title": "转换为Word文档",
+        "command": "markdowntoword.markdown-to-word.convert",
+        "title": "配置world文档",
         "category": "Markdown"
       },
       {
-        "command": "markdown-to-word.diagnostics",
+        "command": "markdowntoword.markdown-to-word.convertDirect",
+        "title": "生成Word文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.convertToHtml",
+        "title": "生成HTML文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.diagnostics",
         "title": "环境诊断",
         "category": "Markdown to Word"
       },
       {
-        "command": "markdown-to-word.checkEnvironment",
+        "command": "markdowntoword.markdown-to-word.checkEnvironment",
         "title": "检查环境",
         "category": "Markdown to Word"
       },
       {
-        "command": "markdown-to-word.installDependencies",
+        "command": "markdowntoword.markdown-to-word.installDependencies",
         "title": "安装依赖",
+        "category": "Markdown to Word"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.test",
+        "title": "测试命令",
         "category": "Markdown to Word"
       }
     ],
@@ -48,30 +64,61 @@
       "explorer/context": [
         {
           "when": "resourceExtname == .md",
-          "command": "markdown-to-word.convert",
+          "command": "markdowntoword.markdown-to-word.convert",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdowntoword.markdown-to-word.convertDirect",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdowntoword.markdown-to-word.convertToHtml",
           "group": "navigation"
         }
       ],
       "editor/context": [
         {
           "when": "resourceExtname == .md",
-          "command": "markdown-to-word.convert",
+          "command": "markdowntoword.markdown-to-word.convert",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdowntoword.markdown-to-word.convertDirect",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdowntoword.markdown-to-word.convertToHtml",
           "group": "navigation"
         }
       ],
       "commandPalette": [
         {
-          "command": "markdown-to-word.convert",
+          "command": "markdowntoword.markdown-to-word.convert",
           "when": "resourceExtname == .md"
         },
         {
-          "command": "markdown-to-word.diagnostics"
+          "command": "markdowntoword.markdown-to-word.convertDirect",
+          "when": "resourceExtname == .md"
         },
         {
-          "command": "markdown-to-word.checkEnvironment"
+          "command": "markdowntoword.markdown-to-word.convertToHtml",
+          "when": "resourceExtname == .md"
         },
         {
-          "command": "markdown-to-word.installDependencies"
+          "command": "markdowntoword.markdown-to-word.diagnostics"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.checkEnvironment"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.installDependencies"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.test"
         }
       ]
     },
@@ -158,6 +205,11 @@
           "type": "boolean",
           "default": false,
           "description": "在转换过程中显示诊断信息"
+        },
+        "markdown-to-word.markdownToWordUserConfig": {
+          "type": "string",
+          "default": "",
+          "description": "用户配置数据（自动管理，请勿手动修改）"
         }
       }
     }
@@ -168,10 +220,17 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "update-version": "node ./scripts/update-version.js",
+    "package": "npm run update-version && npx @vscode/vsce package"
   },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "publisher": "markdowntoword",
   "devDependencies": {
     "@types/glob": "^7.1.3",
+    "@types/js-yaml": "^4.0.5",
     "@types/mocha": "^8.2.2",
     "@types/node": "^14.14.37",
     "@types/vscode": "^1.60.0",

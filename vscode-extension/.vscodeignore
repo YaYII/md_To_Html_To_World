@@ -9,10 +9,15 @@ src/**
 .gitignore
 tsconfig.json
 vsc-extension-quickstart.md
+node_modules/**
+*.vsix
+.eslintrc.json
 
 # 不要忽略的文件 (这些是必需的)
 !out/**
 !scripts/**
 !scripts/**/*.py
 !scripts/**/*.yaml
-!node_modules/** 
+!scripts/src/modules/**
+!scripts/src/** 
+!node_modules/js-yaml/** 

@@ -51,27 +51,42 @@ class ProgressUI {
         }
     }
     async showSuccess(message, outputFile) {
-        const action = await vscode.window.showInformationMessage(message, { modal: false, detail: `文件已保存至: ${outputFile}` }, '打开文件', '打开所在文件夹');
-        if (action === '打开文件') {
-            await vscode.env.openExternal(vscode.Uri.file(outputFile));
+        const actions = [];
+        if (outputFile) {
+            const fileExtension = outputFile.toLowerCase().split('.').pop();
+            let actionText = '打开文档';
+            if (fileExtension === 'docx') {
+                actionText = '打开Word文档';
+            }
+            else if (fileExtension === 'html') {
+                actionText = '打开HTML文档';
+            }
+            actions.push(actionText);
         }
-        else if (action === '打开所在文件夹') {
-            await vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(outputFile));
+        const result = await vscode.window.showInformationMessage(message, ...actions);
+        if (result && outputFile) {
+            this.openDocument(outputFile);
         }
     }
     async showError(error) {
-        const selection = await vscode.window.showErrorMessage(error.message || '转换过程中发生未知错误。', '查看错误日志');
-        if (selection === '查看错误日志') {
-            const channel = vscode.window.createOutputChannel('Markdown 转换器 错误日志');
-            channel.show(true);
-            channel.appendLine(`======== ${new Date().toISOString()} ========`);
-            channel.appendLine('错误详情:');
-            channel.appendLine(`  消息: ${error.message || '未知错误'}`);
-            if (error.stack) {
-                channel.appendLine('  错误堆栈:');
-                channel.appendLine(error.stack);
-            }
-            channel.appendLine('======== 日志结束 ========');
+        const message = `转换失败: ${error.message}`;
+        const result = await vscode.window.showErrorMessage(message, '查看详情', '重试');
+        if (result === '查看详情') {
+            const detailedMessage = error.stack || error.message;
+            const doc = await vscode.workspace.openTextDocument({
+                content: detailedMessage,
+                language: 'plaintext'
+            });
+            await vscode.window.showTextDocument(doc);
+        }
+    }
+    async openDocument(filePath) {
+        try {
+            const uri = vscode.Uri.file(filePath);
+            vscode.env.openExternal(uri);
+        }
+        catch (error) {
+            vscode.window.showErrorMessage(`无法打开文件: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 }
