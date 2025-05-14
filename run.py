@@ -11,6 +11,39 @@ import sys
 import argparse
 import logging
 from pathlib import Path
+import traceback # 导入 traceback 模块
+
+# --- BEGIN DIAGNOSTICS ---
+print("--- run.py 启动诊断信息 ---", file=sys.stderr)
+print(f"Python Executable: {sys.executable}", file=sys.stderr)
+print(f"Python Version: {sys.version}", file=sys.stderr)
+print("sys.path:", file=sys.stderr)
+for p in sys.path:
+    print(f"  - {p}", file=sys.stderr)
+
+# 尝试导入关键模块
+try:
+    import markdown2docx
+    print("成功导入 'markdown2docx'", file=sys.stderr)
+except ModuleNotFoundError as e:
+    print("!!! 错误：无法导入 'markdown2docx' !!!", file=sys.stderr)
+    traceback.print_exc(file=sys.stderr) # 打印完整的 traceback
+except Exception as e:
+    print(f"!!! 导入 'markdown2docx' 时发生其他错误: {e} !!!", file=sys.stderr)
+    traceback.print_exc(file=sys.stderr)
+
+try:
+    import docx
+    print("成功导入 'docx' (来自 python-docx)", file=sys.stderr)
+except ModuleNotFoundError as e:
+    print("!!! 错误：无法导入 'docx' (来自 python-docx) !!!", file=sys.stderr)
+    traceback.print_exc(file=sys.stderr)
+except Exception as e:
+    print(f"!!! 导入 'docx' 时发生其他错误: {e} !!!", file=sys.stderr)
+    traceback.print_exc(file=sys.stderr)
+
+print("--- 诊断信息结束 ---", file=sys.stderr)
+# --- END DIAGNOSTICS ---
 
 # 将当前目录添加到系统路径
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +62,7 @@ def setup_logging(log_level=logging.INFO):
     logging.basicConfig(
         level=log_level,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[logging.StreamHandler()]
+        handlers=[logging.StreamHandler()] # 注意：StreamHandler 默认输出到 stderr
     )
 
 def find_config_file():
@@ -73,19 +106,26 @@ def main():
     """
     主函数
     """
-    # 导入必要的模块
-    from src.config import Config
-    from src.modules.converter import Converter
-    
     # 解析命令行参数
     args = parse_args()
     
-    # 设置日志级别
+    # 设置日志级别 (确保在尝试导入 src 之前设置)
     log_level = logging.DEBUG if args.debug else logging.INFO
     setup_logging(log_level)
-    
     logger = logging.getLogger('main')
     logger.info('开始执行World MD转换工具')
+
+    # 导入必要的模块 (现在放到 main 里面，确保诊断先运行)
+    try:
+        from src.config import Config
+        from src.modules.converter import Converter
+        logger.debug('成功导入 src 模块')
+    except ImportError as e:
+        logger.error(f'无法导入 src 模块: {e}')
+        logger.error('请确保 run.py 与 src 目录在同一父目录下，或者 src 目录在 PYTHONPATH 中')
+        sys.exit(1)
+        
+    logger.info('开始加载配置...')
     
     # 加载配置
     config = Config()
@@ -124,6 +164,8 @@ def main():
     
     # 决定是否保留HTML文件（默认保留，使用--no-html选项可以禁用保留）
     keep_html = not args.no_html
+    
+    logger.info('准备处理转换...')
     
     # 处理转换
     if args.batch or input_path.is_dir():

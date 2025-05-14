@@ -1,0 +1,18 @@
+# VS Code 插件项目中需要忽略的文件
+.vscode/**
+.vscode-test/**
+out/test/**
+test/**
+src/**
+**/*.ts
+**/*.map
+.gitignore
+tsconfig.json
+vsc-extension-quickstart.md
+
+# 不要忽略的文件 (这些是必需的)
+!out/**
+!scripts/**
+!scripts/**/*.py
+!scripts/**/*.yaml
+!node_modules/** 

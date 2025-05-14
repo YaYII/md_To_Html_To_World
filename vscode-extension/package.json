@@ -1,0 +1,186 @@
+{
+  "name": "markdown-to-word",
+  "displayName": "Markdown to Word",
+  "description": "将Markdown文档转换为Word文档",
+  "version": "0.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/markdown-to-word.git"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onCommand:markdown-to-word.convert",
+    "onCommand:markdown-to-word.diagnostics",
+    "onCommand:markdown-to-word.checkEnvironment",
+    "onCommand:markdown-to-word.installDependencies"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdown-to-word.convert",
+        "title": "转换为Word文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdown-to-word.diagnostics",
+        "title": "环境诊断",
+        "category": "Markdown to Word"
+      },
+      {
+        "command": "markdown-to-word.checkEnvironment",
+        "title": "检查环境",
+        "category": "Markdown to Word"
+      },
+      {
+        "command": "markdown-to-word.installDependencies",
+        "title": "安装依赖",
+        "category": "Markdown to Word"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdown-to-word.convert",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdown-to-word.convert",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "markdown-to-word.convert",
+          "when": "resourceExtname == .md"
+        },
+        {
+          "command": "markdown-to-word.diagnostics"
+        },
+        {
+          "command": "markdown-to-word.checkEnvironment"
+        },
+        {
+          "command": "markdown-to-word.installDependencies"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Markdown to Word",
+      "properties": {
+        "markdown-to-word.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Python解释器路径（可选）"
+        },
+        "markdown-to-word.useVirtualEnv": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否使用虚拟环境"
+        },
+        "markdown-to-word.defaultOutputDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "默认输出目录"
+        },
+        "markdown-to-word.defaultPageSize": {
+          "type": "string",
+          "enum": [
+            "A4",
+            "Letter",
+            "Legal"
+          ],
+          "default": "A4",
+          "description": "默认页面大小"
+        },
+        "markdown-to-word.defaultOrientation": {
+          "type": "string",
+          "enum": [
+            "portrait",
+            "landscape"
+          ],
+          "default": "portrait",
+          "description": "默认页面方向"
+        },
+        "markdown-to-word.defaultFontFamily": {
+          "type": "string",
+          "default": "微软雅黑",
+          "description": "默认字体"
+        },
+        "markdown-to-word.defaultFontSize": {
+          "type": "number",
+          "default": 12,
+          "description": "默认字号"
+        },
+        "markdown-to-word.defaultLineSpacing": {
+          "type": "number",
+          "default": 1.5,
+          "description": "默认行间距"
+        },
+        "markdown-to-word.includeToc": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否包含目录"
+        },
+        "markdown-to-word.tocDepth": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 6,
+          "description": "目录深度"
+        },
+        "markdown-to-word.preserveImages": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否保留图片"
+        },
+        "markdown-to-word.imageMaxWidth": {
+          "type": "number",
+          "default": 800,
+          "description": "图片最大宽度（像素）"
+        },
+        "markdown-to-word.autoInstallDependencies": {
+          "type": "boolean",
+          "default": true,
+          "description": "自动安装缺失的Python依赖"
+        },
+        "markdown-to-word.showDiagnosticInfo": {
+          "type": "boolean",
+          "default": false,
+          "description": "在转换过程中显示诊断信息"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.3",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.37",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "eslint": "^7.32.0",
+    "glob": "^7.1.7",
+    "mocha": "^8.4.0",
+    "typescript": "^4.2.4",
+    "vscode-test": "^1.5.2"
+  }
+}
