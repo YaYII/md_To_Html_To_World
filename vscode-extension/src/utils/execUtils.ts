@@ -28,7 +28,7 @@ function bufferToString(data: string | Buffer | undefined): string | undefined {
     if (data === undefined) {
         return undefined;
     }
-    return data instanceof Buffer ? data.toString('utf8') : data;
+    return data instanceof Buffer ? data.toString('utf8') : String(data);
 }
 
 /**

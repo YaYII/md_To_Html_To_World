@@ -1,0 +1,13 @@
+/*!
+ * Tmp
+ *
+ * Copyright (c) 2011-2017 KARASZI Istvan <github@spam.raszi.hu>
+ *
+ * MIT Licensed
+ */
+
+/*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
+
+/*! http://mths.be/fromcodepoint v0.1.0 by @mathias */
+
+/*! ws. MIT License. Einar Otto Stangvik <einaros@gmail.com> */

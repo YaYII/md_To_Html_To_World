@@ -1,0 +1,87 @@
+fontName: Microsoft YaHei
+fontSize: 12
+chinese:
+  convert_to_traditional: true
+  punctuation_spacing: true
+  auto_spacing: true
+output:
+  keepHtml: false
+fonts:
+  default: 蒙纳宋体
+  code: Courier New
+  headings: 蒙纳宋体
+sizes:
+  default: 12
+  code: 6.5
+  heading1: 18
+  heading2: 16
+  heading3: 14
+  heading4: 12
+  heading5: 12
+  heading6: 12
+colors:
+  default: '#000000'
+  headings: '#000000'
+  code: '#333333'
+  link: '#0563C1'
+paragraph:
+  line_spacing: 1.5
+  space_before: 0
+  space_after: 6
+  first_line_indent: 0
+table_styles:
+  even_row_color: '#f2f2f2'
+  odd_row_color: '#ffffff'
+  header_bg_color: '#e0e0e0'
+  border_color: '#dddddd'
+  cell_height: 0.95em
+  table_width: 100%
+enhanced_table_styles:
+  style: Table Grid
+  width: 16
+  border: true
+  border_size: 1
+  border_color: '#dddddd'
+  header_bg_color: '#E7E6E6'
+  even_row_color: '#F2F2F2'
+  text_align: left
+  vertical_align: center
+  cell_padding: 0
+  cell_height: 0.95
+  autofit: false
+  first_row_as_header: true
+  keep_header_visible: true
+  row_height:
+    default: 0.95
+    header: 0.95
+    min: 0.5
+    max: 5
+    auto_adjust: true
+markdown:
+  extensions:
+    - tables
+    - fenced_code
+    - codehilite
+    - footnotes
+    - nl2br
+  extension_configs:
+    codehilite:
+      linenums: false
+      use_pygments: true
+document:
+  page_size: A4
+  margin_top: 2.54
+  margin_bottom: 2.54
+  margin_left: 3.18
+  margin_right: 3.18
+  header: ''
+  footer: ''
+  generate_toc: false
+debug:
+  enabled: false
+  log_level: INFO
+  log_to_file: false
+  log_file: conversion.log
+  print_html_structure: false
+  verbose_element_info: false
+  timing: true

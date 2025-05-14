@@ -6,6 +6,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml'; // 需要添加这个依赖
+import { NodeMarkdownConverter } from '../core/nodeConverter';
 
 /**
  * @description 配置类型定义，与config_example.yaml完全一致
@@ -118,7 +119,7 @@ export class ConfigPanel {
     private _onConfigDone: (config: IDocumentConfig, cancelled: boolean) => void;
     private _extensionPath: string;
     private _defaultConfig: any;
-    private _storageKey = 'markdownToWordUserConfig'; // 存储键名
+    private _configFilePath: string;
 
     /**
      * @description 私有构造函数，通过静态方法创建实例
@@ -134,8 +135,11 @@ export class ConfigPanel {
         this._inputFile = inputFile;
         this._onConfigDone = onConfigDone;
 
+        // 获取统一的配置文件路径
+        this._configFilePath = NodeMarkdownConverter.getInstance().getConfigFilePath();
+
         // 调试输出初始化信息
-        console.log(`ConfigPanel初始化: ${this._inputFile}, 扩展路径: ${this._extensionPath}`);
+        console.log(`ConfigPanel初始化: ${this._inputFile}, 扩展路径: ${this._extensionPath}, 配置文件: ${this._configFilePath}`);
 
         // 加载默认配置
         this._loadDefaultConfig();
@@ -176,7 +180,16 @@ export class ConfigPanel {
      */
     private _loadDefaultConfig() {
         try {
-            // 首先尝试从用户配置中加载
+            // 首先尝试从统一配置文件加载
+            if (fs.existsSync(this._configFilePath)) {
+                console.log('从统一配置文件加载:', this._configFilePath);
+                const configContent = fs.readFileSync(this._configFilePath, 'utf8');
+                this._defaultConfig = yaml.load(configContent);
+                console.log('成功加载配置文件');
+                return;
+            }
+            
+            // 如果统一配置文件不存在，尝试从用户配置中加载
             const savedConfig = this._loadUserConfig();
             if (savedConfig) {
                 console.log('从用户配置中加载配置');
@@ -185,26 +198,29 @@ export class ConfigPanel {
             }
             
             // 如果没有用户配置，则加载示例配置文件
-            const configPath = path.join(this._extensionPath, 'scripts', 'config_example.yaml');
-            console.log('尝试加载配置文件:', configPath);
+            const configPath = path.join(this._extensionPath, 'nodejs', 'config_example.yaml');
+            console.log('尝试加载示例配置文件:', configPath);
             
             if (fs.existsSync(configPath)) {
                 const configContent = fs.readFileSync(configPath, 'utf8');
                 this._defaultConfig = yaml.load(configContent);
-                console.log('成功加载配置文件:', configPath);
+                console.log('成功加载示例配置文件');
+                
+                // 保存到统一配置文件
+                this._saveConfigToFile(this._defaultConfig, this._configFilePath);
             } else {
                 console.error('配置文件不存在:', configPath);
                 this._defaultConfig = {
-                    fonts: { default: '蒙纳宋体', headings: '蒙纳宋体', code: 'Courier New' },
-                    sizes: { default: 12, code: 6.5 },
+                    fonts: { default: '微软雅黑', headings: '微软雅黑', code: 'Courier New' },
+                    sizes: { default: 12, code: 10 },
                     colors: { default: '#000000', headings: '#000000', code: '#333333', link: '#0563C1' }
                 };
             }
         } catch (error) {
             console.error('加载配置文件失败:', error);
             this._defaultConfig = {
-                fonts: { default: '蒙纳宋体', headings: '蒙纳宋体', code: 'Courier New' },
-                sizes: { default: 12, code: 6.5 },
+                fonts: { default: '微软雅黑', headings: '微软雅黑', code: 'Courier New' },
+                sizes: { default: 12, code: 10 },
                 colors: { default: '#000000', headings: '#000000', code: '#333333', link: '#0563C1' }
             };
         }
@@ -217,11 +233,11 @@ export class ConfigPanel {
     private _loadUserConfig(): IDocumentConfig | null {
         try {
             const config = vscode.workspace.getConfiguration('markdown-to-word');
-            const savedConfig = config.get<string>(this._storageKey);
+            const savedConfig = config.get('markdownToWordUserConfig');
             
-            if (savedConfig) {
-                // 将JSON字符串解析为配置对象
-                return JSON.parse(savedConfig);
+            if (savedConfig && typeof savedConfig === 'object') {
+                // 直接使用对象
+                return savedConfig as IDocumentConfig;
             }
             return null;
         } catch (error) {
@@ -231,38 +247,67 @@ export class ConfigPanel {
     }
 
     /**
-     * @description 保存用户配置到设置
+     * @description 保存用户配置到设置和文件
      * @param config 用户配置对象
      */
     private _saveUserConfig(config: IDocumentConfig): void {
         try {
-            // 将配置直接保存到 YAML 文件
-            const configPath = path.join(this._extensionPath, 'scripts', 'config_example.yaml');
+            // 将配置保存到 VS Code 设置中
+            const vscodeConfig = vscode.workspace.getConfiguration('markdown-to-word');
+            vscodeConfig.update('markdownToWordUserConfig', config, vscode.ConfigurationTarget.Global)
+                .then(() => {
+                    console.log('用户配置已保存到VS Code设置');
+                    
+                    // 同时保存到统一配置文件
+                    this._saveConfigToFile(config, this._configFilePath);
+                    
+                    // 通知NodeMarkdownConverter更新配置
+                    NodeMarkdownConverter.getInstance().saveConfig(config)
+                        .catch((err: Error) => {
+                            console.error('通知转换器更新配置失败:', err);
+                        });
+                    
+                }, (error: Error) => {
+                    console.error('保存配置到VS Code设置失败:', error);
+                });
+        } catch (error) {
+            console.error('保存用户配置失败:', error);
+            vscode.window.showErrorMessage(`保存配置失败: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    /**
+     * @description 保存配置到文件
+     * @param config 配置对象
+     * @param filePath 文件路径
+     */
+    private _saveConfigToFile(config: any, filePath: string): void {
+        try {
+            // 确保目录存在
+            const dirPath = path.dirname(filePath);
+            if (!fs.existsSync(dirPath)) {
+                fs.mkdirSync(dirPath, { recursive: true });
+            }
             
-            // 将配置对象转换为 YAML 字符串
+            // 将配置对象转换为YAML格式
             const yamlStr = yaml.dump(config, {
                 indent: 2,
-                lineWidth: -1, // 不限制行宽
-                noRefs: true,  // 不使用引用
+                lineWidth: -1,
+                noRefs: true
             });
             
             // 添加注释头
-            const yamlWithComments = `# World MD 配置文件
-# 此文件包含World MD工具的所有配置项
-# 您可以根据需要修改这些设置
+            const yamlWithComments = `# Markdown to Word 配置文件
+# 此文件由VS Code扩展自动生成和维护
+# 上次更新时间: ${new Date().toISOString()}
 
 ${yamlStr}`;
             
             // 写入文件
-            fs.writeFileSync(configPath, yamlWithComments, 'utf8');
-            console.log('用户配置已保存到文件:', configPath);
-            
-            // 也将配置保存到 VS Code 设置中作为备份
-            const vscodeConfig = vscode.workspace.getConfiguration('markdown-to-word');
-            vscodeConfig.update(this._storageKey, JSON.stringify(config), vscode.ConfigurationTarget.Global);
+            fs.writeFileSync(filePath, yamlWithComments, 'utf8');
+            console.log('配置已保存到文件:', filePath);
         } catch (error) {
-            console.error('保存用户配置失败:', error);
-            vscode.window.showErrorMessage(`保存配置失败: ${error instanceof Error ? error.message : String(error)}`);
+            console.error('保存配置到文件失败:', error);
         }
     }
 
@@ -489,12 +534,12 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label for="fonts.default">正文字体</label>
-                        <input type="text" id="fonts.default" value="${config.fonts?.default || '蒙纳宋体'}">
+                        <input type="text" id="fonts.default" value="${config.fonts?.default || '微软雅黑'}">
                     </div>
                     
                     <div class="form-group">
                         <label for="fonts.headings">标题字体</label>
-                        <input type="text" id="fonts.headings" value="${config.fonts?.headings || '蒙纳宋体'}">
+                        <input type="text" id="fonts.headings" value="${config.fonts?.headings || '微软雅黑'}">
                     </div>
                     
                     <div class="form-group">
@@ -511,7 +556,7 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label for="sizes.code">代码字号 (pt)</label>
-                        <input type="number" id="sizes.code" min="6" max="72" value="${config.sizes?.code || 6.5}">
+                        <input type="number" id="sizes.code" min="6" max="72" value="${config.sizes?.code || 10}">
                     </div>
                     
                     <h3 class="section-title">颜色设置</h3>

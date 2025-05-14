@@ -1,3 +1,4 @@
 {
-    "markdown-to-word.pythonPath": "/Users/yingyang/Documents/project/python/md_To_Html_To_World/.venv/bin/python"
+    "markdown-to-word.pythonPath": "/Users/yingyang/Documents/project/python/md_To_Html_To_World/.venv/bin/python",
+    "git.ignoreLimitWarning": true
 } 
