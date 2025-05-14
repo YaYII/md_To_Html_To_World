@@ -2,7 +2,7 @@
   "name": "markdown-to-word",
   "displayName": "Markdown to Word",
   "description": "将Markdown文档转换为Word文档:作者杨英：抖音：木易君，抖音号：YI.11.13",
-  "version": "0.0.1",
+  "version": "0.1.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/yourusername/markdown-to-word.git"
@@ -37,6 +37,16 @@
       {
         "command": "markdowntoword.markdown-to-word.convertToHtml",
         "title": "生成HTML文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.batchConvertToWord",
+        "title": "批量生成Word文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.batchConvertToHtml",
+        "title": "批量生成HTML文档",
         "category": "Markdown"
       },
       {
@@ -76,6 +86,16 @@
           "when": "resourceExtname == .md",
           "command": "markdowntoword.markdown-to-word.convertToHtml",
           "group": "navigation"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "markdowntoword.markdown-to-word.batchConvertToWord",
+          "group": "navigation"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "markdowntoword.markdown-to-word.batchConvertToHtml",
+          "group": "navigation"
         }
       ],
       "editor/context": [
@@ -107,6 +127,14 @@
         {
           "command": "markdowntoword.markdown-to-word.convertToHtml",
           "when": "resourceExtname == .md"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.batchConvertToWord",
+          "when": "explorerViewletVisible"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.batchConvertToHtml",
+          "when": "explorerViewletVisible"
         },
         {
           "command": "markdowntoword.markdown-to-word.diagnostics"

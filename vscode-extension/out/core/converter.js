@@ -53,6 +53,9 @@ class MarkdownConverter {
                 '--input', inputFile,
                 '--output', outputFile
             ];
+            if (options.keepHtml === false) {
+                args.push('--no-html');
+            }
             if (options.useConfig) {
                 const tempConfigFile = await this.createTempConfigFile(options.useConfig);
                 if (tempConfigFile) {

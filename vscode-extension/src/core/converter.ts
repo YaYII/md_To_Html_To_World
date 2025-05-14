@@ -16,6 +16,7 @@ export interface IConversionOptions {
     showProgress?: boolean;
     outputDirectory?: string;
     useConfig?: IDocumentConfig; // 添加用户配置支持
+    keepHtml?: boolean; // 是否保留HTML文件
     onProgress?: (message: string) => void;
     onComplete?: (result: IConversionResult) => void;
 }
@@ -76,6 +77,11 @@ export class MarkdownConverter {
                 '--input', inputFile,
                 '--output', outputFile
             ];
+            
+            // 如果明确指定不保留HTML文件，添加--no-html参数
+            if (options.keepHtml === false) {
+                args.push('--no-html');
+            }
             
             // 是否传递配置选项
             if (options.useConfig) {

@@ -520,46 +520,55 @@ ${yamlStr}`;
                         <label for="document.page_size">页面大小</label>
                         <select id="document.page_size">
                             <option value="A4" ${(config.document?.page_size || 'A4') === 'A4' ? 'selected' : ''}>A4</option>
-                            <option value="Letter" ${(config.document?.page_size || '') === 'Letter' ? 'selected' : ''}>Letter</option>
-                            <option value="Legal" ${(config.document?.page_size || '') === 'Legal' ? 'selected' : ''}>Legal</option>
+                            <option value="Letter" ${(config.document?.page_size || 'A4') === 'Letter' ? 'selected' : ''}>Letter</option>
+                            <option value="Legal" ${(config.document?.page_size || 'A4') === 'Legal' ? 'selected' : ''}>Legal</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="document.margin_top">上边距 (厘米)</label>
-                        <input type="number" id="document.margin_top" min="1" max="10" step="0.1" value="${config.document?.margin_top || 2.54}">
+                        <label for="document.margin_top">上边距 (英寸)</label>
+                        <input type="number" id="document.margin_top" min="0.1" max="5" step="0.1" value="${config.document?.margin_top || 1}">
                     </div>
                     
                     <div class="form-group">
-                        <label for="document.margin_bottom">下边距 (厘米)</label>
-                        <input type="number" id="document.margin_bottom" min="1" max="10" step="0.1" value="${config.document?.margin_bottom || 2.54}">
+                        <label for="document.margin_bottom">下边距 (英寸)</label>
+                        <input type="number" id="document.margin_bottom" min="0.1" max="5" step="0.1" value="${config.document?.margin_bottom || 1}">
                     </div>
                     
                     <div class="form-group">
-                        <label for="document.margin_left">左边距 (厘米)</label>
-                        <input type="number" id="document.margin_left" min="1" max="10" step="0.1" value="${config.document?.margin_left || 3.18}">
+                        <label for="document.margin_left">左边距 (英寸)</label>
+                        <input type="number" id="document.margin_left" min="0.1" max="5" step="0.1" value="${config.document?.margin_left || 1}">
                     </div>
                     
                     <div class="form-group">
-                        <label for="document.margin_right">右边距 (厘米)</label>
-                        <input type="number" id="document.margin_right" min="1" max="10" step="0.1" value="${config.document?.margin_right || 3.18}">
+                        <label for="document.margin_right">右边距 (英寸)</label>
+                        <input type="number" id="document.margin_right" min="0.1" max="5" step="0.1" value="${config.document?.margin_right || 1}">
                     </div>
                     
+                    <h3 class="section-title">其他文档设置</h3>
+                    
                     <div class="form-group">
-                        <label for="document.header">页眉内容</label>
+                        <label for="document.header">页眉</label>
                         <input type="text" id="document.header" value="${config.document?.header || ''}">
                     </div>
                     
                     <div class="form-group">
-                        <label for="document.footer">页脚内容</label>
+                        <label for="document.footer">页脚</label>
                         <input type="text" id="document.footer" value="${config.document?.footer || ''}">
                     </div>
                     
                     <div class="form-group">
-                        <label class="checkbox-label">
+                        <div class="checkbox-label">
                             <input type="checkbox" id="document.generate_toc" ${config.document?.generate_toc ? 'checked' : ''}>
-                            生成目录
-                        </label>
+                            <label for="document.generate_toc">生成目录</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-label">
+                            <input type="checkbox" id="output.keepHtml" ${config.output?.keepHtml !== false ? 'checked' : ''}>
+                            <label for="output.keepHtml">保留中间HTML文件</label>
+                        </div>
                     </div>
                 </div>
                 
@@ -838,6 +847,9 @@ ${yamlStr}`;
                                 header: document.getElementById('document.header').value,
                                 footer: document.getElementById('document.footer').value,
                                 generate_toc: document.getElementById('document.generate_toc').checked
+                            },
+                            output: {
+                                keepHtml: document.getElementById('output.keepHtml').checked
                             },
                             debug: {
                                 enabled: document.getElementById('debug.enabled').checked,

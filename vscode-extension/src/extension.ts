@@ -9,6 +9,7 @@ import { ConfigPanel } from './ui/configPanel';
 import * as path from 'path';
 import { execWithDetails } from './utils/execUtils';
 import * as fs from 'fs';
+import * as os from 'os';
 
 /**
  * @description VS Code插件的激活入口点
@@ -80,6 +81,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
                     const result = await converter.convert(inputFile, {
                         showProgress: true,
                         useConfig: config,
+                        keepHtml: config.output?.keepHtml !== false,
                         onComplete: (conversionResult: any) => {
                             if (conversionResult.success && conversionResult.outputFile) {
                                 progressUI.showSuccess(conversionResult.message, conversionResult.outputFile);
@@ -162,6 +164,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
                 
                 const result = await converter.convert(inputFile, {
                     showProgress: true,
+                    keepHtml: false,
                     onComplete: (conversionResult: any) => {
                         if (conversionResult.success && conversionResult.outputFile) {
                             progressUI.showSuccess(conversionResult.message, conversionResult.outputFile);
@@ -225,15 +228,159 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
                     const outputDir = path.dirname(inputFile);
                     const outputHtmlFile = path.join(outputDir, `${baseName}.html`);
                     
-                    // 构建命令
-                    const pythonCmd = envManager.getEnvironmentInfo().pythonCmd;
-                    const scriptPath = path.join(context.extensionPath, 'scripts', 'run.py');
+                    // 如果HTML文件已存在，先尝试删除
+                    if (fs.existsSync(outputHtmlFile)) {
+                        try {
+                            fs.unlinkSync(outputHtmlFile);
+                        } catch (err) {
+                            console.warn('无法删除已存在的HTML文件:', err);
+                        }
+                    }
                     
-                    // 执行命令
+                    // 创建一个简单的Markdown到HTML转换脚本
+                    const tempScriptDir = path.join(os.tmpdir(), 'markdown-to-word');
+                    if (!fs.existsSync(tempScriptDir)) {
+                        fs.mkdirSync(tempScriptDir, { recursive: true });
+                    }
+                    
+                    const tempScriptPath = path.join(tempScriptDir, 'simple_md_to_html.py');
+                    
+                    // 创建一个简单的Python脚本直接处理Markdown到HTML的转换
+                    const scriptContent = `
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import sys
+import os
+import markdown
+from bs4 import BeautifulSoup
+
+def md_to_html(input_file, output_file=None):
+    """将Markdown文件转换为HTML
+    
+    Args:
+        input_file: Markdown文件路径
+        output_file: 输出HTML文件路径，如果不提供则只返回HTML内容
+    
+    Returns:
+        如果output_file为None，则返回HTML内容字符串
+    """
+    try:
+        # 读取Markdown文件
+        with open(input_file, 'r', encoding='utf-8') as f:
+            md_content = f.read()
+        
+        # 转换为HTML
+        html = markdown.markdown(
+            md_content,
+            extensions=[
+                'markdown.extensions.extra',
+                'markdown.extensions.toc',
+                'markdown.extensions.tables',
+                'markdown.extensions.fenced_code'
+            ]
+        )
+        
+        # 使用BeautifulSoup美化HTML
+        soup = BeautifulSoup(f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{os.path.basename(input_file)}</title>
+    <style>
+        body {{ 
+            font-family: 'Microsoft YaHei', 'SimSun', sans-serif; 
+            margin: 0 auto; 
+            max-width: 960px; 
+            padding: 20px; 
+            line-height: 1.6;
+        }}
+        pre {{ 
+            background-color: #f8f8f8; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            border-radius: 3px; 
+            overflow: auto; 
+        }}
+        code {{ 
+            font-family: Consolas, Monaco, monospace; 
+            background-color: #f8f8f8; 
+            padding: 2px 5px; 
+            border-radius: 3px; 
+        }}
+        table {{ 
+            border-collapse: collapse; 
+            width: 100%; 
+            margin-bottom: 20px;
+        }}
+        th, td {{ 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+        }}
+        th {{ 
+            background-color: #f2f2f2; 
+            text-align: left; 
+        }}
+        tr:nth-child(even) {{ 
+            background-color: #f9f9f9; 
+        }}
+        img {{ 
+            max-width: 100%; 
+            height: auto; 
+        }}
+    </style>
+</head>
+<body>
+    {html}
+</body>
+</html>
+        """, 'html.parser')
+        
+        html_pretty = soup.prettify()
+        
+        # 如果提供了输出文件路径，则写入文件
+        if output_file:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(html_pretty)
+            return True
+        else:
+            return html_pretty
+            
+    except Exception as e:
+        print(f"错误: {str(e)}", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("用法: python simple_md_to_html.py <input_file> [output_file]", file=sys.stderr)
+        sys.exit(1)
+        
+    input_file = sys.argv[1]
+    output_file = sys.argv[2] if len(sys.argv) > 2 else None
+    
+    result = md_to_html(input_file, output_file)
+    if not output_file:
+        print(result)
+`;
+                    
+                    // 写入临时脚本
+                    fs.writeFileSync(tempScriptPath, scriptContent, 'utf8');
+                    
+                    // 设置执行权限
+                    if (os.platform() !== 'win32') {
+                        try {
+                            fs.chmodSync(tempScriptPath, 0o755);
+                        } catch (err) {
+                            console.warn('无法设置脚本执行权限:', err);
+                        }
+                    }
+                    
                     progress.report({ message: '正在转换为HTML...' });
                     
                     // 执行Python命令
-                    const result = await execWithDetails(`${pythonCmd} "${scriptPath}" --input "${inputFile}" --output "${path.join(outputDir, baseName + '.docx')}"`);
+                    const pythonCmd = envManager.getEnvironmentInfo().pythonCmd;
+                    const result = await execWithDetails(`${pythonCmd} "${tempScriptPath}" "${inputFile}" "${outputHtmlFile}"`);
                     
                     if (result.success) {
                         // 检查HTML文件是否生成
@@ -241,10 +388,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
                             progress.report({ message: 'HTML生成成功！' });
                             await progressUI.showSuccess('Markdown 文件已成功转换为 HTML！', outputHtmlFile);
                         } else {
-                            throw new Error(`未找到生成的HTML文件: ${outputHtmlFile}`);
+                            throw new Error(`未能写入HTML文件: ${outputHtmlFile}`);
                         }
                     } else {
-                        throw new Error(result.stderr || '转换失败，未知错误');
+                        // 显示详细错误
+                        console.error('Python脚本错误:', result.stderr);
+                        throw new Error(`转换失败: ${result.stderr || '未知错误'}`);
                     }
                 } catch (error) {
                     console.error('HTML转换失败:', error);
@@ -258,7 +407,357 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         }
     });
 
-    context.subscriptions.push(disposable, diagnosticsCmd, checkEnvCmd, installDepsCmd, htmlConvertCmd, directConvertCmd);
+    // 注册批量Word转换命令
+    const batchWordConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.batchConvertToWord', async (uri?: vscode.Uri) => {
+        try {
+            // 确定输入目录
+            if (!uri || !uri.fsPath) {
+                throw new Error('未选择文件夹。请在文件资源管理器中右键单击文件夹。');
+            }
+
+            const inputDir = uri.fsPath;
+            
+            // 检查是否为目录
+            const stat = await vscode.workspace.fs.stat(uri);
+            if (stat.type !== vscode.FileType.Directory) {
+                throw new Error('所选项目不是文件夹。请选择一个文件夹。');
+            }
+
+            // 步骤 1: 检查环境
+            await checkEnvironment(envManager, context);
+
+            // 步骤 2: 显示配置面板
+            console.log('准备显示配置面板，批量处理目录:', inputDir);
+            ConfigPanel.createOrShow(context.extensionPath, inputDir, async (config, cancelled) => {
+                console.log('配置面板回调, 取消状态:', cancelled);
+                if (cancelled) {
+                    console.log('用户取消了批量转换');
+                    return;
+                }
+
+                // 步骤 3: 执行批量转换
+                await progressUI.withProgress('批量Markdown转Word', async (progress) => {
+                    progress.report({ message: '执行批量转换...' });
+                    
+                    try {
+                        // 使用Python脚本直接执行批处理
+                        const envInfo = envManager.getEnvironmentInfo();
+                        const pythonCmd = envInfo.pythonCmd;
+                        const scriptPath = path.join(envInfo.extensionPath, 'scripts', 'run.py');
+                        
+                        // 构建参数
+                        let cmdArgs = [
+                            `"${scriptPath}"`,
+                            `--input "${inputDir}"`,
+                            `--output "${inputDir}"`,
+                            '--batch'
+                        ];
+                        
+                        // 添加HTML选项
+                        if (config.output?.keepHtml === false) {
+                            cmdArgs.push('--no-html');
+                        }
+                        
+                        // 创建临时配置文件并添加到参数
+                        if (config) {
+                            // 使用js-yaml库将配置对象转换为YAML
+                            const yaml = require('js-yaml');
+                            const tempDir = path.join(os.tmpdir(), 'markdown-to-word');
+                            if (!fs.existsSync(tempDir)) {
+                                fs.mkdirSync(tempDir, { recursive: true });
+                            }
+                            
+                            const tempFile = path.join(tempDir, `config-${Date.now()}.yaml`);
+                            fs.writeFileSync(tempFile, yaml.dump(config), 'utf8');
+                            
+                            cmdArgs.push(`--config "${tempFile}"`);
+                        }
+                        
+                        // 执行命令
+                        const cmd = `${pythonCmd} ${cmdArgs.join(' ')}`;
+                        console.log('执行批处理命令:', cmd);
+                        
+                        const result = await execWithDetails(cmd);
+                        
+                        if (result.success) {
+                            progress.report({ message: '批量转换完成！' });
+                            vscode.window.showInformationMessage(`目录 ${path.basename(inputDir)} 中的Markdown文件已成功转换为Word文档！`);
+                        } else {
+                            throw new Error(result.stderr || '批量转换失败，未知错误');
+                        }
+                    } catch (err) {
+                        console.error('批量转换执行错误:', err);
+                        throw err;
+                    }
+                });
+            });
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            console.error('批量转换失败:', errorMessage);
+            
+            if (errorMessage.includes('ModuleNotFoundError') || 
+                errorMessage.includes('ImportError') || 
+                errorMessage.includes('No module named')) {
+                // Python模块相关错误
+                vscode.window.showErrorMessage(
+                    `缺少必要的Python依赖: ${errorMessage}`, 
+                    '自动安装依赖', '查看解决方案'
+                ).then(selection => {
+                    if (selection === '自动安装依赖') {
+                        installDependencies(context);
+                    } else if (selection === '查看解决方案') {
+                        showTroubleshooting();
+                    }
+                });
+            } else {
+                // 其他一般错误
+                await progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+            }
+        }
+    });
+
+    // 注册批量HTML转换命令
+    const batchHtmlConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.batchConvertToHtml', async (uri?: vscode.Uri) => {
+        try {
+            // 确定输入目录
+            if (!uri || !uri.fsPath) {
+                throw new Error('未选择文件夹。请在文件资源管理器中右键单击文件夹。');
+            }
+
+            const inputDir = uri.fsPath;
+            
+            // 检查是否为目录
+            const stat = await vscode.workspace.fs.stat(uri);
+            if (stat.type !== vscode.FileType.Directory) {
+                throw new Error('所选项目不是文件夹。请选择一个文件夹。');
+            }
+
+            // 步骤 1: 检查环境
+            await checkEnvironment(envManager, context);
+            
+            // 步骤 2: 直接执行批量HTML转换
+            await progressUI.withProgress('批量Markdown转HTML', async (progress) => {
+                progress.report({ message: '执行批量HTML转换...' });
+                
+                try {
+                    // 创建一个临时脚本处理HTML转换
+                    const tempScriptDir = path.join(os.tmpdir(), 'markdown-to-word');
+                    if (!fs.existsSync(tempScriptDir)) {
+                        fs.mkdirSync(tempScriptDir, { recursive: true });
+                    }
+                    
+                    const tempScriptPath = path.join(tempScriptDir, 'batch_md_to_html.py');
+                    
+                    const scriptContent = `
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+import glob
+import markdown
+from bs4 import BeautifulSoup
+
+def md_to_html(input_file, output_file=None):
+    """将Markdown文件转换为HTML
+    
+    Args:
+        input_file: Markdown文件路径
+        output_file: 输出HTML文件路径，如果不提供则只返回HTML内容
+    
+    Returns:
+        如果output_file为None，则返回HTML内容字符串
+    """
+    try:
+        # 读取Markdown文件
+        with open(input_file, 'r', encoding='utf-8') as f:
+            md_content = f.read()
+        
+        # 转换为HTML
+        html = markdown.markdown(
+            md_content,
+            extensions=[
+                'markdown.extensions.extra',
+                'markdown.extensions.toc',
+                'markdown.extensions.tables',
+                'markdown.extensions.fenced_code'
+            ]
+        )
+        
+        # 使用BeautifulSoup美化HTML
+        soup = BeautifulSoup(f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{os.path.basename(input_file)}</title>
+    <style>
+        body {{ 
+            font-family: 'Microsoft YaHei', 'SimSun', sans-serif; 
+            margin: 0 auto; 
+            max-width: 960px; 
+            padding: 20px; 
+            line-height: 1.6;
+        }}
+        pre {{ 
+            background-color: #f8f8f8; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            border-radius: 3px; 
+            overflow: auto; 
+        }}
+        code {{ 
+            font-family: Consolas, Monaco, monospace; 
+            background-color: #f8f8f8; 
+            padding: 2px 5px; 
+            border-radius: 3px; 
+        }}
+        table {{ 
+            border-collapse: collapse; 
+            width: 100%; 
+            margin-bottom: 20px;
+        }}
+        th, td {{ 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+        }}
+        th {{ 
+            background-color: #f2f2f2; 
+            text-align: left; 
+        }}
+        tr:nth-child(even) {{ 
+            background-color: #f9f9f9; 
+        }}
+        img {{ 
+            max-width: 100%; 
+            height: auto; 
+        }}
+    </style>
+</head>
+<body>
+    {html}
+</body>
+</html>
+        """, 'html.parser')
+        
+        html_pretty = soup.prettify()
+        
+        # 如果提供了输出文件路径，则写入文件
+        if output_file:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(html_pretty)
+            return True
+        else:
+            return html_pretty
+            
+    except Exception as e:
+        print(f"处理{input_file}时出错: {str(e)}", file=sys.stderr)
+        return False
+
+def main():
+    input_dir = "${inputDir.replace(/\\/g, '\\\\')}"
+    
+    # 找到所有的md文件
+    md_files = glob.glob(os.path.join(input_dir, "**", "*.md"), recursive=True)
+    
+    print(f"找到 {len(md_files)} 个Markdown文件...")
+    
+    success_count = 0
+    for md_file in md_files:
+        base_name = os.path.splitext(os.path.basename(md_file))[0]
+        dir_name = os.path.dirname(md_file)
+        html_file = os.path.join(dir_name, f"{base_name}.html")
+        
+        # 删除可能已经存在的HTML文件，确保重新生成
+        if os.path.exists(html_file):
+            try:
+                os.remove(html_file)
+            except Exception as e:
+                print(f"无法删除已存在的HTML文件 {html_file}: {str(e)}", file=sys.stderr)
+                
+        # 转换MD到HTML
+        print(f"处理: {md_file}")
+        try:
+            result = md_to_html(md_file, html_file)
+            if result:
+                success_count += 1
+                print(f"成功生成HTML: {html_file}")
+            else:
+                print(f"转换失败: {md_file}", file=sys.stderr)
+        except Exception as e:
+            print(f"处理{md_file}时出错: {str(e)}", file=sys.stderr)
+    
+    print(f"完成! 成功处理 {success_count}/{len(md_files)} 个文件。")
+    return 0 if success_count > 0 else 1
+
+if __name__ == "__main__":
+    sys.exit(main())
+`;
+                    
+                    // 写入临时脚本
+                    fs.writeFileSync(tempScriptPath, scriptContent, 'utf8');
+                    
+                    // 确保脚本可执行
+                    if (os.platform() !== 'win32') {
+                        try {
+                            fs.chmodSync(tempScriptPath, 0o755);
+                        } catch (err) {
+                            console.error('无法设置脚本权限:', err);
+                        }
+                    }
+                    
+                    // 执行临时脚本
+                    console.log('执行批量HTML转换脚本:', tempScriptPath);
+                    const pythonCmd = envManager.getEnvironmentInfo().pythonCmd;
+                    const result = await execWithDetails(`${pythonCmd} "${tempScriptPath}"`);
+                    
+                    if (result.success) {
+                        progress.report({ message: '批量HTML转换完成！' });
+                        vscode.window.showInformationMessage(`目录 ${path.basename(inputDir)} 中的Markdown文件已成功转换为HTML文档！`);
+                    } else {
+                        console.error('批量转换错误输出:', result.stderr);
+                        throw new Error(result.stderr || '批量HTML转换失败，未知错误');
+                    }
+                } catch (err) {
+                    console.error('批量HTML转换执行错误:', err);
+                    throw err;
+                }
+            });
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            console.error('批量HTML转换失败:', errorMessage);
+            
+            if (errorMessage.includes('ModuleNotFoundError') || 
+                errorMessage.includes('ImportError') || 
+                errorMessage.includes('No module named')) {
+                // Python模块相关错误
+                vscode.window.showErrorMessage(
+                    `缺少必要的Python依赖: ${errorMessage}`, 
+                    '自动安装依赖', '查看解决方案'
+                ).then(selection => {
+                    if (selection === '自动安装依赖') {
+                        installDependencies(context);
+                    } else if (selection === '查看解决方案') {
+                        showTroubleshooting();
+                    }
+                });
+            } else {
+                // 其他一般错误
+                await progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+            }
+        }
+    });
+
+    context.subscriptions.push(
+        disposable, 
+        diagnosticsCmd, 
+        checkEnvCmd, 
+        installDepsCmd, 
+        htmlConvertCmd, 
+        directConvertCmd,
+        batchWordConvertCmd, 
+        batchHtmlConvertCmd
+    );
     console.log('插件 "Markdown to Word Converter" 已成功激活。');
 }
 
