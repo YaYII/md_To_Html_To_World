@@ -81,7 +81,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
                     const result = await converter.convert(inputFile, {
                         showProgress: true,
                         useConfig: config,
-                        keepHtml: config.output?.keepHtml !== false,
+                        keepHtml: false,
                         onComplete: (conversionResult: any) => {
                             if (conversionResult.success && conversionResult.outputFile) {
                                 progressUI.showSuccess(conversionResult.message, conversionResult.outputFile);
@@ -426,70 +426,43 @@ if __name__ == "__main__":
             // 步骤 1: 检查环境
             await checkEnvironment(envManager, context);
 
-            // 步骤 2: 显示配置面板
-            console.log('准备显示配置面板，批量处理目录:', inputDir);
-            ConfigPanel.createOrShow(context.extensionPath, inputDir, async (config, cancelled) => {
-                console.log('配置面板回调, 取消状态:', cancelled);
-                if (cancelled) {
-                    console.log('用户取消了批量转换');
-                    return;
-                }
-
-                // 步骤 3: 执行批量转换
-                await progressUI.withProgress('批量Markdown转Word', async (progress) => {
-                    progress.report({ message: '执行批量转换...' });
+            // 直接执行批量转换，不显示配置面板
+            await progressUI.withProgress('批量Markdown转Word', async (progress) => {
+                progress.report({ message: '执行批量转换...' });
+                
+                try {
+                    // 使用Python脚本直接执行批处理
+                    const envInfo = envManager.getEnvironmentInfo();
+                    const pythonCmd = envInfo.pythonCmd;
+                    const scriptPath = path.join(envInfo.extensionPath, 'scripts', 'run.py');
                     
-                    try {
-                        // 使用Python脚本直接执行批处理
-                        const envInfo = envManager.getEnvironmentInfo();
-                        const pythonCmd = envInfo.pythonCmd;
-                        const scriptPath = path.join(envInfo.extensionPath, 'scripts', 'run.py');
-                        
-                        // 构建参数
-                        let cmdArgs = [
-                            `"${scriptPath}"`,
-                            `--input "${inputDir}"`,
-                            `--output "${inputDir}"`,
-                            '--batch'
-                        ];
-                        
-                        // 添加HTML选项
-                        if (config.output?.keepHtml === false) {
-                            cmdArgs.push('--no-html');
-                        }
-                        
-                        // 创建临时配置文件并添加到参数
-                        if (config) {
-                            // 使用js-yaml库将配置对象转换为YAML
-                            const yaml = require('js-yaml');
-                            const tempDir = path.join(os.tmpdir(), 'markdown-to-word');
-                            if (!fs.existsSync(tempDir)) {
-                                fs.mkdirSync(tempDir, { recursive: true });
-                            }
-                            
-                            const tempFile = path.join(tempDir, `config-${Date.now()}.yaml`);
-                            fs.writeFileSync(tempFile, yaml.dump(config), 'utf8');
-                            
-                            cmdArgs.push(`--config "${tempFile}"`);
-                        }
-                        
-                        // 执行命令
-                        const cmd = `${pythonCmd} ${cmdArgs.join(' ')}`;
-                        console.log('执行批处理命令:', cmd);
-                        
-                        const result = await execWithDetails(cmd);
-                        
-                        if (result.success) {
-                            progress.report({ message: '批量转换完成！' });
-                            vscode.window.showInformationMessage(`目录 ${path.basename(inputDir)} 中的Markdown文件已成功转换为Word文档！`);
-                        } else {
-                            throw new Error(result.stderr || '批量转换失败，未知错误');
-                        }
-                    } catch (err) {
-                        console.error('批量转换执行错误:', err);
-                        throw err;
+                    // 构建参数
+                    let cmdArgs = [
+                        `"${scriptPath}"`,
+                        `--input "${inputDir}"`,
+                        `--output "${inputDir}"`,
+                        '--batch'
+                    ];
+                    
+                    // 默认不保留HTML文件
+                    cmdArgs.push('--no-html');
+                    
+                    // 执行命令
+                    const cmd = `${pythonCmd} ${cmdArgs.join(' ')}`;
+                    console.log('执行批处理命令:', cmd);
+                    
+                    const result = await execWithDetails(cmd);
+                    
+                    if (result.success) {
+                        progress.report({ message: '批量转换完成！' });
+                        vscode.window.showInformationMessage(`目录 ${path.basename(inputDir)} 中的Markdown文件已成功转换为Word文档！`);
+                    } else {
+                        throw new Error(result.stderr || '批量转换失败，未知错误');
                     }
-                });
+                } catch (err) {
+                    console.error('批量转换执行错误:', err);
+                    throw err;
+                }
             });
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : String(error);

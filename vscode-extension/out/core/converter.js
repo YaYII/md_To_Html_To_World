@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MarkdownConverter = void 0;
 const path = __importStar(require("path"));
@@ -40,79 +49,83 @@ class MarkdownConverter {
         }
         return MarkdownConverter.instance;
     }
-    async convert(inputFile, options = {}) {
-        try {
-            const envInfo = this.envManager.getEnvironmentInfo();
-            const outputDir = options.outputDirectory || path.dirname(inputFile);
-            const inputBaseName = path.basename(inputFile, '.md');
-            const outputFile = path.join(outputDir, `${inputBaseName}.docx`);
-            const pythonCmd = envInfo.pythonCmd;
-            const scriptPath = path.join(envInfo.extensionPath, 'scripts', 'run.py');
-            let args = [
-                scriptPath,
-                '--input', inputFile,
-                '--output', outputFile
-            ];
-            if (options.keepHtml === false) {
-                args.push('--no-html');
-            }
-            if (options.useConfig) {
-                const tempConfigFile = await this.createTempConfigFile(options.useConfig);
-                if (tempConfigFile) {
-                    args.push('--config', tempConfigFile);
+    convert(inputFile, options = {}) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const envInfo = this.envManager.getEnvironmentInfo();
+                const outputDir = options.outputDirectory || path.dirname(inputFile);
+                const inputBaseName = path.basename(inputFile, '.md');
+                const outputFile = path.join(outputDir, `${inputBaseName}.docx`);
+                const pythonCmd = envInfo.pythonCmd;
+                const scriptPath = path.join(envInfo.extensionPath, 'scripts', 'run.py');
+                let args = [
+                    scriptPath,
+                    '--input', inputFile,
+                    '--output', outputFile
+                ];
+                if (options.keepHtml === false) {
+                    args.push('--no-html');
                 }
-            }
-            if (options.onProgress) {
-                options.onProgress('正在执行转换...');
-            }
-            const result = await this.runPythonScript(pythonCmd, args);
-            if (result.success) {
-                const message = `成功将 ${inputBaseName}.md 转换为 ${path.basename(outputFile)}`;
-                if (options.onComplete) {
-                    options.onComplete({
+                if (options.useConfig) {
+                    const tempConfigFile = yield this.createTempConfigFile(options.useConfig);
+                    if (tempConfigFile) {
+                        args.push('--config', tempConfigFile);
+                    }
+                }
+                if (options.onProgress) {
+                    options.onProgress('正在执行转换...');
+                }
+                const result = yield this.runPythonScript(pythonCmd, args);
+                if (result.success) {
+                    const message = `成功将 ${inputBaseName}.md 转换为 ${path.basename(outputFile)}`;
+                    if (options.onComplete) {
+                        options.onComplete({
+                            success: true,
+                            message,
+                            outputFile
+                        });
+                    }
+                    return {
                         success: true,
                         message,
                         outputFile
+                    };
+                }
+                else {
+                    throw new Error(result.stderr || '转换失败，未知错误');
+                }
+            }
+            catch (error) {
+                console.error('转换失败:', error);
+                const message = error instanceof Error ? error.message : String(error);
+                if (options.onComplete) {
+                    options.onComplete({
+                        success: false,
+                        message: `转换失败: ${message}`,
+                        error: error instanceof Error ? error : new Error(String(error))
                     });
                 }
-                return {
-                    success: true,
-                    message,
-                    outputFile
-                };
+                throw error;
             }
-            else {
-                throw new Error(result.stderr || '转换失败，未知错误');
-            }
-        }
-        catch (error) {
-            console.error('转换失败:', error);
-            const message = error instanceof Error ? error.message : String(error);
-            if (options.onComplete) {
-                options.onComplete({
-                    success: false,
-                    message: `转换失败: ${message}`,
-                    error: error instanceof Error ? error : new Error(String(error))
-                });
-            }
-            throw error;
-        }
+        });
     }
-    async createTempConfigFile(config) {
-        try {
-            const yamlConfig = this.generateYamlConfig(config);
-            const tempDir = path.join(os.tmpdir(), 'markdown-to-word');
-            if (!fs.existsSync(tempDir)) {
-                fs.mkdirSync(tempDir, { recursive: true });
+    createTempConfigFile(config) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const yamlConfig = this.generateYamlConfig(config);
+                const tempDir = path.join(os.tmpdir(), 'markdown-to-word');
+                if (!fs.existsSync(tempDir)) {
+                    fs.mkdirSync(tempDir, { recursive: true });
+                }
+                const tempFile = path.join(tempDir, `config-${Date.now()}.yaml`);
+                fs.writeFileSync(tempFile, yamlConfig, 'utf8');
+                return tempFile;
             }
-            const tempFile = path.join(tempDir, `config-${Date.now()}.yaml`);
-            fs.writeFileSync(tempFile, yamlConfig, 'utf8');
-            return tempFile;
-        }
-        catch (error) {
-            console.error('创建临时配置文件失败:', error);
-            return null;
-        }
+            catch (error) {
+                console.error('创建临时配置文件失败:', error);
+                return null;
+            }
+        });
     }
     generateYamlConfig(config) {
         return yaml.dump(config);

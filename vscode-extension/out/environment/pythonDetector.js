@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PythonDetector = void 0;
 const vscode = __importStar(require("vscode"));
@@ -30,100 +39,112 @@ const fs = __importStar(require("fs"));
 const utils_1 = require("../utils");
 const types_1 = require("./types");
 class PythonDetector {
-    static async detect(workspaceRoot) {
-        const config = vscode.workspace.getConfiguration('markdown-to-word');
-        const pythonPathFromConfig = config.get('pythonPath', '');
-        const useVirtualEnv = config.get('useVirtualEnv', true);
-        const attempts = [
-            async () => await this.checkUserConfigPath(pythonPathFromConfig, workspaceRoot),
-            async () => await this.checkVSCodePythonExt(),
-            async () => await this.checkVirtualEnv(useVirtualEnv, workspaceRoot),
-            async () => await this.checkSystemPath()
-        ];
-        for (const attempt of attempts) {
-            const result = await attempt();
-            if (result.success && result.version && result.path) {
-                return {
-                    cmd: result.path,
-                    version: result.version,
-                    path: result.path
-                };
+    static detect(workspaceRoot) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const config = vscode.workspace.getConfiguration('markdown-to-word');
+            const pythonPathFromConfig = config.get('pythonPath', '');
+            const useVirtualEnv = config.get('useVirtualEnv', true);
+            const attempts = [
+                () => __awaiter(this, void 0, void 0, function* () { return yield this.checkUserConfigPath(pythonPathFromConfig, workspaceRoot); }),
+                () => __awaiter(this, void 0, void 0, function* () { return yield this.checkVSCodePythonExt(); }),
+                () => __awaiter(this, void 0, void 0, function* () { return yield this.checkVirtualEnv(useVirtualEnv, workspaceRoot); }),
+                () => __awaiter(this, void 0, void 0, function* () { return yield this.checkSystemPath(); })
+            ];
+            for (const attempt of attempts) {
+                const result = yield attempt();
+                if (result.success && result.version && result.path) {
+                    return {
+                        cmd: result.path,
+                        version: result.version,
+                        path: result.path
+                    };
+                }
             }
-        }
-        throw new types_1.EnvironmentError('未找到可用的Python环境');
+            throw new types_1.EnvironmentError('未找到可用的Python环境');
+        });
     }
-    static async checkUserConfigPath(pythonPath, workspaceRoot) {
-        if (!pythonPath) {
-            return { success: false };
-        }
-        let expandedPath = this.expandEnvironmentVariables(pythonPath);
-        if (!path.isAbsolute(expandedPath) && workspaceRoot) {
-            expandedPath = path.join(workspaceRoot, expandedPath);
-        }
-        return await this.checkPython(expandedPath);
-    }
-    static async checkVSCodePythonExt() {
-        try {
-            const pythonExtConfig = vscode.workspace.getConfiguration('python');
-            const pythonExtPath = pythonExtConfig.get('defaultInterpreterPath');
-            if (pythonExtPath) {
-                return await this.checkPython(pythonExtPath);
+    static checkUserConfigPath(pythonPath, workspaceRoot) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!pythonPath) {
+                return { success: false };
             }
-        }
-        catch {
-        }
-        return { success: false };
+            let expandedPath = this.expandEnvironmentVariables(pythonPath);
+            if (!path.isAbsolute(expandedPath) && workspaceRoot) {
+                expandedPath = path.join(workspaceRoot, expandedPath);
+            }
+            return yield this.checkPython(expandedPath);
+        });
     }
-    static async checkVirtualEnv(useVirtualEnv, workspaceRoot) {
-        if (!useVirtualEnv || !workspaceRoot) {
+    static checkVSCodePythonExt() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const pythonExtConfig = vscode.workspace.getConfiguration('python');
+                const pythonExtPath = pythonExtConfig.get('defaultInterpreterPath');
+                if (pythonExtPath) {
+                    return yield this.checkPython(pythonExtPath);
+                }
+            }
+            catch (_a) {
+            }
             return { success: false };
-        }
-        const venvPaths = ['.venv', 'venv', 'env'];
-        for (const venvPath of venvPaths) {
-            const venvPython = process.platform === 'win32'
-                ? path.join(workspaceRoot, venvPath, 'Scripts', 'python.exe')
-                : path.join(workspaceRoot, venvPath, 'bin', 'python');
-            if (fs.existsSync(venvPython)) {
-                const result = await this.checkPython(venvPython);
+        });
+    }
+    static checkVirtualEnv(useVirtualEnv, workspaceRoot) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!useVirtualEnv || !workspaceRoot) {
+                return { success: false };
+            }
+            const venvPaths = ['.venv', 'venv', 'env'];
+            for (const venvPath of venvPaths) {
+                const venvPython = process.platform === 'win32'
+                    ? path.join(workspaceRoot, venvPath, 'Scripts', 'python.exe')
+                    : path.join(workspaceRoot, venvPath, 'bin', 'python');
+                if (fs.existsSync(venvPython)) {
+                    const result = yield this.checkPython(venvPython);
+                    if (result.success) {
+                        return result;
+                    }
+                }
+            }
+            return { success: false };
+        });
+    }
+    static checkSystemPath() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const pythonCommands = process.platform === 'win32'
+                ? ['python.exe', 'python3.exe']
+                : ['python3', 'python'];
+            for (const cmd of pythonCommands) {
+                const result = yield this.checkPython(cmd);
                 if (result.success) {
                     return result;
                 }
             }
-        }
-        return { success: false };
-    }
-    static async checkSystemPath() {
-        const pythonCommands = process.platform === 'win32'
-            ? ['python.exe', 'python3.exe']
-            : ['python3', 'python'];
-        for (const cmd of pythonCommands) {
-            const result = await this.checkPython(cmd);
-            if (result.success) {
-                return result;
-            }
-        }
-        return { success: false };
-    }
-    static async checkPython(cmd) {
-        try {
-            const quotedCmd = cmd.includes(' ') ? `"${cmd}"` : cmd;
-            const versionResult = await (0, utils_1.execWithDetails)(`${quotedCmd} --version`);
-            if (!versionResult.success || !versionResult.stdout) {
-                return { success: false };
-            }
-            const pathResult = await (0, utils_1.execWithDetails)(`${quotedCmd} -c "import sys; print(sys.executable)"`);
-            if (!pathResult.success || !pathResult.stdout) {
-                return { success: false };
-            }
-            return {
-                success: true,
-                version: versionResult.stdout.trim(),
-                path: pathResult.stdout.trim()
-            };
-        }
-        catch {
             return { success: false };
-        }
+        });
+    }
+    static checkPython(cmd) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const quotedCmd = cmd.includes(' ') ? `"${cmd}"` : cmd;
+                const versionResult = yield (0, utils_1.execWithDetails)(`${quotedCmd} --version`);
+                if (!versionResult.success || !versionResult.stdout) {
+                    return { success: false };
+                }
+                const pathResult = yield (0, utils_1.execWithDetails)(`${quotedCmd} -c "import sys; print(sys.executable)"`);
+                if (!pathResult.success || !pathResult.stdout) {
+                    return { success: false };
+                }
+                return {
+                    success: true,
+                    version: versionResult.stdout.trim(),
+                    path: pathResult.stdout.trim()
+                };
+            }
+            catch (_a) {
+                return { success: false };
+            }
+        });
     }
     static expandEnvironmentVariables(value) {
         let expandedValue = value.replace(/%([^%]+)%/g, (_, key) => process.env[key] || '');

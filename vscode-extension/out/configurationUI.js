@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigurationUI = void 0;
 const vscode = __importStar(require("vscode"));
@@ -35,24 +44,26 @@ class ConfigurationUI {
         }
         return ConfigurationUI.instance;
     }
-    async showConfigurationUI() {
-        const activeEditor = vscode.window.activeTextEditor;
-        if (!activeEditor) {
-            vscode.window.showErrorMessage('请先打开一个Markdown文件');
-            return undefined;
-        }
-        const defaultConfig = this.getDefaultConfig(activeEditor.document.uri);
-        try {
-            const config = await this.showConfigurationSteps(defaultConfig);
-            if (config) {
-                this.currentConfig = config;
-                return config;
+    showConfigurationUI() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const activeEditor = vscode.window.activeTextEditor;
+            if (!activeEditor) {
+                vscode.window.showErrorMessage('请先打开一个Markdown文件');
+                return undefined;
             }
-        }
-        catch (error) {
-            vscode.window.showErrorMessage(`配置过程出错: ${error instanceof Error ? error.message : String(error)}`);
-        }
-        return undefined;
+            const defaultConfig = this.getDefaultConfig(activeEditor.document.uri);
+            try {
+                const config = yield this.showConfigurationSteps(defaultConfig);
+                if (config) {
+                    this.currentConfig = config;
+                    return config;
+                }
+            }
+            catch (error) {
+                vscode.window.showErrorMessage(`配置过程出错: ${error instanceof Error ? error.message : String(error)}`);
+            }
+            return undefined;
+        });
     }
     getDefaultConfig(inputFileUri) {
         const workspaceFolder = vscode.workspace.getWorkspaceFolder(inputFileUri);
@@ -90,81 +101,66 @@ class ConfigurationUI {
             }
         };
     }
-    async showConfigurationSteps(defaultConfig) {
-        const outputDirectory = await vscode.window.showInputBox({
-            prompt: '请输入输出目录路径',
-            value: defaultConfig.outputDirectory,
-            validateInput: (value) => {
-                return value ? undefined : '输出目录不能为空';
-            }
+    showConfigurationSteps(defaultConfig) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const outputDirectory = yield vscode.window.showInputBox({
+                prompt: '请输入输出目录路径',
+                value: defaultConfig.outputDirectory,
+                validateInput: (value) => {
+                    return value ? undefined : '输出目录不能为空';
+                }
+            });
+            if (!outputDirectory)
+                return undefined;
+            const outputFileName = yield vscode.window.showInputBox({
+                prompt: '请输入输出文件名',
+                value: defaultConfig.outputFileName,
+                validateInput: (value) => {
+                    return value ? undefined : '文件名不能为空';
+                }
+            });
+            if (!outputFileName)
+                return undefined;
+            const pageSize = yield vscode.window.showQuickPick(['A4', 'Letter', 'Legal'], {
+                placeHolder: '选择页面大小',
+                canPickMany: false
+            });
+            if (!pageSize)
+                return undefined;
+            const orientation = yield vscode.window.showQuickPick(['portrait', 'landscape'], {
+                placeHolder: '选择页面方向',
+                canPickMany: false
+            });
+            if (!orientation)
+                return undefined;
+            const fontFamily = yield vscode.window.showQuickPick(['微软雅黑', '宋体', '黑体', 'Times New Roman', 'Arial'], {
+                placeHolder: '选择字体',
+                canPickMany: false
+            });
+            if (!fontFamily)
+                return undefined;
+            const fontSize = yield vscode.window.showQuickPick(['10', '11', '12', '14', '16', '18'], {
+                placeHolder: '选择字号',
+                canPickMany: false
+            });
+            if (!fontSize)
+                return undefined;
+            const includeToc = yield vscode.window.showQuickPick(['是', '否'], {
+                placeHolder: '是否包含目录',
+                canPickMany: false
+            });
+            if (!includeToc)
+                return undefined;
+            const tocDepth = includeToc === '是' ? yield vscode.window.showQuickPick(['1', '2', '3', '4', '5'], {
+                placeHolder: '选择目录深度',
+                canPickMany: false
+            }) : '3';
+            if (!tocDepth)
+                return undefined;
+            return Object.assign(Object.assign({}, defaultConfig), { outputDirectory,
+                outputFileName, formatOptions: Object.assign(Object.assign({}, defaultConfig.formatOptions), { pageSize,
+                    orientation }), styleOptions: Object.assign(Object.assign({}, defaultConfig.styleOptions), { fontFamily, fontSize: parseInt(fontSize) }), tocOptions: Object.assign(Object.assign({}, defaultConfig.tocOptions), { includeToc: includeToc === '是', tocDepth: parseInt(tocDepth) }) });
         });
-        if (!outputDirectory)
-            return undefined;
-        const outputFileName = await vscode.window.showInputBox({
-            prompt: '请输入输出文件名',
-            value: defaultConfig.outputFileName,
-            validateInput: (value) => {
-                return value ? undefined : '文件名不能为空';
-            }
-        });
-        if (!outputFileName)
-            return undefined;
-        const pageSize = await vscode.window.showQuickPick(['A4', 'Letter', 'Legal'], {
-            placeHolder: '选择页面大小',
-            canPickMany: false
-        });
-        if (!pageSize)
-            return undefined;
-        const orientation = await vscode.window.showQuickPick(['portrait', 'landscape'], {
-            placeHolder: '选择页面方向',
-            canPickMany: false
-        });
-        if (!orientation)
-            return undefined;
-        const fontFamily = await vscode.window.showQuickPick(['微软雅黑', '宋体', '黑体', 'Times New Roman', 'Arial'], {
-            placeHolder: '选择字体',
-            canPickMany: false
-        });
-        if (!fontFamily)
-            return undefined;
-        const fontSize = await vscode.window.showQuickPick(['10', '11', '12', '14', '16', '18'], {
-            placeHolder: '选择字号',
-            canPickMany: false
-        });
-        if (!fontSize)
-            return undefined;
-        const includeToc = await vscode.window.showQuickPick(['是', '否'], {
-            placeHolder: '是否包含目录',
-            canPickMany: false
-        });
-        if (!includeToc)
-            return undefined;
-        const tocDepth = includeToc === '是' ? await vscode.window.showQuickPick(['1', '2', '3', '4', '5'], {
-            placeHolder: '选择目录深度',
-            canPickMany: false
-        }) : '3';
-        if (!tocDepth)
-            return undefined;
-        return {
-            ...defaultConfig,
-            outputDirectory,
-            outputFileName,
-            formatOptions: {
-                ...defaultConfig.formatOptions,
-                pageSize,
-                orientation
-            },
-            styleOptions: {
-                ...defaultConfig.styleOptions,
-                fontFamily,
-                fontSize: parseInt(fontSize)
-            },
-            tocOptions: {
-                ...defaultConfig.tocOptions,
-                includeToc: includeToc === '是',
-                tocDepth: parseInt(tocDepth)
-            }
-        };
     }
     getCurrentConfig() {
         return this.currentConfig;

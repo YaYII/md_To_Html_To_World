@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigPresetManager = void 0;
 const fs = __importStar(require("fs"));
@@ -153,38 +162,46 @@ class ConfigPresetManager {
     getPreset(name) {
         return this.presets.get(name);
     }
-    async addPreset(preset) {
-        this.presets.set(preset.name, preset);
-        await this.savePresets();
+    addPreset(preset) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.presets.set(preset.name, preset);
+            yield this.savePresets();
+        });
     }
-    async deletePreset(name) {
-        this.presets.delete(name);
-        await this.savePresets();
+    deletePreset(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.presets.delete(name);
+            yield this.savePresets();
+        });
     }
-    async exportPresets(filePath) {
-        try {
-            const data = JSON.stringify(Array.from(this.presets.values()), null, 2);
-            fs.writeFileSync(filePath, data, 'utf8');
-        }
-        catch (error) {
-            throw new Error(`导出预设失败: ${error}`);
-        }
-    }
-    async importPresets(filePath) {
-        try {
-            const data = fs.readFileSync(filePath, 'utf8');
-            const importedPresets = JSON.parse(data);
-            if (!Array.isArray(importedPresets)) {
-                throw new Error('无效的预设文件格式');
+    exportPresets(filePath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = JSON.stringify(Array.from(this.presets.values()), null, 2);
+                fs.writeFileSync(filePath, data, 'utf8');
             }
-            importedPresets.forEach(preset => {
-                this.presets.set(preset.name, preset);
-            });
-            await this.savePresets();
-        }
-        catch (error) {
-            throw new Error(`导入预设失败: ${error}`);
-        }
+            catch (error) {
+                throw new Error(`导出预设失败: ${error}`);
+            }
+        });
+    }
+    importPresets(filePath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = fs.readFileSync(filePath, 'utf8');
+                const importedPresets = JSON.parse(data);
+                if (!Array.isArray(importedPresets)) {
+                    throw new Error('无效的预设文件格式');
+                }
+                importedPresets.forEach(preset => {
+                    this.presets.set(preset.name, preset);
+                });
+                yield this.savePresets();
+            }
+            catch (error) {
+                throw new Error(`导入预设失败: ${error}`);
+            }
+        });
     }
 }
 exports.ConfigPresetManager = ConfigPresetManager;

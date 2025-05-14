@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProgressUI = void 0;
 const vscode = __importStar(require("vscode"));
@@ -33,14 +42,16 @@ class ProgressUI {
         }
         return ProgressUI.instance;
     }
-    async withProgress(title, task) {
-        return vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title,
-            cancellable: false
-        }, async (progress, token) => {
-            this.currentProgress = progress;
-            return await task(progress, token);
+    withProgress(title, task) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title,
+                cancellable: false
+            }, (progress, token) => __awaiter(this, void 0, void 0, function* () {
+                this.currentProgress = progress;
+                return yield task(progress, token);
+            }));
         });
     }
     updateProgress(progress) {
@@ -50,44 +61,50 @@ class ProgressUI {
             });
         }
     }
-    async showSuccess(message, outputFile) {
-        const actions = [];
-        if (outputFile) {
-            const fileExtension = outputFile.toLowerCase().split('.').pop();
-            let actionText = '打开文档';
-            if (fileExtension === 'docx') {
-                actionText = '打开Word文档';
+    showSuccess(message, outputFile) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const actions = [];
+            if (outputFile) {
+                const fileExtension = outputFile.toLowerCase().split('.').pop();
+                let actionText = '打开文档';
+                if (fileExtension === 'docx') {
+                    actionText = '打开Word文档';
+                }
+                else if (fileExtension === 'html') {
+                    actionText = '打开HTML文档';
+                }
+                actions.push(actionText);
             }
-            else if (fileExtension === 'html') {
-                actionText = '打开HTML文档';
+            const result = yield vscode.window.showInformationMessage(message, ...actions);
+            if (result && outputFile) {
+                this.openDocument(outputFile);
             }
-            actions.push(actionText);
-        }
-        const result = await vscode.window.showInformationMessage(message, ...actions);
-        if (result && outputFile) {
-            this.openDocument(outputFile);
-        }
+        });
     }
-    async showError(error) {
-        const message = `转换失败: ${error.message}`;
-        const result = await vscode.window.showErrorMessage(message, '查看详情', '重试');
-        if (result === '查看详情') {
-            const detailedMessage = error.stack || error.message;
-            const doc = await vscode.workspace.openTextDocument({
-                content: detailedMessage,
-                language: 'plaintext'
-            });
-            await vscode.window.showTextDocument(doc);
-        }
+    showError(error) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const message = `转换失败: ${error.message}`;
+            const result = yield vscode.window.showErrorMessage(message, '查看详情', '重试');
+            if (result === '查看详情') {
+                const detailedMessage = error.stack || error.message;
+                const doc = yield vscode.workspace.openTextDocument({
+                    content: detailedMessage,
+                    language: 'plaintext'
+                });
+                yield vscode.window.showTextDocument(doc);
+            }
+        });
     }
-    async openDocument(filePath) {
-        try {
-            const uri = vscode.Uri.file(filePath);
-            vscode.env.openExternal(uri);
-        }
-        catch (error) {
-            vscode.window.showErrorMessage(`无法打开文件: ${error instanceof Error ? error.message : String(error)}`);
-        }
+    openDocument(filePath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const uri = vscode.Uri.file(filePath);
+                vscode.env.openExternal(uri);
+            }
+            catch (error) {
+                vscode.window.showErrorMessage(`无法打开文件: ${error instanceof Error ? error.message : String(error)}`);
+            }
+        });
     }
 }
 exports.ProgressUI = ProgressUI;

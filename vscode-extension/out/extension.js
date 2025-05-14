@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
@@ -33,51 +42,115 @@ const path = __importStar(require("path"));
 const execUtils_1 = require("./utils/execUtils");
 const fs = __importStar(require("fs"));
 const os = __importStar(require("os"));
-async function activate(context) {
-    console.log('插件 "Markdown to Word Converter" 正在激活...');
-    const envManager = environmentManager_1.EnvironmentManager.getInstance();
-    try {
-        await envManager.initialize(context);
-        console.log('环境初始化成功');
-    }
-    catch (error) {
-        console.error('环境初始化失败:', error);
-        vscode.window.showErrorMessage(`Markdown to Word 插件初始化失败: ${error instanceof Error ? error.message : String(error)}`, '查看诊断信息', '查看解决方案').then(selection => {
-            if (selection === '查看诊断信息') {
-                showDiagnostics(envManager);
-            }
-            else if (selection === '查看解决方案') {
-                showTroubleshooting();
-            }
-        });
-    }
-    const converter = converter_1.MarkdownConverter.getInstance();
-    const progressUI = progressUI_1.ProgressUI.getInstance();
-    const disposable = vscode.commands.registerCommand('markdowntoword.markdown-to-word.convert', async (uri) => {
+function activate(context) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('插件 "Markdown to Word Converter" 正在激活...');
+        const envManager = environmentManager_1.EnvironmentManager.getInstance();
         try {
-            const editor = vscode.window.activeTextEditor;
-            const inputFileUri = uri || editor?.document.uri;
-            if (!inputFileUri) {
-                throw new Error('无法确定要转换的 Markdown 文件。请在编辑器中打开一个 Markdown 文件，或在文件资源管理器中右键单击它。');
-            }
-            const inputFile = inputFileUri.fsPath;
-            if (!inputFile.toLowerCase().endsWith('.md')) {
-                throw new Error(`选择的文件不是 Markdown (.md) 文件: ${inputFile}`);
-            }
-            await checkEnvironment(envManager, context);
-            console.log('准备显示配置面板, 输入文件:', inputFile);
-            configPanel_1.ConfigPanel.createOrShow(context.extensionPath, inputFile, async (config, cancelled) => {
-                console.log('配置面板回调, 取消状态:', cancelled);
-                if (cancelled) {
-                    console.log('用户取消了转换');
-                    return;
+            yield envManager.initialize(context);
+            console.log('环境初始化成功');
+        }
+        catch (error) {
+            console.error('环境初始化失败:', error);
+            vscode.window.showErrorMessage(`Markdown to Word 插件初始化失败: ${error instanceof Error ? error.message : String(error)}`, '查看诊断信息', '查看解决方案').then(selection => {
+                if (selection === '查看诊断信息') {
+                    showDiagnostics(envManager);
                 }
-                await progressUI.withProgress('Markdown 转 Word', async (progress) => {
+                else if (selection === '查看解决方案') {
+                    showTroubleshooting();
+                }
+            });
+        }
+        const converter = converter_1.MarkdownConverter.getInstance();
+        const progressUI = progressUI_1.ProgressUI.getInstance();
+        const disposable = vscode.commands.registerCommand('markdowntoword.markdown-to-word.convert', (uri) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const editor = vscode.window.activeTextEditor;
+                const inputFileUri = uri || (editor === null || editor === void 0 ? void 0 : editor.document.uri);
+                if (!inputFileUri) {
+                    throw new Error('无法确定要转换的 Markdown 文件。请在编辑器中打开一个 Markdown 文件，或在文件资源管理器中右键单击它。');
+                }
+                const inputFile = inputFileUri.fsPath;
+                if (!inputFile.toLowerCase().endsWith('.md')) {
+                    throw new Error(`选择的文件不是 Markdown (.md) 文件: ${inputFile}`);
+                }
+                yield checkEnvironment(envManager, context);
+                console.log('准备显示配置面板, 输入文件:', inputFile);
+                configPanel_1.ConfigPanel.createOrShow(context.extensionPath, inputFile, (config, cancelled) => __awaiter(this, void 0, void 0, function* () {
+                    console.log('配置面板回调, 取消状态:', cancelled);
+                    if (cancelled) {
+                        console.log('用户取消了转换');
+                        return;
+                    }
+                    yield progressUI.withProgress('Markdown 转 Word', (progress) => __awaiter(this, void 0, void 0, function* () {
+                        progress.report({ message: '执行转换...' });
+                        const result = yield converter.convert(inputFile, {
+                            showProgress: true,
+                            useConfig: config,
+                            keepHtml: false,
+                            onComplete: (conversionResult) => {
+                                if (conversionResult.success && conversionResult.outputFile) {
+                                    progressUI.showSuccess(conversionResult.message, conversionResult.outputFile);
+                                }
+                            }
+                        });
+                        progress.report({ message: '转换完成！' });
+                        progressUI.showSuccess('Markdown 文件已成功转换为 Word 文档！', result.outputFile);
+                    }));
+                }));
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('转换失败:', errorMessage);
+                if (errorMessage.includes('ModuleNotFoundError') ||
+                    errorMessage.includes('ImportError') ||
+                    errorMessage.includes('No module named')) {
+                    vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
+                        if (selection === '自动安装依赖') {
+                            installDependencies(context);
+                        }
+                        else if (selection === '查看解决方案') {
+                            showTroubleshooting();
+                        }
+                    });
+                }
+                else {
+                    yield progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+                }
+            }
+        }));
+        const diagnosticsCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.diagnostics', () => __awaiter(this, void 0, void 0, function* () {
+            showDiagnostics(envManager);
+        }));
+        const checkEnvCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.checkEnvironment', () => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield checkEnvironment(envManager, context, true);
+                vscode.window.showInformationMessage('环境检查通过');
+            }
+            catch (error) {
+                vscode.window.showErrorMessage(`环境检查失败: ${error instanceof Error ? error.message : String(error)}`);
+            }
+        }));
+        const installDepsCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.installDependencies', () => __awaiter(this, void 0, void 0, function* () {
+            installDependencies(context);
+        }));
+        const directConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.convertDirect', (uri) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const editor = vscode.window.activeTextEditor;
+                const inputFileUri = uri || (editor === null || editor === void 0 ? void 0 : editor.document.uri);
+                if (!inputFileUri) {
+                    throw new Error('无法确定要转换的 Markdown 文件。请在编辑器中打开一个 Markdown 文件，或在文件资源管理器中右键单击它。');
+                }
+                const inputFile = inputFileUri.fsPath;
+                if (!inputFile.toLowerCase().endsWith('.md')) {
+                    throw new Error(`选择的文件不是 Markdown (.md) 文件: ${inputFile}`);
+                }
+                yield checkEnvironment(envManager, context);
+                yield progressUI.withProgress('Markdown 直接转 Word', (progress) => __awaiter(this, void 0, void 0, function* () {
                     progress.report({ message: '执行转换...' });
-                    const result = await converter.convert(inputFile, {
+                    const result = yield converter.convert(inputFile, {
                         showProgress: true,
-                        useConfig: config,
-                        keepHtml: config.output?.keepHtml !== false,
+                        keepHtml: false,
                         onComplete: (conversionResult) => {
                             if (conversionResult.success && conversionResult.outputFile) {
                                 progressUI.showSuccess(conversionResult.message, conversionResult.outputFile);
@@ -85,123 +158,60 @@ async function activate(context) {
                         }
                     });
                     progress.report({ message: '转换完成！' });
-                    progressUI.showSuccess('Markdown 文件已成功转换为 Word 文档！', result.outputFile);
-                });
-            });
-        }
-        catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error('转换失败:', errorMessage);
-            if (errorMessage.includes('ModuleNotFoundError') ||
-                errorMessage.includes('ImportError') ||
-                errorMessage.includes('No module named')) {
-                vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
-                    if (selection === '自动安装依赖') {
-                        installDependencies(context);
-                    }
-                    else if (selection === '查看解决方案') {
-                        showTroubleshooting();
-                    }
-                });
+                    yield progressUI.showSuccess('Markdown 文件已成功转换为 Word 文档！', result.outputFile);
+                }));
             }
-            else {
-                await progressUI.showError(error instanceof Error ? error : new Error(String(error)));
-            }
-        }
-    });
-    const diagnosticsCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.diagnostics', async () => {
-        showDiagnostics(envManager);
-    });
-    const checkEnvCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.checkEnvironment', async () => {
-        try {
-            await checkEnvironment(envManager, context, true);
-            vscode.window.showInformationMessage('环境检查通过');
-        }
-        catch (error) {
-            vscode.window.showErrorMessage(`环境检查失败: ${error instanceof Error ? error.message : String(error)}`);
-        }
-    });
-    const installDepsCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.installDependencies', async () => {
-        installDependencies(context);
-    });
-    const directConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.convertDirect', async (uri) => {
-        try {
-            const editor = vscode.window.activeTextEditor;
-            const inputFileUri = uri || editor?.document.uri;
-            if (!inputFileUri) {
-                throw new Error('无法确定要转换的 Markdown 文件。请在编辑器中打开一个 Markdown 文件，或在文件资源管理器中右键单击它。');
-            }
-            const inputFile = inputFileUri.fsPath;
-            if (!inputFile.toLowerCase().endsWith('.md')) {
-                throw new Error(`选择的文件不是 Markdown (.md) 文件: ${inputFile}`);
-            }
-            await checkEnvironment(envManager, context);
-            await progressUI.withProgress('Markdown 直接转 Word', async (progress) => {
-                progress.report({ message: '执行转换...' });
-                const result = await converter.convert(inputFile, {
-                    showProgress: true,
-                    keepHtml: false,
-                    onComplete: (conversionResult) => {
-                        if (conversionResult.success && conversionResult.outputFile) {
-                            progressUI.showSuccess(conversionResult.message, conversionResult.outputFile);
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('直接转换失败:', errorMessage);
+                if (errorMessage.includes('ModuleNotFoundError') ||
+                    errorMessage.includes('ImportError') ||
+                    errorMessage.includes('No module named')) {
+                    vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
+                        if (selection === '自动安装依赖') {
+                            installDependencies(context);
                         }
-                    }
-                });
-                progress.report({ message: '转换完成！' });
-                await progressUI.showSuccess('Markdown 文件已成功转换为 Word 文档！', result.outputFile);
-            });
-        }
-        catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error('直接转换失败:', errorMessage);
-            if (errorMessage.includes('ModuleNotFoundError') ||
-                errorMessage.includes('ImportError') ||
-                errorMessage.includes('No module named')) {
-                vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
-                    if (selection === '自动安装依赖') {
-                        installDependencies(context);
-                    }
-                    else if (selection === '查看解决方案') {
-                        showTroubleshooting();
-                    }
-                });
-            }
-            else {
-                await progressUI.showError(error instanceof Error ? error : new Error(String(error)));
-            }
-        }
-    });
-    const htmlConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.convertToHtml', async (uri) => {
-        try {
-            const editor = vscode.window.activeTextEditor;
-            const inputFileUri = uri || editor?.document.uri;
-            if (!inputFileUri) {
-                throw new Error('无法确定要转换的 Markdown 文件。请在编辑器中打开一个 Markdown 文件，或在文件资源管理器中右键单击它。');
-            }
-            const inputFile = inputFileUri.fsPath;
-            if (!inputFile.toLowerCase().endsWith('.md')) {
-                throw new Error(`选择的文件不是 Markdown (.md) 文件: ${inputFile}`);
-            }
-            await checkEnvironment(envManager, context);
-            await progressUI.withProgress('Markdown 转 HTML', async (progress) => {
-                try {
-                    const baseName = path.basename(inputFile, '.md');
-                    const outputDir = path.dirname(inputFile);
-                    const outputHtmlFile = path.join(outputDir, `${baseName}.html`);
-                    if (fs.existsSync(outputHtmlFile)) {
-                        try {
-                            fs.unlinkSync(outputHtmlFile);
+                        else if (selection === '查看解决方案') {
+                            showTroubleshooting();
                         }
-                        catch (err) {
-                            console.warn('无法删除已存在的HTML文件:', err);
+                    });
+                }
+                else {
+                    yield progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+                }
+            }
+        }));
+        const htmlConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.convertToHtml', (uri) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const editor = vscode.window.activeTextEditor;
+                const inputFileUri = uri || (editor === null || editor === void 0 ? void 0 : editor.document.uri);
+                if (!inputFileUri) {
+                    throw new Error('无法确定要转换的 Markdown 文件。请在编辑器中打开一个 Markdown 文件，或在文件资源管理器中右键单击它。');
+                }
+                const inputFile = inputFileUri.fsPath;
+                if (!inputFile.toLowerCase().endsWith('.md')) {
+                    throw new Error(`选择的文件不是 Markdown (.md) 文件: ${inputFile}`);
+                }
+                yield checkEnvironment(envManager, context);
+                yield progressUI.withProgress('Markdown 转 HTML', (progress) => __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        const baseName = path.basename(inputFile, '.md');
+                        const outputDir = path.dirname(inputFile);
+                        const outputHtmlFile = path.join(outputDir, `${baseName}.html`);
+                        if (fs.existsSync(outputHtmlFile)) {
+                            try {
+                                fs.unlinkSync(outputHtmlFile);
+                            }
+                            catch (err) {
+                                console.warn('无法删除已存在的HTML文件:', err);
+                            }
                         }
-                    }
-                    const tempScriptDir = path.join(os.tmpdir(), 'markdown-to-word');
-                    if (!fs.existsSync(tempScriptDir)) {
-                        fs.mkdirSync(tempScriptDir, { recursive: true });
-                    }
-                    const tempScriptPath = path.join(tempScriptDir, 'simple_md_to_html.py');
-                    const scriptContent = `
+                        const tempScriptDir = path.join(os.tmpdir(), 'markdown-to-word');
+                        if (!fs.existsSync(tempScriptDir)) {
+                            fs.mkdirSync(tempScriptDir, { recursive: true });
+                        }
+                        const tempScriptPath = path.join(tempScriptDir, 'simple_md_to_html.py');
+                        const scriptContent = `
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -318,63 +328,56 @@ if __name__ == "__main__":
     if not output_file:
         print(result)
 `;
-                    fs.writeFileSync(tempScriptPath, scriptContent, 'utf8');
-                    if (os.platform() !== 'win32') {
-                        try {
-                            fs.chmodSync(tempScriptPath, 0o755);
+                        fs.writeFileSync(tempScriptPath, scriptContent, 'utf8');
+                        if (os.platform() !== 'win32') {
+                            try {
+                                fs.chmodSync(tempScriptPath, 0o755);
+                            }
+                            catch (err) {
+                                console.warn('无法设置脚本执行权限:', err);
+                            }
                         }
-                        catch (err) {
-                            console.warn('无法设置脚本执行权限:', err);
-                        }
-                    }
-                    progress.report({ message: '正在转换为HTML...' });
-                    const pythonCmd = envManager.getEnvironmentInfo().pythonCmd;
-                    const result = await (0, execUtils_1.execWithDetails)(`${pythonCmd} "${tempScriptPath}" "${inputFile}" "${outputHtmlFile}"`);
-                    if (result.success) {
-                        if (fs.existsSync(outputHtmlFile)) {
-                            progress.report({ message: 'HTML生成成功！' });
-                            await progressUI.showSuccess('Markdown 文件已成功转换为 HTML！', outputHtmlFile);
+                        progress.report({ message: '正在转换为HTML...' });
+                        const pythonCmd = envManager.getEnvironmentInfo().pythonCmd;
+                        const result = yield (0, execUtils_1.execWithDetails)(`${pythonCmd} "${tempScriptPath}" "${inputFile}" "${outputHtmlFile}"`);
+                        if (result.success) {
+                            if (fs.existsSync(outputHtmlFile)) {
+                                progress.report({ message: 'HTML生成成功！' });
+                                yield progressUI.showSuccess('Markdown 文件已成功转换为 HTML！', outputHtmlFile);
+                            }
+                            else {
+                                throw new Error(`未能写入HTML文件: ${outputHtmlFile}`);
+                            }
                         }
                         else {
-                            throw new Error(`未能写入HTML文件: ${outputHtmlFile}`);
+                            console.error('Python脚本错误:', result.stderr);
+                            throw new Error(`转换失败: ${result.stderr || '未知错误'}`);
                         }
                     }
-                    else {
-                        console.error('Python脚本错误:', result.stderr);
-                        throw new Error(`转换失败: ${result.stderr || '未知错误'}`);
+                    catch (error) {
+                        console.error('HTML转换失败:', error);
+                        throw error;
                     }
-                }
-                catch (error) {
-                    console.error('HTML转换失败:', error);
-                    throw error;
-                }
-            });
-        }
-        catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error('转换到HTML失败:', errorMessage);
-            await progressUI.showError(error instanceof Error ? error : new Error(String(error)));
-        }
-    });
-    const batchWordConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.batchConvertToWord', async (uri) => {
-        try {
-            if (!uri || !uri.fsPath) {
-                throw new Error('未选择文件夹。请在文件资源管理器中右键单击文件夹。');
+                }));
             }
-            const inputDir = uri.fsPath;
-            const stat = await vscode.workspace.fs.stat(uri);
-            if (stat.type !== vscode.FileType.Directory) {
-                throw new Error('所选项目不是文件夹。请选择一个文件夹。');
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('转换到HTML失败:', errorMessage);
+                yield progressUI.showError(error instanceof Error ? error : new Error(String(error)));
             }
-            await checkEnvironment(envManager, context);
-            console.log('准备显示配置面板，批量处理目录:', inputDir);
-            configPanel_1.ConfigPanel.createOrShow(context.extensionPath, inputDir, async (config, cancelled) => {
-                console.log('配置面板回调, 取消状态:', cancelled);
-                if (cancelled) {
-                    console.log('用户取消了批量转换');
-                    return;
+        }));
+        const batchWordConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.batchConvertToWord', (uri) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!uri || !uri.fsPath) {
+                    throw new Error('未选择文件夹。请在文件资源管理器中右键单击文件夹。');
                 }
-                await progressUI.withProgress('批量Markdown转Word', async (progress) => {
+                const inputDir = uri.fsPath;
+                const stat = yield vscode.workspace.fs.stat(uri);
+                if (stat.type !== vscode.FileType.Directory) {
+                    throw new Error('所选项目不是文件夹。请选择一个文件夹。');
+                }
+                yield checkEnvironment(envManager, context);
+                yield progressUI.withProgress('批量Markdown转Word', (progress) => __awaiter(this, void 0, void 0, function* () {
                     progress.report({ message: '执行批量转换...' });
                     try {
                         const envInfo = envManager.getEnvironmentInfo();
@@ -386,22 +389,10 @@ if __name__ == "__main__":
                             `--output "${inputDir}"`,
                             '--batch'
                         ];
-                        if (config.output?.keepHtml === false) {
-                            cmdArgs.push('--no-html');
-                        }
-                        if (config) {
-                            const yaml = require('js-yaml');
-                            const tempDir = path.join(os.tmpdir(), 'markdown-to-word');
-                            if (!fs.existsSync(tempDir)) {
-                                fs.mkdirSync(tempDir, { recursive: true });
-                            }
-                            const tempFile = path.join(tempDir, `config-${Date.now()}.yaml`);
-                            fs.writeFileSync(tempFile, yaml.dump(config), 'utf8');
-                            cmdArgs.push(`--config "${tempFile}"`);
-                        }
+                        cmdArgs.push('--no-html');
                         const cmd = `${pythonCmd} ${cmdArgs.join(' ')}`;
                         console.log('执行批处理命令:', cmd);
-                        const result = await (0, execUtils_1.execWithDetails)(cmd);
+                        const result = yield (0, execUtils_1.execWithDetails)(cmd);
                         if (result.success) {
                             progress.report({ message: '批量转换完成！' });
                             vscode.window.showInformationMessage(`目录 ${path.basename(inputDir)} 中的Markdown文件已成功转换为Word文档！`);
@@ -414,49 +405,48 @@ if __name__ == "__main__":
                         console.error('批量转换执行错误:', err);
                         throw err;
                     }
-                });
-            });
-        }
-        catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error('批量转换失败:', errorMessage);
-            if (errorMessage.includes('ModuleNotFoundError') ||
-                errorMessage.includes('ImportError') ||
-                errorMessage.includes('No module named')) {
-                vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
-                    if (selection === '自动安装依赖') {
-                        installDependencies(context);
-                    }
-                    else if (selection === '查看解决方案') {
-                        showTroubleshooting();
-                    }
-                });
+                }));
             }
-            else {
-                await progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('批量转换失败:', errorMessage);
+                if (errorMessage.includes('ModuleNotFoundError') ||
+                    errorMessage.includes('ImportError') ||
+                    errorMessage.includes('No module named')) {
+                    vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
+                        if (selection === '自动安装依赖') {
+                            installDependencies(context);
+                        }
+                        else if (selection === '查看解决方案') {
+                            showTroubleshooting();
+                        }
+                    });
+                }
+                else {
+                    yield progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+                }
             }
-        }
-    });
-    const batchHtmlConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.batchConvertToHtml', async (uri) => {
-        try {
-            if (!uri || !uri.fsPath) {
-                throw new Error('未选择文件夹。请在文件资源管理器中右键单击文件夹。');
-            }
-            const inputDir = uri.fsPath;
-            const stat = await vscode.workspace.fs.stat(uri);
-            if (stat.type !== vscode.FileType.Directory) {
-                throw new Error('所选项目不是文件夹。请选择一个文件夹。');
-            }
-            await checkEnvironment(envManager, context);
-            await progressUI.withProgress('批量Markdown转HTML', async (progress) => {
-                progress.report({ message: '执行批量HTML转换...' });
-                try {
-                    const tempScriptDir = path.join(os.tmpdir(), 'markdown-to-word');
-                    if (!fs.existsSync(tempScriptDir)) {
-                        fs.mkdirSync(tempScriptDir, { recursive: true });
-                    }
-                    const tempScriptPath = path.join(tempScriptDir, 'batch_md_to_html.py');
-                    const scriptContent = `
+        }));
+        const batchHtmlConvertCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.batchConvertToHtml', (uri) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!uri || !uri.fsPath) {
+                    throw new Error('未选择文件夹。请在文件资源管理器中右键单击文件夹。');
+                }
+                const inputDir = uri.fsPath;
+                const stat = yield vscode.workspace.fs.stat(uri);
+                if (stat.type !== vscode.FileType.Directory) {
+                    throw new Error('所选项目不是文件夹。请选择一个文件夹。');
+                }
+                yield checkEnvironment(envManager, context);
+                yield progressUI.withProgress('批量Markdown转HTML', (progress) => __awaiter(this, void 0, void 0, function* () {
+                    progress.report({ message: '执行批量HTML转换...' });
+                    try {
+                        const tempScriptDir = path.join(os.tmpdir(), 'markdown-to-word');
+                        if (!fs.existsSync(tempScriptDir)) {
+                            fs.mkdirSync(tempScriptDir, { recursive: true });
+                        }
+                        const tempScriptPath = path.join(tempScriptDir, 'batch_md_to_html.py');
+                        const scriptContent = `
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -601,84 +591,90 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 `;
-                    fs.writeFileSync(tempScriptPath, scriptContent, 'utf8');
-                    if (os.platform() !== 'win32') {
-                        try {
-                            fs.chmodSync(tempScriptPath, 0o755);
+                        fs.writeFileSync(tempScriptPath, scriptContent, 'utf8');
+                        if (os.platform() !== 'win32') {
+                            try {
+                                fs.chmodSync(tempScriptPath, 0o755);
+                            }
+                            catch (err) {
+                                console.error('无法设置脚本权限:', err);
+                            }
                         }
-                        catch (err) {
-                            console.error('无法设置脚本权限:', err);
+                        console.log('执行批量HTML转换脚本:', tempScriptPath);
+                        const pythonCmd = envManager.getEnvironmentInfo().pythonCmd;
+                        const result = yield (0, execUtils_1.execWithDetails)(`${pythonCmd} "${tempScriptPath}"`);
+                        if (result.success) {
+                            progress.report({ message: '批量HTML转换完成！' });
+                            vscode.window.showInformationMessage(`目录 ${path.basename(inputDir)} 中的Markdown文件已成功转换为HTML文档！`);
+                        }
+                        else {
+                            console.error('批量转换错误输出:', result.stderr);
+                            throw new Error(result.stderr || '批量HTML转换失败，未知错误');
                         }
                     }
-                    console.log('执行批量HTML转换脚本:', tempScriptPath);
-                    const pythonCmd = envManager.getEnvironmentInfo().pythonCmd;
-                    const result = await (0, execUtils_1.execWithDetails)(`${pythonCmd} "${tempScriptPath}"`);
-                    if (result.success) {
-                        progress.report({ message: '批量HTML转换完成！' });
-                        vscode.window.showInformationMessage(`目录 ${path.basename(inputDir)} 中的Markdown文件已成功转换为HTML文档！`);
+                    catch (err) {
+                        console.error('批量HTML转换执行错误:', err);
+                        throw err;
                     }
-                    else {
-                        console.error('批量转换错误输出:', result.stderr);
-                        throw new Error(result.stderr || '批量HTML转换失败，未知错误');
-                    }
+                }));
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('批量HTML转换失败:', errorMessage);
+                if (errorMessage.includes('ModuleNotFoundError') ||
+                    errorMessage.includes('ImportError') ||
+                    errorMessage.includes('No module named')) {
+                    vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
+                        if (selection === '自动安装依赖') {
+                            installDependencies(context);
+                        }
+                        else if (selection === '查看解决方案') {
+                            showTroubleshooting();
+                        }
+                    });
                 }
-                catch (err) {
-                    console.error('批量HTML转换执行错误:', err);
-                    throw err;
+                else {
+                    yield progressUI.showError(error instanceof Error ? error : new Error(String(error)));
                 }
-            });
+            }
+        }));
+        context.subscriptions.push(disposable, diagnosticsCmd, checkEnvCmd, installDepsCmd, htmlConvertCmd, directConvertCmd, batchWordConvertCmd, batchHtmlConvertCmd);
+        console.log('插件 "Markdown to Word Converter" 已成功激活。');
+    });
+}
+exports.activate = activate;
+function checkEnvironment(envManager, context, showSuccess = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield envManager.initialize(context);
+            if (showSuccess) {
+                vscode.window.showInformationMessage('环境检查通过');
+            }
         }
         catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error('批量HTML转换失败:', errorMessage);
-            if (errorMessage.includes('ModuleNotFoundError') ||
-                errorMessage.includes('ImportError') ||
-                errorMessage.includes('No module named')) {
-                vscode.window.showErrorMessage(`缺少必要的Python依赖: ${errorMessage}`, '自动安装依赖', '查看解决方案').then(selection => {
-                    if (selection === '自动安装依赖') {
-                        installDependencies(context);
-                    }
-                    else if (selection === '查看解决方案') {
-                        showTroubleshooting();
-                    }
-                });
-            }
-            else {
-                await progressUI.showError(error instanceof Error ? error : new Error(String(error)));
-            }
+            throw new Error(`环境检查失败: ${errorMessage}`);
         }
     });
-    context.subscriptions.push(disposable, diagnosticsCmd, checkEnvCmd, installDepsCmd, htmlConvertCmd, directConvertCmd, batchWordConvertCmd, batchHtmlConvertCmd);
-    console.log('插件 "Markdown to Word Converter" 已成功激活。');
 }
-exports.activate = activate;
-async function checkEnvironment(envManager, context, showSuccess = false) {
-    try {
-        await envManager.initialize(context);
-        if (showSuccess) {
-            vscode.window.showInformationMessage('环境检查通过');
+function showDiagnostics(envManager) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const diagnostics = yield envManager.getDiagnostics();
+            const doc = yield vscode.workspace.openTextDocument({
+                content: diagnostics,
+                language: 'plaintext'
+            });
+            yield vscode.window.showTextDocument(doc);
         }
-    }
-    catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new Error(`环境检查失败: ${errorMessage}`);
-    }
+        catch (error) {
+            vscode.window.showErrorMessage(`无法获取诊断信息: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    });
 }
-async function showDiagnostics(envManager) {
-    try {
-        const diagnostics = await envManager.getDiagnostics();
-        const doc = await vscode.workspace.openTextDocument({
-            content: diagnostics,
-            language: 'plaintext'
-        });
-        await vscode.window.showTextDocument(doc);
-    }
-    catch (error) {
-        vscode.window.showErrorMessage(`无法获取诊断信息: ${error instanceof Error ? error.message : String(error)}`);
-    }
-}
-async function showTroubleshooting() {
-    const troubleshootingContent = `# Markdown 转 Word 故障排除指南
+function showTroubleshooting() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const troubleshootingContent = `# Markdown 转 Word 故障排除指南
 
 ## 常见问题
 
@@ -716,41 +712,44 @@ async function showTroubleshooting() {
 pip install python-docx markdown beautifulsoup4 opencc-python-reimplemented pyyaml lxml
 \`\`\`
 `;
-    const doc = await vscode.workspace.openTextDocument({
-        content: troubleshootingContent,
-        language: 'markdown'
-    });
-    await vscode.window.showTextDocument(doc);
-}
-async function installDependencies(context) {
-    const envManager = environmentManager_1.EnvironmentManager.getInstance();
-    try {
-        await envManager.initialize(context);
-        await vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: "安装Python依赖",
-            cancellable: false
-        }, async (progress) => {
-            try {
-                const envInfo = envManager.getEnvironmentInfo();
-                const installScript = path.join(envInfo.extensionPath, 'scripts', 'install_dependencies.py');
-                progress.report({ message: "正在安装依赖..." });
-                const result = await (0, execUtils_1.execWithDetails)(`${envInfo.pythonCmd} "${installScript}"`);
-                if (result.success) {
-                    vscode.window.showInformationMessage("依赖安装成功");
-                }
-                else {
-                    throw new Error(result.stderr);
-                }
-            }
-            catch (error) {
-                vscode.window.showErrorMessage(`依赖安装失败: ${error instanceof Error ? error.message : String(error)}`);
-            }
+        const doc = yield vscode.workspace.openTextDocument({
+            content: troubleshootingContent,
+            language: 'markdown'
         });
-    }
-    catch (error) {
-        vscode.window.showErrorMessage(`无法初始化环境: ${error instanceof Error ? error.message : String(error)}`);
-    }
+        yield vscode.window.showTextDocument(doc);
+    });
+}
+function installDependencies(context) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const envManager = environmentManager_1.EnvironmentManager.getInstance();
+        try {
+            yield envManager.initialize(context);
+            yield vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: "安装Python依赖",
+                cancellable: false
+            }, (progress) => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    const envInfo = envManager.getEnvironmentInfo();
+                    const installScript = path.join(envInfo.extensionPath, 'scripts', 'install_dependencies.py');
+                    progress.report({ message: "正在安装依赖..." });
+                    const result = yield (0, execUtils_1.execWithDetails)(`${envInfo.pythonCmd} "${installScript}"`);
+                    if (result.success) {
+                        vscode.window.showInformationMessage("依赖安装成功");
+                    }
+                    else {
+                        throw new Error(result.stderr);
+                    }
+                }
+                catch (error) {
+                    vscode.window.showErrorMessage(`依赖安装失败: ${error instanceof Error ? error.message : String(error)}`);
+                }
+            }));
+        }
+        catch (error) {
+            vscode.window.showErrorMessage(`无法初始化环境: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    });
 }
 function deactivate() {
     console.log('插件 "Markdown to Word Converter" 已停用。');

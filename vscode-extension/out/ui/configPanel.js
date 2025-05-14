@@ -165,6 +165,7 @@ ${yamlStr}`;
         this._panel.webview.html = this._getHtmlForWebview();
     }
     _getHtmlForWebview() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, _61, _62, _63, _64, _65;
         const config = this._defaultConfig || {};
         console.log('加载配置:', config);
         console.log('扩展路径:', this._extensionPath);
@@ -313,55 +314,55 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label for="fonts.default">正文字体</label>
-                        <input type="text" id="fonts.default" value="${config.fonts?.default || '蒙纳宋体'}">
+                        <input type="text" id="fonts.default" value="${((_a = config.fonts) === null || _a === void 0 ? void 0 : _a.default) || '蒙纳宋体'}">
                     </div>
                     
                     <div class="form-group">
                         <label for="fonts.headings">标题字体</label>
-                        <input type="text" id="fonts.headings" value="${config.fonts?.headings || '蒙纳宋体'}">
+                        <input type="text" id="fonts.headings" value="${((_b = config.fonts) === null || _b === void 0 ? void 0 : _b.headings) || '蒙纳宋体'}">
                     </div>
                     
                     <div class="form-group">
                         <label for="fonts.code">代码字体</label>
-                        <input type="text" id="fonts.code" value="${config.fonts?.code || 'Courier New'}">
+                        <input type="text" id="fonts.code" value="${((_c = config.fonts) === null || _c === void 0 ? void 0 : _c.code) || 'Courier New'}">
                     </div>
                     
                     <h3 class="section-title">字号设置</h3>
                     
                     <div class="form-group">
                         <label for="sizes.default">正文字号 (pt)</label>
-                        <input type="number" id="sizes.default" min="8" max="72" value="${config.sizes?.default || 12}">
+                        <input type="number" id="sizes.default" min="8" max="72" value="${((_d = config.sizes) === null || _d === void 0 ? void 0 : _d.default) || 12}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.code">代码字号 (pt)</label>
-                        <input type="number" id="sizes.code" min="6" max="72" value="${config.sizes?.code || 6.5}">
+                        <input type="number" id="sizes.code" min="6" max="72" value="${((_e = config.sizes) === null || _e === void 0 ? void 0 : _e.code) || 6.5}">
                     </div>
                     
                     <h3 class="section-title">颜色设置</h3>
                     
                     <div class="form-group">
                         <label for="colors.default">正文颜色</label>
-                        <input type="text" id="colors.default" value="${config.colors?.default || '#000000'}">
-                        <span class="color-preview" style="background-color: ${config.colors?.default || '#000000'};"></span>
+                        <input type="text" id="colors.default" value="${((_f = config.colors) === null || _f === void 0 ? void 0 : _f.default) || '#000000'}">
+                        <span class="color-preview" style="background-color: ${((_g = config.colors) === null || _g === void 0 ? void 0 : _g.default) || '#000000'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="colors.headings">标题颜色</label>
-                        <input type="text" id="colors.headings" value="${config.colors?.headings || '#000000'}">
-                        <span class="color-preview" style="background-color: ${config.colors?.headings || '#000000'};"></span>
+                        <input type="text" id="colors.headings" value="${((_h = config.colors) === null || _h === void 0 ? void 0 : _h.headings) || '#000000'}">
+                        <span class="color-preview" style="background-color: ${((_j = config.colors) === null || _j === void 0 ? void 0 : _j.headings) || '#000000'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="colors.code">代码颜色</label>
-                        <input type="text" id="colors.code" value="${config.colors?.code || '#333333'}">
-                        <span class="color-preview" style="background-color: ${config.colors?.code || '#333333'};"></span>
+                        <input type="text" id="colors.code" value="${((_k = config.colors) === null || _k === void 0 ? void 0 : _k.code) || '#333333'}">
+                        <span class="color-preview" style="background-color: ${((_l = config.colors) === null || _l === void 0 ? void 0 : _l.code) || '#333333'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="colors.link">链接颜色</label>
-                        <input type="text" id="colors.link" value="${config.colors?.link || '#0563C1'}">
-                        <span class="color-preview" style="background-color: ${config.colors?.link || '#0563C1'};"></span>
+                        <input type="text" id="colors.link" value="${((_m = config.colors) === null || _m === void 0 ? void 0 : _m.link) || '#0563C1'}">
+                        <span class="color-preview" style="background-color: ${((_o = config.colors) === null || _o === void 0 ? void 0 : _o.link) || '#0563C1'};"></span>
                     </div>
                 </div>
                 
@@ -371,43 +372,43 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label for="paragraph.line_spacing">行间距</label>
-                        <input type="number" id="paragraph.line_spacing" min="1" max="3" step="0.1" value="${config.paragraph?.line_spacing || 1.5}">
+                        <input type="number" id="paragraph.line_spacing" min="1" max="3" step="0.1" value="${((_p = config.paragraph) === null || _p === void 0 ? void 0 : _p.line_spacing) || 1.5}">
                     </div>
                     
                     <div class="form-group">
                         <label for="paragraph.space_before">段前间距 (pt)</label>
-                        <input type="number" id="paragraph.space_before" min="0" max="72" value="${config.paragraph?.space_before || 0}">
+                        <input type="number" id="paragraph.space_before" min="0" max="72" value="${((_q = config.paragraph) === null || _q === void 0 ? void 0 : _q.space_before) || 0}">
                     </div>
                     
                     <div class="form-group">
                         <label for="paragraph.space_after">段后间距 (pt)</label>
-                        <input type="number" id="paragraph.space_after" min="0" max="72" value="${config.paragraph?.space_after || 6}">
+                        <input type="number" id="paragraph.space_after" min="0" max="72" value="${((_r = config.paragraph) === null || _r === void 0 ? void 0 : _r.space_after) || 6}">
                     </div>
                     
                     <div class="form-group">
                         <label for="paragraph.first_line_indent">首行缩进字符数</label>
-                        <input type="number" id="paragraph.first_line_indent" min="0" max="10" value="${config.paragraph?.first_line_indent || 0}">
+                        <input type="number" id="paragraph.first_line_indent" min="0" max="10" value="${((_s = config.paragraph) === null || _s === void 0 ? void 0 : _s.first_line_indent) || 0}">
                     </div>
                     
                     <h3 class="section-title">中文设置</h3>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="chinese.convert_to_traditional" ${config.chinese?.convert_to_traditional !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="chinese.convert_to_traditional" ${((_t = config.chinese) === null || _t === void 0 ? void 0 : _t.convert_to_traditional) !== false ? 'checked' : ''}>
                             转换为繁体中文
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="chinese.punctuation_spacing" ${config.chinese?.punctuation_spacing !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="chinese.punctuation_spacing" ${((_u = config.chinese) === null || _u === void 0 ? void 0 : _u.punctuation_spacing) !== false ? 'checked' : ''}>
                             优化标点符号间距
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="chinese.auto_spacing" ${config.chinese?.auto_spacing !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="chinese.auto_spacing" ${((_v = config.chinese) === null || _v === void 0 ? void 0 : _v.auto_spacing) !== false ? 'checked' : ''}>
                             中英文之间自动添加空格
                         </label>
                     </div>
@@ -419,95 +420,95 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label for="table_styles.even_row_color">偶数行背景色</label>
-                        <input type="text" id="table_styles.even_row_color" value="${config.table_styles?.even_row_color || '#f2f2f2'}">
-                        <span class="color-preview" style="background-color: ${config.table_styles?.even_row_color || '#f2f2f2'};"></span>
+                        <input type="text" id="table_styles.even_row_color" value="${((_w = config.table_styles) === null || _w === void 0 ? void 0 : _w.even_row_color) || '#f2f2f2'}">
+                        <span class="color-preview" style="background-color: ${((_x = config.table_styles) === null || _x === void 0 ? void 0 : _x.even_row_color) || '#f2f2f2'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="table_styles.odd_row_color">奇数行背景色</label>
-                        <input type="text" id="table_styles.odd_row_color" value="${config.table_styles?.odd_row_color || '#ffffff'}">
-                        <span class="color-preview" style="background-color: ${config.table_styles?.odd_row_color || '#ffffff'};"></span>
+                        <input type="text" id="table_styles.odd_row_color" value="${((_y = config.table_styles) === null || _y === void 0 ? void 0 : _y.odd_row_color) || '#ffffff'}">
+                        <span class="color-preview" style="background-color: ${((_z = config.table_styles) === null || _z === void 0 ? void 0 : _z.odd_row_color) || '#ffffff'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="table_styles.header_bg_color">表头背景色</label>
-                        <input type="text" id="table_styles.header_bg_color" value="${config.table_styles?.header_bg_color || '#e0e0e0'}">
-                        <span class="color-preview" style="background-color: ${config.table_styles?.header_bg_color || '#e0e0e0'};"></span>
+                        <input type="text" id="table_styles.header_bg_color" value="${((_0 = config.table_styles) === null || _0 === void 0 ? void 0 : _0.header_bg_color) || '#e0e0e0'}">
+                        <span class="color-preview" style="background-color: ${((_1 = config.table_styles) === null || _1 === void 0 ? void 0 : _1.header_bg_color) || '#e0e0e0'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="table_styles.border_color">边框颜色</label>
-                        <input type="text" id="table_styles.border_color" value="${config.table_styles?.border_color || '#dddddd'}">
-                        <span class="color-preview" style="background-color: ${config.table_styles?.border_color || '#dddddd'};"></span>
+                        <input type="text" id="table_styles.border_color" value="${((_2 = config.table_styles) === null || _2 === void 0 ? void 0 : _2.border_color) || '#dddddd'}">
+                        <span class="color-preview" style="background-color: ${((_3 = config.table_styles) === null || _3 === void 0 ? void 0 : _3.border_color) || '#dddddd'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="table_styles.cell_height">单元格高度</label>
-                        <input type="text" id="table_styles.cell_height" value="${config.table_styles?.cell_height || '0.95em'}">
+                        <input type="text" id="table_styles.cell_height" value="${((_4 = config.table_styles) === null || _4 === void 0 ? void 0 : _4.cell_height) || '0.95em'}">
                     </div>
                     
                     <div class="form-group">
                         <label for="table_styles.table_width">表格宽度</label>
-                        <input type="text" id="table_styles.table_width" value="${config.table_styles?.table_width || '100%'}">
+                        <input type="text" id="table_styles.table_width" value="${((_5 = config.table_styles) === null || _5 === void 0 ? void 0 : _5.table_width) || '100%'}">
                     </div>
                     
                     <h3 class="section-title">Word表格样式</h3>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.style">表格样式名称</label>
-                        <input type="text" id="enhanced_table_styles.style" value="${config.enhanced_table_styles?.style || 'Table Grid'}">
+                        <input type="text" id="enhanced_table_styles.style" value="${((_6 = config.enhanced_table_styles) === null || _6 === void 0 ? void 0 : _6.style) || 'Table Grid'}">
                     </div>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.width">表格宽度(厘米)</label>
-                        <input type="number" id="enhanced_table_styles.width" min="1" max="30" step="0.1" value="${config.enhanced_table_styles?.width || 16.0}">
+                        <input type="number" id="enhanced_table_styles.width" min="1" max="30" step="0.1" value="${((_7 = config.enhanced_table_styles) === null || _7 === void 0 ? void 0 : _7.width) || 16.0}">
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="enhanced_table_styles.border" ${config.enhanced_table_styles?.border !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="enhanced_table_styles.border" ${((_8 = config.enhanced_table_styles) === null || _8 === void 0 ? void 0 : _8.border) !== false ? 'checked' : ''}>
                             显示边框
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.border_size">边框粗细(磅)</label>
-                        <input type="number" id="enhanced_table_styles.border_size" min="0.5" max="6" step="0.5" value="${config.enhanced_table_styles?.border_size || 1}">
+                        <input type="number" id="enhanced_table_styles.border_size" min="0.5" max="6" step="0.5" value="${((_9 = config.enhanced_table_styles) === null || _9 === void 0 ? void 0 : _9.border_size) || 1}">
                     </div>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.border_color">边框颜色</label>
-                        <input type="text" id="enhanced_table_styles.border_color" value="${config.enhanced_table_styles?.border_color || '#dddddd'}">
-                        <span class="color-preview" style="background-color: ${config.enhanced_table_styles?.border_color || '#dddddd'};"></span>
+                        <input type="text" id="enhanced_table_styles.border_color" value="${((_10 = config.enhanced_table_styles) === null || _10 === void 0 ? void 0 : _10.border_color) || '#dddddd'}">
+                        <span class="color-preview" style="background-color: ${((_11 = config.enhanced_table_styles) === null || _11 === void 0 ? void 0 : _11.border_color) || '#dddddd'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.header_bg_color">表头背景色</label>
-                        <input type="text" id="enhanced_table_styles.header_bg_color" value="${config.enhanced_table_styles?.header_bg_color || '#E7E6E6'}">
-                        <span class="color-preview" style="background-color: ${config.enhanced_table_styles?.header_bg_color || '#E7E6E6'};"></span>
+                        <input type="text" id="enhanced_table_styles.header_bg_color" value="${((_12 = config.enhanced_table_styles) === null || _12 === void 0 ? void 0 : _12.header_bg_color) || '#E7E6E6'}">
+                        <span class="color-preview" style="background-color: ${((_13 = config.enhanced_table_styles) === null || _13 === void 0 ? void 0 : _13.header_bg_color) || '#E7E6E6'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.even_row_color">偶数行背景色</label>
-                        <input type="text" id="enhanced_table_styles.even_row_color" value="${config.enhanced_table_styles?.even_row_color || '#F2F2F2'}">
-                        <span class="color-preview" style="background-color: ${config.enhanced_table_styles?.even_row_color || '#F2F2F2'};"></span>
+                        <input type="text" id="enhanced_table_styles.even_row_color" value="${((_14 = config.enhanced_table_styles) === null || _14 === void 0 ? void 0 : _14.even_row_color) || '#F2F2F2'}">
+                        <span class="color-preview" style="background-color: ${((_15 = config.enhanced_table_styles) === null || _15 === void 0 ? void 0 : _15.even_row_color) || '#F2F2F2'};"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.text_align">文本水平对齐</label>
                         <select id="enhanced_table_styles.text_align">
-                            <option value="left" ${(config.enhanced_table_styles?.text_align || 'left') === 'left' ? 'selected' : ''}>左对齐</option>
-                            <option value="center" ${(config.enhanced_table_styles?.text_align || '') === 'center' ? 'selected' : ''}>居中</option>
-                            <option value="right" ${(config.enhanced_table_styles?.text_align || '') === 'right' ? 'selected' : ''}>右对齐</option>
+                            <option value="left" ${(((_16 = config.enhanced_table_styles) === null || _16 === void 0 ? void 0 : _16.text_align) || 'left') === 'left' ? 'selected' : ''}>左对齐</option>
+                            <option value="center" ${(((_17 = config.enhanced_table_styles) === null || _17 === void 0 ? void 0 : _17.text_align) || '') === 'center' ? 'selected' : ''}>居中</option>
+                            <option value="right" ${(((_18 = config.enhanced_table_styles) === null || _18 === void 0 ? void 0 : _18.text_align) || '') === 'right' ? 'selected' : ''}>右对齐</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label for="enhanced_table_styles.vertical_align">文本垂直对齐</label>
                         <select id="enhanced_table_styles.vertical_align">
-                            <option value="top" ${(config.enhanced_table_styles?.vertical_align || '') === 'top' ? 'selected' : ''}>顶部对齐</option>
-                            <option value="center" ${(config.enhanced_table_styles?.vertical_align || 'center') === 'center' ? 'selected' : ''}>居中</option>
-                            <option value="bottom" ${(config.enhanced_table_styles?.vertical_align || '') === 'bottom' ? 'selected' : ''}>底部对齐</option>
+                            <option value="top" ${(((_19 = config.enhanced_table_styles) === null || _19 === void 0 ? void 0 : _19.vertical_align) || '') === 'top' ? 'selected' : ''}>顶部对齐</option>
+                            <option value="center" ${(((_20 = config.enhanced_table_styles) === null || _20 === void 0 ? void 0 : _20.vertical_align) || 'center') === 'center' ? 'selected' : ''}>居中</option>
+                            <option value="bottom" ${(((_21 = config.enhanced_table_styles) === null || _21 === void 0 ? void 0 : _21.vertical_align) || '') === 'bottom' ? 'selected' : ''}>底部对齐</option>
                         </select>
                     </div>
                 </div>
@@ -519,54 +520,54 @@ ${yamlStr}`;
                     <div class="form-group">
                         <label for="document.page_size">页面大小</label>
                         <select id="document.page_size">
-                            <option value="A4" ${(config.document?.page_size || 'A4') === 'A4' ? 'selected' : ''}>A4</option>
-                            <option value="Letter" ${(config.document?.page_size || 'A4') === 'Letter' ? 'selected' : ''}>Letter</option>
-                            <option value="Legal" ${(config.document?.page_size || 'A4') === 'Legal' ? 'selected' : ''}>Legal</option>
+                            <option value="A4" ${(((_22 = config.document) === null || _22 === void 0 ? void 0 : _22.page_size) || 'A4') === 'A4' ? 'selected' : ''}>A4</option>
+                            <option value="Letter" ${(((_23 = config.document) === null || _23 === void 0 ? void 0 : _23.page_size) || 'A4') === 'Letter' ? 'selected' : ''}>Letter</option>
+                            <option value="Legal" ${(((_24 = config.document) === null || _24 === void 0 ? void 0 : _24.page_size) || 'A4') === 'Legal' ? 'selected' : ''}>Legal</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label for="document.margin_top">上边距 (英寸)</label>
-                        <input type="number" id="document.margin_top" min="0.1" max="5" step="0.1" value="${config.document?.margin_top || 1}">
+                        <input type="number" id="document.margin_top" min="0.1" max="5" step="0.1" value="${((_25 = config.document) === null || _25 === void 0 ? void 0 : _25.margin_top) || 1}">
                     </div>
                     
                     <div class="form-group">
                         <label for="document.margin_bottom">下边距 (英寸)</label>
-                        <input type="number" id="document.margin_bottom" min="0.1" max="5" step="0.1" value="${config.document?.margin_bottom || 1}">
+                        <input type="number" id="document.margin_bottom" min="0.1" max="5" step="0.1" value="${((_26 = config.document) === null || _26 === void 0 ? void 0 : _26.margin_bottom) || 1}">
                     </div>
                     
                     <div class="form-group">
                         <label for="document.margin_left">左边距 (英寸)</label>
-                        <input type="number" id="document.margin_left" min="0.1" max="5" step="0.1" value="${config.document?.margin_left || 1}">
+                        <input type="number" id="document.margin_left" min="0.1" max="5" step="0.1" value="${((_27 = config.document) === null || _27 === void 0 ? void 0 : _27.margin_left) || 1}">
                     </div>
                     
                     <div class="form-group">
                         <label for="document.margin_right">右边距 (英寸)</label>
-                        <input type="number" id="document.margin_right" min="0.1" max="5" step="0.1" value="${config.document?.margin_right || 1}">
+                        <input type="number" id="document.margin_right" min="0.1" max="5" step="0.1" value="${((_28 = config.document) === null || _28 === void 0 ? void 0 : _28.margin_right) || 1}">
                     </div>
                     
                     <h3 class="section-title">其他文档设置</h3>
                     
                     <div class="form-group">
                         <label for="document.header">页眉</label>
-                        <input type="text" id="document.header" value="${config.document?.header || ''}">
+                        <input type="text" id="document.header" value="${((_29 = config.document) === null || _29 === void 0 ? void 0 : _29.header) || ''}">
                     </div>
                     
                     <div class="form-group">
                         <label for="document.footer">页脚</label>
-                        <input type="text" id="document.footer" value="${config.document?.footer || ''}">
+                        <input type="text" id="document.footer" value="${((_30 = config.document) === null || _30 === void 0 ? void 0 : _30.footer) || ''}">
                     </div>
                     
                     <div class="form-group">
                         <div class="checkbox-label">
-                            <input type="checkbox" id="document.generate_toc" ${config.document?.generate_toc ? 'checked' : ''}>
+                            <input type="checkbox" id="document.generate_toc" ${((_31 = config.document) === null || _31 === void 0 ? void 0 : _31.generate_toc) ? 'checked' : ''}>
                             <label for="document.generate_toc">生成目录</label>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <div class="checkbox-label">
-                            <input type="checkbox" id="output.keepHtml" ${config.output?.keepHtml !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="output.keepHtml" ${((_32 = config.output) === null || _32 === void 0 ? void 0 : _32.keepHtml) !== false ? 'checked' : ''}>
                             <label for="output.keepHtml">保留中间HTML文件</label>
                         </div>
                     </div>
@@ -578,42 +579,42 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.tables" ${Array.isArray(config.markdown?.extensions) && config.markdown?.extensions.includes('tables') ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.tables" ${Array.isArray((_33 = config.markdown) === null || _33 === void 0 ? void 0 : _33.extensions) && ((_34 = config.markdown) === null || _34 === void 0 ? void 0 : _34.extensions.includes('tables')) ? 'checked' : ''}>
                             启用表格支持
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.fenced_code" ${Array.isArray(config.markdown?.extensions) && config.markdown?.extensions.includes('fenced_code') ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.fenced_code" ${Array.isArray((_35 = config.markdown) === null || _35 === void 0 ? void 0 : _35.extensions) && ((_36 = config.markdown) === null || _36 === void 0 ? void 0 : _36.extensions.includes('fenced_code')) ? 'checked' : ''}>
                             启用围栏式代码块
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.codehilite" ${Array.isArray(config.markdown?.extensions) && config.markdown?.extensions.includes('codehilite') ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.codehilite" ${Array.isArray((_37 = config.markdown) === null || _37 === void 0 ? void 0 : _37.extensions) && ((_38 = config.markdown) === null || _38 === void 0 ? void 0 : _38.extensions.includes('codehilite')) ? 'checked' : ''}>
                             启用代码高亮
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.toc" ${Array.isArray(config.markdown?.extensions) && config.markdown?.extensions.includes('toc') ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.toc" ${Array.isArray((_39 = config.markdown) === null || _39 === void 0 ? void 0 : _39.extensions) && ((_40 = config.markdown) === null || _40 === void 0 ? void 0 : _40.extensions.includes('toc')) ? 'checked' : ''}>
                             启用目录生成
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.footnotes" ${Array.isArray(config.markdown?.extensions) && config.markdown?.extensions.includes('footnotes') ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.footnotes" ${Array.isArray((_41 = config.markdown) === null || _41 === void 0 ? void 0 : _41.extensions) && ((_42 = config.markdown) === null || _42 === void 0 ? void 0 : _42.extensions.includes('footnotes')) ? 'checked' : ''}>
                             启用脚注支持
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.nl2br" ${Array.isArray(config.markdown?.extensions) && config.markdown?.extensions.includes('nl2br') ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.nl2br" ${Array.isArray((_43 = config.markdown) === null || _43 === void 0 ? void 0 : _43.extensions) && ((_44 = config.markdown) === null || _44 === void 0 ? void 0 : _44.extensions.includes('nl2br')) ? 'checked' : ''}>
                             将换行符转换为<br>标签
                         </label>
                     </div>
@@ -622,14 +623,14 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extension_configs.codehilite.linenums" ${config.markdown?.extension_configs?.codehilite?.linenums ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extension_configs.codehilite.linenums" ${((_47 = (_46 = (_45 = config.markdown) === null || _45 === void 0 ? void 0 : _45.extension_configs) === null || _46 === void 0 ? void 0 : _46.codehilite) === null || _47 === void 0 ? void 0 : _47.linenums) ? 'checked' : ''}>
                             显示行号
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extension_configs.codehilite.use_pygments" ${config.markdown?.extension_configs?.codehilite?.use_pygments !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extension_configs.codehilite.use_pygments" ${((_50 = (_49 = (_48 = config.markdown) === null || _48 === void 0 ? void 0 : _48.extension_configs) === null || _49 === void 0 ? void 0 : _49.codehilite) === null || _50 === void 0 ? void 0 : _50.use_pygments) !== false ? 'checked' : ''}>
                             使用Pygments进行语法高亮
                         </label>
                     </div>
@@ -641,39 +642,39 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label for="sizes.heading1">一级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading1" min="12" max="72" value="${config.sizes?.heading1 || 18}">
+                        <input type="number" id="sizes.heading1" min="12" max="72" value="${((_51 = config.sizes) === null || _51 === void 0 ? void 0 : _51.heading1) || 18}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading2">二级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading2" min="12" max="72" value="${config.sizes?.heading2 || 16}">
+                        <input type="number" id="sizes.heading2" min="12" max="72" value="${((_52 = config.sizes) === null || _52 === void 0 ? void 0 : _52.heading2) || 16}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading3">三级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading3" min="12" max="72" value="${config.sizes?.heading3 || 14}">
+                        <input type="number" id="sizes.heading3" min="12" max="72" value="${((_53 = config.sizes) === null || _53 === void 0 ? void 0 : _53.heading3) || 14}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading4">四级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading4" min="12" max="72" value="${config.sizes?.heading4 || 12}">
+                        <input type="number" id="sizes.heading4" min="12" max="72" value="${((_54 = config.sizes) === null || _54 === void 0 ? void 0 : _54.heading4) || 12}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading5">五级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading5" min="12" max="72" value="${config.sizes?.heading5 || 12}">
+                        <input type="number" id="sizes.heading5" min="12" max="72" value="${((_55 = config.sizes) === null || _55 === void 0 ? void 0 : _55.heading5) || 12}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading6">六级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading6" min="12" max="72" value="${config.sizes?.heading6 || 12}">
+                        <input type="number" id="sizes.heading6" min="12" max="72" value="${((_56 = config.sizes) === null || _56 === void 0 ? void 0 : _56.heading6) || 12}">
                     </div>
                     
                     <h3 class="section-title">调试设置</h3>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="debug.enabled" ${config.debug?.enabled ? 'checked' : ''}>
+                            <input type="checkbox" id="debug.enabled" ${((_57 = config.debug) === null || _57 === void 0 ? void 0 : _57.enabled) ? 'checked' : ''}>
                             启用调试模式
                         </label>
                     </div>
@@ -681,29 +682,29 @@ ${yamlStr}`;
                     <div class="form-group">
                         <label for="debug.log_level">日志级别</label>
                         <select id="debug.log_level">
-                            <option value="DEBUG" ${(config.debug?.log_level || '') === 'DEBUG' ? 'selected' : ''}>DEBUG</option>
-                            <option value="INFO" ${(config.debug?.log_level || 'INFO') === 'INFO' ? 'selected' : ''}>INFO</option>
-                            <option value="WARNING" ${(config.debug?.log_level || '') === 'WARNING' ? 'selected' : ''}>WARNING</option>
-                            <option value="ERROR" ${(config.debug?.log_level || '') === 'ERROR' ? 'selected' : ''}>ERROR</option>
-                            <option value="CRITICAL" ${(config.debug?.log_level || '') === 'CRITICAL' ? 'selected' : ''}>CRITICAL</option>
+                            <option value="DEBUG" ${(((_58 = config.debug) === null || _58 === void 0 ? void 0 : _58.log_level) || '') === 'DEBUG' ? 'selected' : ''}>DEBUG</option>
+                            <option value="INFO" ${(((_59 = config.debug) === null || _59 === void 0 ? void 0 : _59.log_level) || 'INFO') === 'INFO' ? 'selected' : ''}>INFO</option>
+                            <option value="WARNING" ${(((_60 = config.debug) === null || _60 === void 0 ? void 0 : _60.log_level) || '') === 'WARNING' ? 'selected' : ''}>WARNING</option>
+                            <option value="ERROR" ${(((_61 = config.debug) === null || _61 === void 0 ? void 0 : _61.log_level) || '') === 'ERROR' ? 'selected' : ''}>ERROR</option>
+                            <option value="CRITICAL" ${(((_62 = config.debug) === null || _62 === void 0 ? void 0 : _62.log_level) || '') === 'CRITICAL' ? 'selected' : ''}>CRITICAL</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="debug.log_to_file" ${config.debug?.log_to_file ? 'checked' : ''}>
+                            <input type="checkbox" id="debug.log_to_file" ${((_63 = config.debug) === null || _63 === void 0 ? void 0 : _63.log_to_file) ? 'checked' : ''}>
                             将日志写入文件
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label for="debug.log_file">日志文件路径</label>
-                        <input type="text" id="debug.log_file" value="${config.debug?.log_file || 'conversion.log'}">
+                        <input type="text" id="debug.log_file" value="${((_64 = config.debug) === null || _64 === void 0 ? void 0 : _64.log_file) || 'conversion.log'}">
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="debug.timing" ${config.debug?.timing !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="debug.timing" ${((_65 = config.debug) === null || _65 === void 0 ? void 0 : _65.timing) !== false ? 'checked' : ''}>
                             记录处理时间统计
                         </label>
                     </div>
