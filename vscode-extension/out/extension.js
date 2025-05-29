@@ -197,6 +197,7 @@ function activate(context) {
                         margin_left: 3.18,
                         margin_right: 3.18,
                         generate_toc: vscodeConfig.get('includeToc') || false,
+                        show_horizontal_rules: true,
                         header: '',
                         footer: ''
                     },
@@ -276,7 +277,7 @@ function activate(context) {
                     document: {
                         page_size: 'A4', margin_top: 2.54, margin_bottom: 2.54,
                         margin_left: 3.18, margin_right: 3.18,
-                        generate_toc: false, header: '', footer: ''
+                        generate_toc: false, show_horizontal_rules: true, header: '', footer: ''
                     },
                     chinese: { convert_to_traditional: false, punctuation_spacing: false, auto_spacing: false },
                     table_styles: {

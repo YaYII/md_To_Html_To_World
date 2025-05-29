@@ -370,6 +370,7 @@ class NodeMarkdownConverter {
                 margin_left: 3.18,
                 margin_right: 3.18,
                 generate_toc: vsConfig.get('includeToc') || false,
+                show_horizontal_rules: vsConfig.get('showHorizontalRules') || false,
                 toc_depth: vsConfig.get('tocDepth') || 3
             },
             images: {
@@ -382,7 +383,7 @@ class NodeMarkdownConverter {
         };
     }
     convertConfig(config) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4;
         console.log('转换配置:', JSON.stringify(config, null, 2));
         const convertedConfig = {
             fonts: {
@@ -420,6 +421,7 @@ class NodeMarkdownConverter {
                 margin_left: ((_y = config.document) === null || _y === void 0 ? void 0 : _y.margin_left) || 3.18,
                 margin_right: ((_z = config.document) === null || _z === void 0 ? void 0 : _z.margin_right) || 3.18,
                 generate_toc: ((_0 = config.document) === null || _0 === void 0 ? void 0 : _0.generate_toc) || false,
+                show_horizontal_rules: ((_1 = config.document) === null || _1 === void 0 ? void 0 : _1.show_horizontal_rules) !== false,
                 toc_depth: 3
             },
             images: {
@@ -427,9 +429,9 @@ class NodeMarkdownConverter {
                 max_width: 800
             },
             chinese: {
-                convert_to_traditional: ((_1 = config.chinese) === null || _1 === void 0 ? void 0 : _1.convert_to_traditional) || false,
-                punctuation_spacing: ((_2 = config.chinese) === null || _2 === void 0 ? void 0 : _2.punctuation_spacing) || true,
-                auto_spacing: ((_3 = config.chinese) === null || _3 === void 0 ? void 0 : _3.auto_spacing) || true
+                convert_to_traditional: ((_2 = config.chinese) === null || _2 === void 0 ? void 0 : _2.convert_to_traditional) || false,
+                punctuation_spacing: ((_3 = config.chinese) === null || _3 === void 0 ? void 0 : _3.punctuation_spacing) || true,
+                auto_spacing: ((_4 = config.chinese) === null || _4 === void 0 ? void 0 : _4.auto_spacing) || true
             }
         };
         if (config.table_styles) {
@@ -452,41 +454,56 @@ class NodeMarkdownConverter {
     }
     updateVSCodeConfig(nodeConfig) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
             const config = vscode.workspace.getConfiguration('markdown-to-word');
             try {
-                if ((_a = nodeConfig.fonts) === null || _a === void 0 ? void 0 : _a.default) {
-                    yield config.update('defaultFontFamily', nodeConfig.fonts.default, vscode.ConfigurationTarget.Global);
-                }
-                if ((_b = nodeConfig.sizes) === null || _b === void 0 ? void 0 : _b.default) {
-                    yield config.update('defaultFontSize', nodeConfig.sizes.default, vscode.ConfigurationTarget.Global);
-                }
-                if ((_c = nodeConfig.paragraph) === null || _c === void 0 ? void 0 : _c.line_spacing) {
-                    yield config.update('defaultLineSpacing', nodeConfig.paragraph.line_spacing, vscode.ConfigurationTarget.Global);
-                }
-                if ((_d = nodeConfig.document) === null || _d === void 0 ? void 0 : _d.page_size) {
-                    yield config.update('defaultPageSize', nodeConfig.document.page_size, vscode.ConfigurationTarget.Global);
-                }
-                if ((_e = nodeConfig.document) === null || _e === void 0 ? void 0 : _e.orientation) {
-                    yield config.update('defaultOrientation', nodeConfig.document.orientation, vscode.ConfigurationTarget.Global);
-                }
-                if (((_f = nodeConfig.document) === null || _f === void 0 ? void 0 : _f.generate_toc) !== undefined) {
-                    yield config.update('includeToc', nodeConfig.document.generate_toc, vscode.ConfigurationTarget.Global);
-                }
-                if ((_g = nodeConfig.document) === null || _g === void 0 ? void 0 : _g.toc_depth) {
-                    yield config.update('tocDepth', nodeConfig.document.toc_depth, vscode.ConfigurationTarget.Global);
-                }
-                if (((_h = nodeConfig.images) === null || _h === void 0 ? void 0 : _h.preserve) !== undefined) {
-                    yield config.update('preserveImages', nodeConfig.images.preserve, vscode.ConfigurationTarget.Global);
-                }
-                if ((_j = nodeConfig.images) === null || _j === void 0 ? void 0 : _j.max_width) {
-                    yield config.update('imageMaxWidth', nodeConfig.images.max_width, vscode.ConfigurationTarget.Global);
-                }
                 yield config.update('markdownToWordUserConfig', nodeConfig, vscode.ConfigurationTarget.Global);
+                console.log('✅ 成功保存完整用户配置');
+                try {
+                    if ((_a = nodeConfig.fonts) === null || _a === void 0 ? void 0 : _a.default) {
+                        yield config.update('defaultFontFamily', nodeConfig.fonts.default, vscode.ConfigurationTarget.Global);
+                    }
+                    if ((_b = nodeConfig.sizes) === null || _b === void 0 ? void 0 : _b.default) {
+                        yield config.update('defaultFontSize', nodeConfig.sizes.default, vscode.ConfigurationTarget.Global);
+                    }
+                    if ((_c = nodeConfig.paragraph) === null || _c === void 0 ? void 0 : _c.line_spacing) {
+                        yield config.update('defaultLineSpacing', nodeConfig.paragraph.line_spacing, vscode.ConfigurationTarget.Global);
+                    }
+                    if ((_d = nodeConfig.document) === null || _d === void 0 ? void 0 : _d.page_size) {
+                        yield config.update('defaultPageSize', nodeConfig.document.page_size, vscode.ConfigurationTarget.Global);
+                    }
+                    if ((_e = nodeConfig.document) === null || _e === void 0 ? void 0 : _e.orientation) {
+                        yield config.update('defaultOrientation', nodeConfig.document.orientation, vscode.ConfigurationTarget.Global);
+                    }
+                    if (((_f = nodeConfig.document) === null || _f === void 0 ? void 0 : _f.generate_toc) !== undefined) {
+                        yield config.update('includeToc', nodeConfig.document.generate_toc, vscode.ConfigurationTarget.Global);
+                    }
+                    if ((_g = nodeConfig.document) === null || _g === void 0 ? void 0 : _g.toc_depth) {
+                        yield config.update('tocDepth', nodeConfig.document.toc_depth, vscode.ConfigurationTarget.Global);
+                    }
+                    if (((_h = nodeConfig.images) === null || _h === void 0 ? void 0 : _h.preserve) !== undefined) {
+                        yield config.update('preserveImages', nodeConfig.images.preserve, vscode.ConfigurationTarget.Global);
+                    }
+                    if ((_j = nodeConfig.images) === null || _j === void 0 ? void 0 : _j.max_width) {
+                        yield config.update('imageMaxWidth', nodeConfig.images.max_width, vscode.ConfigurationTarget.Global);
+                    }
+                    console.log('✅ 成功更新所有单个配置项');
+                }
+                catch (individualError) {
+                    console.warn('⚠️ 部分配置项更新失败（不影响功能）:', individualError instanceof Error ? individualError.message : String(individualError));
+                    if (((_k = nodeConfig.document) === null || _k === void 0 ? void 0 : _k.show_horizontal_rules) !== undefined) {
+                        try {
+                            yield config.update('showHorizontalRules', nodeConfig.document.show_horizontal_rules, vscode.ConfigurationTarget.Global);
+                            console.log('✅ 段落线配置更新成功');
+                        }
+                        catch (hrError) {
+                            console.warn('⚠️ 段落线配置更新失败（不影响功能）:', hrError instanceof Error ? hrError.message : String(hrError));
+                        }
+                    }
+                }
             }
             catch (error) {
-                console.error('更新VS Code配置失败:', error);
-                throw error;
+                console.error('❌ 更新VS Code配置失败:', error);
             }
         });
     }

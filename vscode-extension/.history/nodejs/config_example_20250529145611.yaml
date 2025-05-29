@@ -1,0 +1,133 @@
+# World MD 配置文件
+# 此文件包含World MD工具的所有配置项
+# 您可以根据需要修改这些设置
+
+# 字体配置
+# 用于设置文档中不同部分使用的字体
+fonts:
+  default: 蒙纳宋体      # 正文默认字体，建议使用支持中文的字体
+  code: Courier New     # 代码块字体，通常使用等宽字体以便于代码对齐
+  headings: 蒙纳宋体     # 标题字体，可以与默认字体相同或使用其他字体
+
+# 大小配置（单位：磅/pt）
+# 控制文档中各元素的字体大小
+sizes:
+  default: 12           # 正文默认字号
+  code: 6.5              # 代码块字号，通常比正文小一号
+  heading1: 18          # 一级标题字号
+  heading2: 16          # 二级标题字号
+  heading3: 14          # 三级标题字号
+  heading4: 12          # 四级标题字号
+  heading5: 12          # 五级标题字号
+  heading6: 12          # 六级标题字号
+
+# 颜色配置（使用十六进制颜色代码）
+# 设置文档中各元素的文字颜色
+colors:
+  default: '#000000'    # 正文默认颜色（黑色）
+  headings: '#000000'   # 标题颜色（黑色）
+  code: '#333333'       # 代码颜色（深灰色）
+  link: '#0563C1'       # 链接颜色（蓝色）
+
+# 段落配置
+# 控制段落的格式和间距
+paragraph:
+  line_spacing: 1.5     # 行间距倍数，1.5表示1.5倍行距
+  space_before: 0       # 段前间距（磅）
+  space_after: 6        # 段后间距（磅）
+  first_line_indent: 0  # 首行缩进字符数（汉字个数，0表示不缩进）
+
+# 中文配置
+# 中文文档特有的处理选项
+chinese:
+  convert_to_traditional: true  # 是否将简体中文转换为繁体中文，设置为false则保持简体中文
+  punctuation_spacing: true     # 是否优化标点符号间距，如处理全角半角问题
+  auto_spacing: true            # 是否在中英文、中文与数字之间自动添加空格，提高可读性
+
+# 表格样式配置
+# HTML表格的样式设置（用于中间HTML文件）
+table_styles:
+  even_row_color: '#f2f2f2'     # 偶数行背景色（浅灰色）
+  odd_row_color: '#ffffff'      # 奇数行背景色（白色）
+  header_bg_color: '#e0e0e0'    # 表头背景色（灰色）
+  border_color: '#dddddd'       # 边框颜色（浅灰色）
+  cell_height: 0.95em           # 单元格高度（em单位）
+  table_width: 100%             # 表格宽度（百分比）
+
+# 增强表格样式配置（Word文档）
+# 控制Word文档中表格的具体样式和格式
+enhanced_table_styles:
+  style: Table Grid               # Word表格样式名称，可选值如"Table Grid"、"Table Normal"等
+  width: 16.0                     # 表格宽度（厘米）
+  border: true                    # 是否显示边框
+  border_size: 1                  # 边框粗细（磅）
+  border_color: '#dddddd'         # 边框颜色（浅灰色）
+  header_bg_color: '#E7E6E6'      # 表头背景色（浅灰色）
+  even_row_color: '#F2F2F2'       # 偶数行背景色（浅灰色）
+  text_align: left                # 文本水平对齐方式，可选值：left、center、right
+  vertical_align: center          # 文本垂直对齐方式，可选值：top、center、bottom
+  cell_padding: 0                 # 单元格内边距（磅）
+  cell_height: 0.95               # 单元格默认高度（厘米）
+  autofit: false                  # 是否自动适应内容宽度
+  first_row_as_header: true       # 是否将第一行作为表头
+  keep_header_visible: true       # 在分页时是否保持表头可见
+  row_height:                     # 行高详细配置
+    default: 0.95                 # 普通行默认高度（厘米）
+    header: 0.95                  # 表头行高（厘米）
+    min: 0.5                      # 最小允许行高（厘米）
+    max: 5.0                      # 最大允许行高（厘米）
+    auto_adjust: true             # 是否根据内容自动调整行高
+
+# Markdown解析配置
+# 控制Markdown解析器的行为和支持的扩展
+markdown:
+  extensions:                     # 启用的Markdown扩展列表
+  - tables                        # 表格支持
+  - fenced_code                   # 围栏式代码块（使用```标记）
+  - codehilite                    # 代码高亮
+  #- toc                           # 目录生成
+  - footnotes                     # 脚注支持
+  - nl2br                         # 将换行符转换为<br>标签
+  extension_configs:              # 扩展的具体配置
+    codehilite:                   # 代码高亮配置
+      linenums: false             # 是否显示行号
+      use_pygments: true          # 是否使用Pygments进行语法高亮
+
+# 文档配置
+# Word文档的页面设置和全局选项
+document:
+  page_size: A4                   # 页面大小，常用值：A4、Letter
+  margin_top: 2.54                # 上边距（厘米）
+  margin_bottom: 2.54             # 下边距（厘米）
+  margin_left: 3.18               # 左边距（厘米）
+  margin_right: 3.18              # 右边距（厘米）
+  header: ''                      # 页眉内容，留空表示无页眉
+  footer: ''                      # 页脚内容，留空表示无页脚
+  generate_toc: false             # 是否生成目录
+  show_horizontal_rules: true     # 是否显示章节分隔线（水平线）
+  toc_depth: 3                    # 目录深度级别（1-6）
+  
+  # 封面页配置
+  generate_cover: true            # 是否生成封面页（第一页）
+  generate_cover_without_toc: false # 当没有目录时是否仍生成封面页
+  cover_title: '文档标题'          # 封面标题，留空则使用文档标题
+  cover_version: '1.0'            # 版本号
+  cover_author: '文档作者'         # 作者信息
+  cover_date: ''                  # 日期，留空则使用当前日期
+  cover_description: '这是一个示例文档的说明' # 封面描述文字
+
+# 调试配置
+# 控制程序运行时的日志和调试信息
+debug:
+  enabled: false                  # 是否启用调试模式
+  log_level: INFO                 # 日志级别，可选值：DEBUG、INFO、WARNING、ERROR、CRITICAL
+  log_to_file: false              # 是否将日志写入文件
+  log_file: conversion.log        # 日志文件路径
+  print_html_structure: false     # 是否打印HTML结构（用于调试）
+  verbose_element_info: false     # 是否输出详细的元素信息
+  timing: true                    # 是否记录处理时间统计
+
+# 输出配置
+# 控制输出文件的设置
+output:
+  keepHtml: false                 # 是否保留中间HTML文件

@@ -204,7 +204,7 @@ ${yamlStr}`;
         this._panel.webview.html = this._getHtmlForWebview();
     }
     _getHtmlForWebview() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, _61, _62, _63, _64, _65;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, _61, _62, _63, _64;
         const config = this._defaultConfig || {};
         console.log('加载配置:', config);
         console.log('扩展路径:', this._extensionPath);
@@ -330,6 +330,14 @@ ${yamlStr}`;
                 .sub-section {
                     margin-left: 20px;
                     margin-bottom: 20px;
+                }
+                
+                .form-help {
+                    display: block;
+                    font-size: 12px;
+                    color: var(--vscode-descriptionForeground);
+                    margin-top: 4px;
+                    font-style: italic;
                 }
             </style>
         </head>
@@ -585,28 +593,26 @@ ${yamlStr}`;
                         <input type="number" id="document.margin_right" min="0.1" max="5" step="0.1" value="${((_28 = config.document) === null || _28 === void 0 ? void 0 : _28.margin_right) || 1}">
                     </div>
                     
-                    <h3 class="section-title">其他文档设置</h3>
+                    <h3 class="section-title">内容设置</h3>
                     
                     <div class="form-group">
-                        <label for="document.header">页眉</label>
-                        <input type="text" id="document.header" value="${((_29 = config.document) === null || _29 === void 0 ? void 0 : _29.header) || ''}">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="document.generate_toc" ${((_29 = config.document) === null || _29 === void 0 ? void 0 : _29.generate_toc) !== false ? 'checked' : ''}>
+                            生成目录
+                        </label>
                     </div>
                     
                     <div class="form-group">
-                        <label for="document.footer">页脚</label>
-                        <input type="text" id="document.footer" value="${((_30 = config.document) === null || _30 === void 0 ? void 0 : _30.footer) || ''}">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="document.show_horizontal_rules" ${((_30 = config.document) === null || _30 === void 0 ? void 0 : _30.show_horizontal_rules) !== false ? 'checked' : ''}>
+                            显示章节分隔线
+                        </label>
+                        <span class="form-help">在标题下方显示水平分隔线，用于区分不同章节</span>
                     </div>
                     
                     <div class="form-group">
                         <div class="checkbox-label">
-                            <input type="checkbox" id="document.generate_toc" ${((_31 = config.document) === null || _31 === void 0 ? void 0 : _31.generate_toc) ? 'checked' : ''}>
-                            <label for="document.generate_toc">生成目录</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <div class="checkbox-label">
-                            <input type="checkbox" id="output.keepHtml" ${((_32 = config.output) === null || _32 === void 0 ? void 0 : _32.keepHtml) !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="output.keepHtml" ${((_31 = config.output) === null || _31 === void 0 ? void 0 : _31.keepHtml) !== false ? 'checked' : ''}>
                             <label for="output.keepHtml">保留中间HTML文件</label>
                         </div>
                     </div>
@@ -618,42 +624,42 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.tables" ${Array.isArray((_33 = config.markdown) === null || _33 === void 0 ? void 0 : _33.extensions) && ((_34 = config.markdown) === null || _34 === void 0 ? void 0 : _34.extensions.includes('tables')) ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.tables" ${Array.isArray((_32 = config.markdown) === null || _32 === void 0 ? void 0 : _32.extensions) && ((_33 = config.markdown) === null || _33 === void 0 ? void 0 : _33.extensions.includes('tables')) ? 'checked' : ''}>
                             启用表格支持
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.fenced_code" ${Array.isArray((_35 = config.markdown) === null || _35 === void 0 ? void 0 : _35.extensions) && ((_36 = config.markdown) === null || _36 === void 0 ? void 0 : _36.extensions.includes('fenced_code')) ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.fenced_code" ${Array.isArray((_34 = config.markdown) === null || _34 === void 0 ? void 0 : _34.extensions) && ((_35 = config.markdown) === null || _35 === void 0 ? void 0 : _35.extensions.includes('fenced_code')) ? 'checked' : ''}>
                             启用围栏式代码块
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.codehilite" ${Array.isArray((_37 = config.markdown) === null || _37 === void 0 ? void 0 : _37.extensions) && ((_38 = config.markdown) === null || _38 === void 0 ? void 0 : _38.extensions.includes('codehilite')) ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.codehilite" ${Array.isArray((_36 = config.markdown) === null || _36 === void 0 ? void 0 : _36.extensions) && ((_37 = config.markdown) === null || _37 === void 0 ? void 0 : _37.extensions.includes('codehilite')) ? 'checked' : ''}>
                             启用代码高亮
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.toc" ${Array.isArray((_39 = config.markdown) === null || _39 === void 0 ? void 0 : _39.extensions) && ((_40 = config.markdown) === null || _40 === void 0 ? void 0 : _40.extensions.includes('toc')) ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.toc" ${Array.isArray((_38 = config.markdown) === null || _38 === void 0 ? void 0 : _38.extensions) && ((_39 = config.markdown) === null || _39 === void 0 ? void 0 : _39.extensions.includes('toc')) ? 'checked' : ''}>
                             启用目录生成
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.footnotes" ${Array.isArray((_41 = config.markdown) === null || _41 === void 0 ? void 0 : _41.extensions) && ((_42 = config.markdown) === null || _42 === void 0 ? void 0 : _42.extensions.includes('footnotes')) ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.footnotes" ${Array.isArray((_40 = config.markdown) === null || _40 === void 0 ? void 0 : _40.extensions) && ((_41 = config.markdown) === null || _41 === void 0 ? void 0 : _41.extensions.includes('footnotes')) ? 'checked' : ''}>
                             启用脚注支持
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extensions.nl2br" ${Array.isArray((_43 = config.markdown) === null || _43 === void 0 ? void 0 : _43.extensions) && ((_44 = config.markdown) === null || _44 === void 0 ? void 0 : _44.extensions.includes('nl2br')) ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extensions.nl2br" ${Array.isArray((_42 = config.markdown) === null || _42 === void 0 ? void 0 : _42.extensions) && ((_43 = config.markdown) === null || _43 === void 0 ? void 0 : _43.extensions.includes('nl2br')) ? 'checked' : ''}>
                             将换行符转换为<br>标签
                         </label>
                     </div>
@@ -662,14 +668,14 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extension_configs.codehilite.linenums" ${((_47 = (_46 = (_45 = config.markdown) === null || _45 === void 0 ? void 0 : _45.extension_configs) === null || _46 === void 0 ? void 0 : _46.codehilite) === null || _47 === void 0 ? void 0 : _47.linenums) ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extension_configs.codehilite.linenums" ${((_46 = (_45 = (_44 = config.markdown) === null || _44 === void 0 ? void 0 : _44.extension_configs) === null || _45 === void 0 ? void 0 : _45.codehilite) === null || _46 === void 0 ? void 0 : _46.linenums) ? 'checked' : ''}>
                             显示行号
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="markdown.extension_configs.codehilite.use_pygments" ${((_50 = (_49 = (_48 = config.markdown) === null || _48 === void 0 ? void 0 : _48.extension_configs) === null || _49 === void 0 ? void 0 : _49.codehilite) === null || _50 === void 0 ? void 0 : _50.use_pygments) !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="markdown.extension_configs.codehilite.use_pygments" ${((_49 = (_48 = (_47 = config.markdown) === null || _47 === void 0 ? void 0 : _47.extension_configs) === null || _48 === void 0 ? void 0 : _48.codehilite) === null || _49 === void 0 ? void 0 : _49.use_pygments) !== false ? 'checked' : ''}>
                             使用Pygments进行语法高亮
                         </label>
                     </div>
@@ -681,39 +687,39 @@ ${yamlStr}`;
                     
                     <div class="form-group">
                         <label for="sizes.heading1">一级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading1" min="12" max="72" value="${((_51 = config.sizes) === null || _51 === void 0 ? void 0 : _51.heading1) || 18}">
+                        <input type="number" id="sizes.heading1" min="12" max="72" value="${((_50 = config.sizes) === null || _50 === void 0 ? void 0 : _50.heading1) || 18}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading2">二级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading2" min="12" max="72" value="${((_52 = config.sizes) === null || _52 === void 0 ? void 0 : _52.heading2) || 16}">
+                        <input type="number" id="sizes.heading2" min="12" max="72" value="${((_51 = config.sizes) === null || _51 === void 0 ? void 0 : _51.heading2) || 16}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading3">三级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading3" min="12" max="72" value="${((_53 = config.sizes) === null || _53 === void 0 ? void 0 : _53.heading3) || 14}">
+                        <input type="number" id="sizes.heading3" min="12" max="72" value="${((_52 = config.sizes) === null || _52 === void 0 ? void 0 : _52.heading3) || 14}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading4">四级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading4" min="12" max="72" value="${((_54 = config.sizes) === null || _54 === void 0 ? void 0 : _54.heading4) || 12}">
+                        <input type="number" id="sizes.heading4" min="12" max="72" value="${((_53 = config.sizes) === null || _53 === void 0 ? void 0 : _53.heading4) || 12}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading5">五级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading5" min="12" max="72" value="${((_55 = config.sizes) === null || _55 === void 0 ? void 0 : _55.heading5) || 12}">
+                        <input type="number" id="sizes.heading5" min="12" max="72" value="${((_54 = config.sizes) === null || _54 === void 0 ? void 0 : _54.heading5) || 12}">
                     </div>
                     
                     <div class="form-group">
                         <label for="sizes.heading6">六级标题字号 (pt)</label>
-                        <input type="number" id="sizes.heading6" min="12" max="72" value="${((_56 = config.sizes) === null || _56 === void 0 ? void 0 : _56.heading6) || 12}">
+                        <input type="number" id="sizes.heading6" min="12" max="72" value="${((_55 = config.sizes) === null || _55 === void 0 ? void 0 : _55.heading6) || 12}">
                     </div>
                     
                     <h3 class="section-title">调试设置</h3>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="debug.enabled" ${((_57 = config.debug) === null || _57 === void 0 ? void 0 : _57.enabled) ? 'checked' : ''}>
+                            <input type="checkbox" id="debug.enabled" ${((_56 = config.debug) === null || _56 === void 0 ? void 0 : _56.enabled) ? 'checked' : ''}>
                             启用调试模式
                         </label>
                     </div>
@@ -721,29 +727,29 @@ ${yamlStr}`;
                     <div class="form-group">
                         <label for="debug.log_level">日志级别</label>
                         <select id="debug.log_level">
-                            <option value="DEBUG" ${(((_58 = config.debug) === null || _58 === void 0 ? void 0 : _58.log_level) || '') === 'DEBUG' ? 'selected' : ''}>DEBUG</option>
-                            <option value="INFO" ${(((_59 = config.debug) === null || _59 === void 0 ? void 0 : _59.log_level) || 'INFO') === 'INFO' ? 'selected' : ''}>INFO</option>
-                            <option value="WARNING" ${(((_60 = config.debug) === null || _60 === void 0 ? void 0 : _60.log_level) || '') === 'WARNING' ? 'selected' : ''}>WARNING</option>
-                            <option value="ERROR" ${(((_61 = config.debug) === null || _61 === void 0 ? void 0 : _61.log_level) || '') === 'ERROR' ? 'selected' : ''}>ERROR</option>
-                            <option value="CRITICAL" ${(((_62 = config.debug) === null || _62 === void 0 ? void 0 : _62.log_level) || '') === 'CRITICAL' ? 'selected' : ''}>CRITICAL</option>
+                            <option value="DEBUG" ${(((_57 = config.debug) === null || _57 === void 0 ? void 0 : _57.log_level) || '') === 'DEBUG' ? 'selected' : ''}>DEBUG</option>
+                            <option value="INFO" ${(((_58 = config.debug) === null || _58 === void 0 ? void 0 : _58.log_level) || 'INFO') === 'INFO' ? 'selected' : ''}>INFO</option>
+                            <option value="WARNING" ${(((_59 = config.debug) === null || _59 === void 0 ? void 0 : _59.log_level) || '') === 'WARNING' ? 'selected' : ''}>WARNING</option>
+                            <option value="ERROR" ${(((_60 = config.debug) === null || _60 === void 0 ? void 0 : _60.log_level) || '') === 'ERROR' ? 'selected' : ''}>ERROR</option>
+                            <option value="CRITICAL" ${(((_61 = config.debug) === null || _61 === void 0 ? void 0 : _61.log_level) || '') === 'CRITICAL' ? 'selected' : ''}>CRITICAL</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="debug.log_to_file" ${((_63 = config.debug) === null || _63 === void 0 ? void 0 : _63.log_to_file) ? 'checked' : ''}>
+                            <input type="checkbox" id="debug.log_to_file" ${((_62 = config.debug) === null || _62 === void 0 ? void 0 : _62.log_to_file) ? 'checked' : ''}>
                             将日志写入文件
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label for="debug.log_file">日志文件路径</label>
-                        <input type="text" id="debug.log_file" value="${((_64 = config.debug) === null || _64 === void 0 ? void 0 : _64.log_file) || 'conversion.log'}">
+                        <input type="text" id="debug.log_file" value="${((_63 = config.debug) === null || _63 === void 0 ? void 0 : _63.log_file) || 'conversion.log'}">
                     </div>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="debug.timing" ${((_65 = config.debug) === null || _65 === void 0 ? void 0 : _65.timing) !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="debug.timing" ${((_64 = config.debug) === null || _64 === void 0 ? void 0 : _64.timing) !== false ? 'checked' : ''}>
                             记录处理时间统计
                         </label>
                     </div>
@@ -884,9 +890,10 @@ ${yamlStr}`;
                                 margin_bottom: parseFloat(document.getElementById('document.margin_bottom').value),
                                 margin_left: parseFloat(document.getElementById('document.margin_left').value),
                                 margin_right: parseFloat(document.getElementById('document.margin_right').value),
-                                header: document.getElementById('document.header').value,
-                                footer: document.getElementById('document.footer').value,
-                                generate_toc: document.getElementById('document.generate_toc').checked
+                                header: '',
+                                footer: '',
+                                generate_toc: document.getElementById('document.generate_toc').checked,
+                                show_horizontal_rules: document.getElementById('document.show_horizontal_rules').checked
                             },
                             output: {
                                 keepHtml: document.getElementById('output.keepHtml').checked
