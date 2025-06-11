@@ -33,18 +33,25 @@ class Converter {
     /**
      * 转换单个Markdown文件为Excel
      */
-    async convertFile(inputPath, outputPath = null) {
-        try {
-            console.log(`Starting conversion: ${inputPath}`);
-            
-            // 验证输入文件
-            await this.validateInputFile(inputPath);
+    async convertFile(inputPath, outputPath) {
+            try {
+                console.log(`Starting conversion: ${inputPath}`);
+                
+                // 验证输入文件
+                await this.validateInputFile(inputPath);
             
             // 确定输出路径
             if (!outputPath) {
                 const basename = path.basename(inputPath, path.extname(inputPath));
                 const outputDir = this.config.outputPath || path.dirname(inputPath);
                 outputPath = path.join(outputDir, `${this.config.filename || basename}.xlsx`);
+            } else {
+                // 如果用户指定了输出路径，直接使用，确保它有正确的扩展名
+                if (!outputPath.endsWith('.xlsx')) {
+                    outputPath += '.xlsx';
+                }
+                // 解析为绝对路径
+                outputPath = path.resolve(outputPath);
             }
             
             // 确保输出目录存在

@@ -232,10 +232,10 @@ class HtmlToExcelConverter {
         const text = this.extractTextWithLineBreaks($, element);
         
         if (text) {
-            // 在标题前添加间隔行（除了第一个标题）
-            // if (this.currentRow > 2) { // 跳过表头行和第一个标题
-            //     this.addSpacingRow(worksheet);
-            // }
+            //在标题前添加间隔行（除了第一个标题）
+            if (this.currentRow > 2) { // 跳过表头行和第一个标题
+                this.addSpacingRow(worksheet);
+            }
             
             const row = await this.addContentRow(worksheet, 'heading', level, text);
             
@@ -374,6 +374,10 @@ class HtmlToExcelConverter {
             }
         } else {
             // 直接在主工作表中显示表格内容
+            // 修复：在表格前添加一个空行作为分隔
+            if (this.currentRow > 2) {
+                this.addSpacingRow(worksheet);
+            }
             await this.convertHtmlTableToExcel($, element, worksheet, this.currentRow);
         }
     }
@@ -382,8 +386,35 @@ class HtmlToExcelConverter {
      * 将HTML表格转换为Excel表格
      */
     async convertHtmlTableToExcel($, tableElement, worksheet, startRow = 1) {
-        const rows = tableElement.find('tr');
+        // 正确处理HTML表格的层级结构，分别获取thead和tbody中的行
+        const theadRows = tableElement.find('thead tr');
+        const tbodyRows = tableElement.find('tbody tr');
+        const directRows = tableElement.find('> tr'); // 直接子元素的tr（没有thead/tbody结构的表格）
+        
+        // 合并所有行，优先处理thead中的表头行
+        let allRows = $();
+        if (theadRows.length > 0) {
+            allRows = allRows.add(theadRows);
+        }
+        if (tbodyRows.length > 0) {
+            allRows = allRows.add(tbodyRows);
+        }
+        if (directRows.length > 0 && theadRows.length === 0 && tbodyRows.length === 0) {
+            // 只有在没有thead/tbody结构时才使用直接的tr元素
+            allRows = allRows.add(directRows);
+        }
+        
+        const rows = allRows;
         let excelRowIndex = startRow;
+        
+                console.log(`表格转换: 找到 ${theadRows.length} 个thead行, ${tbodyRows.length} 个tbody行, ${directRows.length} 个直接tr行, 总计 ${rows.length} 行`);
+        
+        // 确保thead行被正确包含
+        if (theadRows.length > 0) {
+            console.log('✓ 检测到thead行，将作为表格标题行处理');
+        } else {
+            console.log('⚠ 未检测到thead行，将第一行作为标题行处理');
+        }
         
         for (let i = 0; i < rows.length; i++) {
             const row = rows.eq(i);
@@ -396,16 +427,23 @@ class HtmlToExcelConverter {
                 const cellText = this.extractTextWithLineBreaks($, cell);
                 const excelCell = excelRow.getCell(j + 1);
                 
+                // 单元格内容处理完成
+                
                 excelCell.value = cellText;
                 
-                // 先应用样式
-                if (cell.is('th')) {
+                                // 先应用样式 - 修复：正确识别thead中的单元格
+                const isInThead = row.closest('thead').length > 0;
+                const isHeaderCell = cell.is('th') || isInThead;
+                
+                if (isHeaderCell) {
                     this.applyCellStyle(excelCell, this.config.styles.table.header);
+                    console.log(`  表头单元格 [${i+1},${j+1}]: "${cellText}"`);
                 } else {
                     this.applyCellStyle(excelCell, this.config.styles.table.cell);
                     
-                    // 交替行样式
-                    if (i % 2 === 0) {
+                    // 交替行样式 - 修复：只对数据行应用交替样式
+                    const dataRowIndex = i - theadRows.length; // 计算在数据行中的索引
+                    if (dataRowIndex >= 0 && dataRowIndex % 2 === 0) {
                         if (!excelCell.fill) {
                             excelCell.fill = {};
                         }
@@ -460,8 +498,18 @@ class HtmlToExcelConverter {
         }
         
         // 根据表格标题内容智能调整列宽
-        const headerRow = tableElement.find('tr').first();
+        // 优先从thead中获取表头行，如果没有则从第一行获取
+        let headerRow;
+        if (theadRows.length > 0) {
+            headerRow = theadRows.first();
+        } else if (rows.length > 0) {
+            headerRow = rows.first();
+        } else {
+            headerRow = tableElement.find('tr').first();
+        }
         const headerCells = headerRow.find('th, td');
+        
+        console.log(`表头识别: 使用${theadRows.length > 0 ? 'thead' : '第一行'}作为表头, 找到 ${headerCells.length} 个表头单元格`);
         
         // 将列索引转换为Excel列名 (0->A, 1->B, 2->C, ...)
         const getColumnName = (index) => {
@@ -670,29 +718,29 @@ class HtmlToExcelConverter {
         // 如果内容没有超出默认宽度，保持默认宽度（不设置column.width，让Excel使用默认值）
     }
     
-    // /**
-    //  * 添加间隔行
-    //  */
-    // addSpacingRow(worksheet) {
-    //     // 先递增行号，然后获取新行
-    //     this.currentRow++;
-    //     const row = worksheet.getRow(this.currentRow);
+    /**
+     * 添加间隔行
+     */
+    addSpacingRow(worksheet) {
+        // 先递增行号，然后获取新行
+        this.currentRow++;
+        const row = worksheet.getRow(this.currentRow);
         
-    //     // 创建一个空行作为间隔
-    //     row.height = 10; // 设置较小的行高作为间隔
+        // 创建一个空行作为间隔
+        row.height = 10; // 设置较小的行高作为间隔
         
-    //     // 在第一列添加空内容并设置样式
-    //     const cell = row.getCell(1);
-    //     cell.value = ''; // 空内容
-    //     cell.fill = {
-    //         type: 'pattern',
-    //         pattern: 'solid',
-    //         fgColor: { argb: 'FFFFFFFF' } // 纯白色背景
-    //     };
+        // 在第一列添加空内容并设置样式
+        const cell = row.getCell(1);
+        cell.value = ''; // 空内容
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFFFFFF' } // 纯白色背景
+        };
         
-    //     row.commit();
-    //     return row;
-    // }
+        row.commit();
+        return row;
+    }
 
     /**
      * 修复间隔行的行高（在applyStyles之后调用）
@@ -717,7 +765,7 @@ class HtmlToExcelConverter {
     /**
      * 添加内容行
      */
-    async addContentRow(worksheet, type, level, content) {
+    async addContentRow(worksheet, type, level, content, isTableContent = false) {
         // 限制内容长度
         if (content.length > this.config.contentMapping.maxCellLength) {
             content = content.substring(0, this.config.contentMapping.maxCellLength - 3) + '...';
@@ -728,13 +776,13 @@ class HtmlToExcelConverter {
         const row = worksheet.getRow(this.currentRow);
         const isHeading = type === 'heading';
         
-        // 使用表格的最大列数来确定合并范围
-        const totalColumns = Math.max(this.maxTableColumns, 1); // 至少1列
+        // 使用表格的最大列数来确定合并范围，但表格内容不进行合并
+        const totalColumns = isTableContent ? 1 : Math.max(this.maxTableColumns, 1); // 表格内容不合并
         
         // 处理标题和内容行
         
-        if (isHeading && totalColumns > 1) {
-            // 标题行：合并所有列，内容放在第一列
+        if (isHeading && totalColumns > 1 && !isTableContent) {
+            // 标题行：合并所有列，内容放在第一列（但表格内容除外）
             const startCol = 1;
             const endCol = Math.min(totalColumns, 16384); // Excel最大列数限制
             
@@ -784,7 +832,7 @@ class HtmlToExcelConverter {
             
         } else {
             // 非标题行：对于非表格内容，实现列合并优化
-            if (type !== 'table' && totalColumns > 1) {
+            if (type !== 'table' && type !== 'table-reference' && totalColumns > 1 && !isTableContent) {
                 // 非表格内容：合并多列后再计算宽度，避免表格内容出现问题
                 const startRow = this.currentRow;
                 const endRow = this.currentRow; // 单行
@@ -815,7 +863,7 @@ class HtmlToExcelConverter {
                     this.addContentRowFallback(worksheet, row, type, level, content);
                 }
             } else {
-                // 表格内容或单列情况：按原有逻辑填充各列
+                // 表格内容、表格引用或单列情况：按原有逻辑填充各列
                 this.addContentRowFallback(worksheet, row, type, level, content);
             }
         }

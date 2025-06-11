@@ -140,7 +140,12 @@ async function main() {
 // 处理单文件转换
 async function handleConvert() {
     const inputPath = argv.input;
-    const outputPath = argv.output;
+    // 如果没有通过 --output 指定输出路径，但有额外的位置参数，使用第一个额外参数作为输出路径
+    let outputPath = argv.output;
+    if (!outputPath && argv._.length > 1) {
+        // argv._[0] 是 'convert'，argv._[1] 是第二个位置参数
+        outputPath = argv._[1];
+    }
     const configPath = argv.config;
     
     log.info(`Converting file: ${inputPath}`);
