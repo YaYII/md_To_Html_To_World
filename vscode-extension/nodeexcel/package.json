@@ -1,0 +1,38 @@
+{
+  "name": "markdown-to-excel-converter",
+  "version": "1.0.0",
+  "description": "Convert Markdown to Excel via HTML with intelligent content mapping",
+  "main": "src/index.js",
+  "bin": {
+    "md-to-excel": "bin/cli.js",
+    "md-to-excel-config": "bin/config.js"
+  },
+  "scripts": {
+    "test": "node test/test-converter.js",
+    "dev": "node examples/test.js"
+  },
+  "keywords": [
+    "markdown",
+    "excel",
+    "converter",
+    "html",
+    "xlsx"
+  ],
+  "author": "Markdown to Excel Converter",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "exceljs": "^4.4.0",
+    "fs-extra": "^11.1.1",
+    "glob": "^10.2.6",
+    "inquirer": "^9.2.7",
+    "js-yaml": "^4.1.0",
+    "markdown-it": "^13.0.1",
+    "markdown-it-anchor": "^8.6.7",
+    "markdown-it-table-of-contents": "^0.6.0",
+    "yargs": "^17.7.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

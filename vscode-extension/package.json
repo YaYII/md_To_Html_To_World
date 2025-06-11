@@ -2,7 +2,7 @@
   "name": "markdown-to-word",
   "displayName": "Markdown to Word",
   "description": "将Markdown文档转换为Word文档:作者杨英：抖音：木易君，抖音号：YI_11_13",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "publisher": "markdowntoword",
   "icon": "images/WechatIMG15.jpg",
   "repository": {
@@ -53,6 +53,21 @@
         "command": "markdowntoword.markdown-to-word.editConfig",
         "title": "编辑配置",
         "category": "Markdown to Word"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.convertToExcel",
+        "title": "生成Excel文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.batchConvertToExcel",
+        "title": "批量生成Excel文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.configExcel",
+        "title": "配置Excel转换",
+        "category": "Markdown"
       }
     ],
     "menus": {
@@ -81,6 +96,16 @@
           "when": "explorerResourceIsFolder",
           "command": "markdowntoword.markdown-to-word.batchConvertToHtml",
           "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdowntoword.markdown-to-word.convertToExcel",
+          "group": "navigation"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "markdowntoword.markdown-to-word.batchConvertToExcel",
+          "group": "navigation"
         }
       ],
       "editor/context": [
@@ -97,6 +122,11 @@
         {
           "when": "resourceExtname == .md",
           "command": "markdowntoword.markdown-to-word.convertToHtml",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .md",
+          "command": "markdowntoword.markdown-to-word.convertToExcel",
           "group": "navigation"
         }
       ],
@@ -123,6 +153,17 @@
         },
         {
           "command": "markdowntoword.markdown-to-word.editConfig"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.convertToExcel",
+          "when": "resourceExtname == .md"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.batchConvertToExcel",
+          "when": "explorerViewletVisible"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.configExcel"
         }
       ]
     },
@@ -250,6 +291,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "docx": "^8.2.2",
+    "exceljs": "^4.4.0",
     "fs-extra": "^11.1.1",
     "glob": "^10.3.3",
     "inquirer": "^8.2.5",

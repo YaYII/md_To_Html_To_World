@@ -6,8 +6,91 @@
  * MIT Licensed
  */
 
+/*!
+ * normalize-path <https://github.com/jonschlinkert/normalize-path>
+ *
+ * Copyright (c) 2014-2018, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+/*! crc32.js (C) 2014-present SheetJS -- http://sheetjs.com */
+
 /*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
 
 /*! http://mths.be/fromcodepoint v0.1.0 by @mathias */
 
+/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
 /*! ws. MIT License. Einar Otto Stangvik <einaros@gmail.com> */
+
+/**
+ * Archiver Core
+ *
+ * @ignore
+ * @license [MIT]{@link https://github.com/archiverjs/node-archiver/blob/master/LICENSE}
+ * @copyright (c) 2012-2014 Chris Talkington, contributors.
+ */
+
+/**
+ * Archiver Vending
+ *
+ * @ignore
+ * @license [MIT]{@link https://github.com/archiverjs/node-archiver/blob/master/LICENSE}
+ * @copyright (c) 2012-2014 Chris Talkington, contributors.
+ */
+
+/**
+ * Character class utilities for XML NS 1.0 edition 3.
+ *
+ * @author Louis-Dominique Dubeau
+ * @license MIT
+ * @copyright Louis-Dominique Dubeau
+ */
+
+/**
+ * Character classes and associated utilities for the 2nd edition of XML 1.1.
+ *
+ * @author Louis-Dominique Dubeau
+ * @license MIT
+ * @copyright Louis-Dominique Dubeau
+ */
+
+/**
+ * Character classes and associated utilities for the 5th edition of XML 1.0.
+ *
+ * @author Louis-Dominique Dubeau
+ * @license MIT
+ * @copyright Louis-Dominique Dubeau
+ */
+
+/**
+ * JSON Format Plugin
+ *
+ * @module plugins/json
+ * @license [MIT]{@link https://github.com/archiverjs/node-archiver/blob/master/LICENSE}
+ * @copyright (c) 2012-2014 Chris Talkington, contributors.
+ */
+
+/**
+ * TAR Format Plugin
+ *
+ * @module plugins/tar
+ * @license [MIT]{@link https://github.com/archiverjs/node-archiver/blob/master/LICENSE}
+ * @copyright (c) 2012-2014 Chris Talkington, contributors.
+ */
+
+/**
+ * ZIP Format Plugin
+ *
+ * @module plugins/zip
+ * @license [MIT]{@link https://github.com/archiverjs/node-archiver/blob/master/LICENSE}
+ * @copyright (c) 2012-2014 Chris Talkington, contributors.
+ */
+
+/**
+ * ZipStream
+ *
+ * @ignore
+ * @license [MIT]{@link https://github.com/archiverjs/node-zip-stream/blob/master/LICENSE}
+ * @copyright (c) 2014 Chris Talkington, contributors.
+ */

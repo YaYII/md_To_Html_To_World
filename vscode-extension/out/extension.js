@@ -51,6 +51,8 @@ const configPanel_1 = require("./ui/configPanel");
 const nodeConverter_1 = require("./core/nodeConverter");
 const yaml = __importStar(require("js-yaml"));
 const path = __importStar(require("path"));
+const ExcelModule = require('../nodeexcel/src/index');
+const { convertFile, convertBatch } = ExcelModule;
 function activate(context) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log('插件 "Markdown to Word Converter" 正在激活...');
@@ -537,7 +539,185 @@ function activate(context) {
                 vscode.window.showErrorMessage(`编辑配置失败: ${errorMessage}`);
             }
         }));
-        context.subscriptions.push(disposable, directConvertCmd, convertToHtmlCmd, batchConvertToWordCmd, batchConvertToHtmlCmd, editConfigCmd);
+        const convertToExcelCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.convertToExcel', (uri) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const editor = vscode.window.activeTextEditor;
+                const inputFileUri = uri || (editor === null || editor === void 0 ? void 0 : editor.document.uri);
+                if (!inputFileUri) {
+                    throw new Error('无法确定要转换的 Markdown 文件。请在编辑器中打开一个 Markdown 文件，或在文件资源管理器中右键单击它。');
+                }
+                const inputFile = inputFileUri.fsPath;
+                if (!inputFile.toLowerCase().endsWith('.md')) {
+                    throw new Error(`选择的文件不是 Markdown (.md) 文件: ${inputFile}`);
+                }
+                const excelConfig = {
+                    preserveFormatting: true,
+                    autoColumnWidth: true,
+                    freezeHeaders: true
+                };
+                yield progressUI.withProgress('Markdown 转 Excel', (progress) => __awaiter(this, void 0, void 0, function* () {
+                    progress.report({ message: '正在转换为Excel...' });
+                    const outputFile = inputFile.replace(/\.md$/i, '.xlsx');
+                    const result = yield convertFile(inputFile, outputFile, excelConfig);
+                    progress.report({ message: '转换完成！' });
+                    yield progressUI.showSuccess('Markdown 文件已成功转换为 Excel 文档！', result.outputFile);
+                    try {
+                        if (result.outputFile) {
+                            const uri = vscode.Uri.file(result.outputFile);
+                            yield vscode.commands.executeCommand('vscode.open', uri);
+                        }
+                    }
+                    catch (openError) {
+                        console.error('无法打开生成的Excel文件:', openError);
+                    }
+                }));
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('转换到Excel失败:', errorMessage);
+                yield progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+            }
+        }));
+        const batchConvertToExcelCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.batchConvertToExcel', (uri) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!uri) {
+                    throw new Error('未选择目录。请在文件资源管理器中右键单击一个目录。');
+                }
+                const inputDir = uri.fsPath;
+                const stats = yield fs.stat(inputDir);
+                if (!stats.isDirectory()) {
+                    throw new Error(`选择的路径不是目录: ${inputDir}`);
+                }
+                const outputDir = yield vscode.window.showInputBox({
+                    prompt: '请输入输出目录路径',
+                    value: inputDir,
+                    validateInput: (value) => __awaiter(this, void 0, void 0, function* () {
+                        if (!value) {
+                            return '输出目录不能为空';
+                        }
+                        try {
+                            yield fs.ensureDir(value);
+                            return null;
+                        }
+                        catch (error) {
+                            return `无法创建目录: ${error instanceof Error ? error.message : String(error)}`;
+                        }
+                    })
+                });
+                if (!outputDir) {
+                    return;
+                }
+                const excelConfig = {
+                    preserveFormatting: true,
+                    autoColumnWidth: true,
+                    freezeHeaders: true,
+                    showProgress: true
+                };
+                yield progressUI.withProgress('批量转换 Markdown 到 Excel', (progress) => __awaiter(this, void 0, void 0, function* () {
+                    var _a, _b;
+                    progress.report({ message: '正在扫描Markdown文件...' });
+                    const inputPattern = path.join(inputDir, '**/*.md');
+                    const results = yield convertBatch(inputPattern, outputDir, excelConfig);
+                    const successCount = ((_a = results.successful) === null || _a === void 0 ? void 0 : _a.length) || 0;
+                    const failedCount = ((_b = results.failed) === null || _b === void 0 ? void 0 : _b.length) || 0;
+                    const totalCount = successCount + failedCount;
+                    progress.report({ message: '批量转换完成！' });
+                    if (totalCount === 0) {
+                        yield progressUI.showError(new Error('在指定目录中未找到Markdown文件'));
+                        return;
+                    }
+                    yield progressUI.showSuccess(`批量转换完成: 共 ${totalCount} 个文件, 成功 ${successCount} 个, 失败 ${failedCount} 个`, outputDir);
+                    if (failedCount > 0 && results.failed) {
+                        const failedFiles = results.failed.map((f) => `${f.file}: ${f.error}`).join('\n');
+                        console.warn('转换失败的文件:\n', failedFiles);
+                    }
+                }));
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('批量转换到Excel失败:', errorMessage);
+                yield progressUI.showError(error instanceof Error ? error : new Error(String(error)));
+            }
+        }));
+        const configExcelCmd = vscode.commands.registerCommand('markdowntoword.markdown-to-word.configExcel', () => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const options = [
+                    { label: '$(gear) 打开配置工具', description: '在终端中启动交互式配置工具' },
+                    { label: '$(file-text) 查看当前配置', description: '显示当前Excel转换配置' },
+                    { label: '$(refresh) 重置为默认配置', description: '恢复Excel转换的默认设置' },
+                    { label: '$(folder-opened) 打开配置目录', description: '在文件管理器中打开配置文件目录' }
+                ];
+                const selected = yield vscode.window.showQuickPick(options, {
+                    placeHolder: '选择Excel配置操作',
+                    canPickMany: false
+                });
+                if (!selected) {
+                    return;
+                }
+                switch (selected.label) {
+                    case '$(gear) 打开配置工具':
+                        const terminal = vscode.window.createTerminal({
+                            name: 'Excel配置工具',
+                            cwd: path.join(context.extensionPath, 'nodeexcel')
+                        });
+                        terminal.show();
+                        terminal.sendText('node bin/config.js');
+                        vscode.window.showInformationMessage('Excel配置工具已在终端中启动');
+                        break;
+                    case '$(file-text) 查看当前配置':
+                        try {
+                            const configInfo = {
+                                '样式设置': {
+                                    '自动列宽': true,
+                                    '冻结表头': true,
+                                    '保留格式': true
+                                },
+                                '转换选项': {
+                                    '支持的输入格式': ['.md', '.markdown'],
+                                    '输出格式': '.xlsx',
+                                    '智能内容映射': true
+                                },
+                                '功能特性': ExcelModule.getFeatures().features.slice(0, 5)
+                            };
+                            const configText = JSON.stringify(configInfo, null, 2);
+                            const doc = yield vscode.workspace.openTextDocument({
+                                content: configText,
+                                language: 'json'
+                            });
+                            yield vscode.window.showTextDocument(doc);
+                        }
+                        catch (error) {
+                            vscode.window.showErrorMessage('无法获取配置信息');
+                        }
+                        break;
+                    case '$(refresh) 重置为默认配置':
+                        const confirm = yield vscode.window.showWarningMessage('确定要重置Excel转换配置为默认设置吗？', { modal: true }, '确定', '取消');
+                        if (confirm === '确定') {
+                            try {
+                                const configPath = path.join(context.extensionPath, 'nodeexcel', 'config', 'excel-config.json');
+                                yield ExcelModule.createDefaultConfigFile(configPath);
+                                vscode.window.showInformationMessage('Excel配置已重置为默认设置');
+                            }
+                            catch (error) {
+                                vscode.window.showErrorMessage('重置配置失败');
+                            }
+                        }
+                        break;
+                    case '$(folder-opened) 打开配置目录':
+                        const configDir = path.join(context.extensionPath, 'nodeexcel', 'config');
+                        yield fs.ensureDir(configDir);
+                        const uri = vscode.Uri.file(configDir);
+                        yield vscode.commands.executeCommand('vscode.openFolder', uri, { forceNewWindow: false });
+                        break;
+                }
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error('Excel配置操作失败:', errorMessage);
+                vscode.window.showErrorMessage(`Excel配置操作失败: ${errorMessage}`);
+            }
+        }));
+        context.subscriptions.push(disposable, directConvertCmd, convertToHtmlCmd, batchConvertToWordCmd, batchConvertToHtmlCmd, editConfigCmd, convertToExcelCmd, batchConvertToExcelCmd, configExcelCmd);
         console.log('插件 "Markdown to Word Converter" 已激活');
     });
 }

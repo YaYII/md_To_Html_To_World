@@ -1,0 +1,376 @@
+outputPath: ./output
+filename: converted
+overwrite: true
+worksheet:
+  name: Content
+  splitByHeaders: true
+  maxRowsPerSheet: 50000
+styles:
+  headers:
+    h1:
+      font:
+        bold: true
+        size: 20
+        color:
+          argb: FFFFFFFF
+      fill:
+        type: pattern
+        pattern: solid
+        fgColor:
+          argb: FF2E75B6
+      alignment:
+        horizontal: left
+        vertical: middle
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+    h2:
+      font:
+        bold: true
+        size: 16
+        color:
+          argb: FFFFFFFF
+      fill:
+        type: pattern
+        pattern: solid
+        fgColor:
+          argb: FF5B9BD5
+      alignment:
+        horizontal: left
+        vertical: middle
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+    h3:
+      font:
+        bold: true
+        size: 14
+        color:
+          argb: FF000000
+      fill:
+        type: pattern
+        pattern: solid
+        fgColor:
+          argb: FFB4C6E7
+      alignment:
+        horizontal: left
+        vertical: middle
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+    h4:
+      font:
+        bold: true
+        size: 12
+        color:
+          argb: FF000000
+      alignment:
+        horizontal: left
+        vertical: middle
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+    h5:
+      font:
+        bold: true
+        size: 11
+        color:
+          argb: FF000000
+      alignment:
+        horizontal: left
+        vertical: middle
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+    h6:
+      font:
+        bold: true
+        size: 10
+        color:
+          argb: FF000000
+      alignment:
+        horizontal: left
+        vertical: middle
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+  content:
+    paragraph:
+      font:
+        size: 11
+        color:
+          argb: FF000000
+      alignment:
+        horizontal: left
+        vertical: top
+        wrapText: true
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+    code:
+      font:
+        name: 'Courier New'
+        size: 11
+        color:
+          argb: FF2E2E2E
+      fill:
+        type: pattern
+        pattern: solid
+        fgColor:
+          argb: FFF8F8F8
+      alignment:
+        horizontal: left
+        vertical: top
+        wrapText: true
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+    blockquote:
+      font:
+        italic: true
+        size: 11
+        color:
+          argb: FF4A4A4A
+      fill:
+        type: pattern
+        pattern: solid
+        fgColor:
+          argb: FFF0F7FF
+      alignment:
+        horizontal: left
+        vertical: top
+        wrapText: true
+      border:
+        left:
+          style: thick
+          color:
+            argb: FFCCCCCC
+        top:
+          style: thin
+          color:
+            argb: FFEEEEEE
+        bottom:
+          style: thin
+          color:
+            argb: FFEEEEEE
+        right:
+          style: thin
+          color:
+            argb: FFEEEEEE
+    list:
+      font:
+        size: 11
+        color:
+          argb: FF000000
+      alignment:
+        horizontal: left
+        vertical: top
+        wrapText: true
+      border:
+        top:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        left:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        bottom:
+          style: thin
+          color:
+            argb: FFCCCCCC
+        right:
+          style: thin
+          color:
+            argb: FFCCCCCC
+  table:
+    header:
+      font:
+        bold: true
+        size: 11
+        color:
+          argb: FFFFFFFF
+      fill:
+        type: pattern
+        pattern: solid
+        fgColor:
+          argb: FF4472C4
+      alignment:
+        horizontal: center
+        vertical: middle
+      border:
+        top:
+          style: medium
+          color:
+            argb: FF000000
+        left:
+          style: medium
+          color:
+            argb: FF000000
+        bottom:
+          style: medium
+          color:
+            argb: FF000000
+        right:
+          style: medium
+          color:
+            argb: FF000000
+    cell:
+      font:
+        size: 11
+        color:
+          argb: FF000000
+      alignment:
+        horizontal: left
+        vertical: middle
+        wrapText: true
+      border:
+        top:
+          style: medium
+          color:
+            argb: FF000000
+        left:
+          style: medium
+          color:
+            argb: FF000000
+        bottom:
+          style: medium
+          color:
+            argb: FF000000
+        right:
+          style: medium
+          color:
+            argb: FF000000
+    alternateRow:
+      fill:
+        type: pattern
+        pattern: solid
+        fgColor:
+          argb: FFF2F2F2
+columnWidths:
+  default: 25
+  content: 80
+  type: 18
+  level: 12
+contentMapping:
+  includeType: true
+  includeLevel: true
+  includeContent: true
+  preserveFormatting: true
+  maxCellLength: 32767
+tableHandling:
+  preserveOriginalTables: false
+  separateTableSheets: false
+  tableSheetPrefix: Table_
