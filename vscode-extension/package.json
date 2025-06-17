@@ -73,17 +73,17 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convert",
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convertDirect",
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convertToHtml",
           "group": "navigation"
         },
@@ -98,7 +98,7 @@
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convertToExcel",
           "group": "navigation"
         },
@@ -110,22 +110,22 @@
       ],
       "editor/context": [
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convert",
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convertDirect",
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convertToHtml",
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
           "command": "markdowntoword.markdown-to-word.convertToExcel",
           "group": "navigation"
         }
@@ -133,15 +133,15 @@
       "commandPalette": [
         {
           "command": "markdowntoword.markdown-to-word.convert",
-          "when": "resourceExtname == .md"
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
         },
         {
           "command": "markdowntoword.markdown-to-word.convertDirect",
-          "when": "resourceExtname == .md"
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
         },
         {
           "command": "markdowntoword.markdown-to-word.convertToHtml",
-          "when": "resourceExtname == .md"
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
         },
         {
           "command": "markdowntoword.markdown-to-word.batchConvertToWord",
@@ -156,7 +156,7 @@
         },
         {
           "command": "markdowntoword.markdown-to-word.convertToExcel",
-          "when": "resourceExtname == .md"
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
         },
         {
           "command": "markdowntoword.markdown-to-word.batchConvertToExcel",

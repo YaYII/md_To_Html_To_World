@@ -120,6 +120,6 @@
 - 支持平台：Windows、macOS、Linux
 
 ### 反馈和支持
-- 如果遇到问题，请查看 [故障排除指南](TROUBLESHOOTING.md)
+- 如果遇到问题，请查看 [故障排除指南](https://github.com/YaYII/md_To_Html_To_World/blob/main/vscode-extension/README_FILE_HANDLING.md)
 - 功能建议和问题反馈：请通过抖音、小红书联系作者
-- 项目地址：[GitHub仓库链接]
+- 项目地址：[https://github.com/YaYII/md_To_Html_To_World/blob/main/vscode-extension/]
