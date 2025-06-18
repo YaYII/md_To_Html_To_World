@@ -6,4 +6,4 @@
 // 导出核心转换器类
 const HtmlToWordConverter = require('./converter');
 
-module.exports = HtmlToWordConverter; 
+module.exports = { HtmlToWordConverter };

@@ -137,7 +137,7 @@ class ConfigUI {
         type: 'input',
         name: 'code',
         message: '代码字体:',
-        default: fonts.code || 'Courier New'
+        default: fonts.code || 'Consolas'
       },
       {
         type: 'input',
@@ -532,4 +532,4 @@ class ConfigUI {
   }
 }
 
-module.exports = ConfigUI; 
+module.exports = ConfigUI;

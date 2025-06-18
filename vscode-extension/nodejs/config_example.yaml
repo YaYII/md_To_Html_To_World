@@ -5,9 +5,9 @@
 # 字体配置
 # 用于设置文档中不同部分使用的字体
 fonts:
-  default: 蒙纳宋体      # 正文默认字体，建议使用支持中文的字体
-  code: Courier New     # 代码块字体，通常使用等宽字体以便于代码对齐
-  headings: 蒙纳宋体     # 标题字体，可以与默认字体相同或使用其他字体
+  default: 微软雅黑      # 正文默认字体，使用简体中文友好字体
+  code: Consolas        # 代码块字体，使用支持中文的等宽字体
+  headings: 微软雅黑     # 标题字体，使用简体中文友好字体
 
 # 大小配置（单位：磅/pt）
 # 控制文档中各元素的字体大小
@@ -40,7 +40,7 @@ paragraph:
 # 中文配置
 # 中文文档特有的处理选项
 chinese:
-  convert_to_traditional: true  # 是否将简体中文转换为繁体中文，设置为false则保持简体中文
+  convert_to_traditional: false # 默认保持简体中文，不转换为繁体中文
   punctuation_spacing: true     # 是否优化标点符号间距，如处理全角半角问题
   auto_spacing: true            # 是否在中英文、中文与数字之间自动添加空格，提高可读性
 
@@ -103,6 +103,7 @@ document:
   margin_right: 3.18              # 右边距（厘米）
   header: ''                      # 页眉内容，留空表示无页眉
   footer: ''                      # 页脚内容，留空表示无页脚
+  language: 'zh-CN'               # 文档语言标识，简体中文
   generate_toc: false             # 是否生成目录
   show_horizontal_rules: true     # 是否显示章节分隔线（水平线）
   toc_depth: 3                    # 目录深度级别（1-6）
@@ -114,6 +115,31 @@ document:
   # - 标题：使用文档的第一个标题
   # - 简介：如果文档开头有描述性内容
   # - 不会添加版本号、作者等用户未明确提供的信息
+
+# 图表配置
+# 控制文字型图表（如mermaid、plantuml等）的转换行为
+charts:
+  enabled: true                   # 是否启用图表转换功能
+  service: 'kroki'                # 图表转换服务：'kroki'（在线）或 'local'（本地）
+  kroki_url: 'https://kroki.io'   # Kroki服务的URL地址
+  output_format: 'png'            # 输出格式：'svg'、'png'、'pdf' (推荐使用png避免Word转换时文字丢失)
+  cache_enabled: true             # 是否启用图表缓存
+  cache_dir: './chart_cache'      # 缓存目录路径
+  timeout: 10000                  # API请求超时时间（毫秒）
+  supported_types:                # 支持的图表类型列表
+    - mermaid                     # Mermaid流程图
+    - plantuml                    # PlantUML统一建模语言
+    - graphviz                    # Graphviz图形可视化
+    - blockdiag                   # 块图
+    - seqdiag                     # 序列图
+    - actdiag                     # 活动图
+    - nwdiag                      # 网络图
+    - c4plantuml                  # C4架构图
+    - ditaa                       # ASCII艺术图
+    - erd                         # 实体关系图
+    - nomnoml                     # UML图
+    - svgbob                      # ASCII到SVG转换
+    - wavedrom                    # 数字时序图
 
 # 调试配置
 # 控制程序运行时的日志和调试信息

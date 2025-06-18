@@ -1,0 +1,24 @@
+{
+  "name": "md-to-word",
+  "version": "1.0.0",
+  "description": "将Markdown文件转换为Word文档的Node.js工具",
+  "main": "src/index.js",
+  "bin": {
+    "md-to-word": "./bin/md-to-word.js",
+    "md-to-word-config": "./bin/config.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "config": "node bin/config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "markdown",
+    "word",
+    "docx",
+    "converter"
+  ],
+  "author": "木易君",
+  "license": "MIT"
+
+}

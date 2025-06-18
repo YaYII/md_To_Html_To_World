@@ -1,0 +1,52 @@
+{
+  "name": "md-to-word",
+  "version": "1.0.0",
+  "description": "将Markdown文件转换为Word文档的Node.js工具",
+  "main": "src/index.js",
+  "bin": {
+    "md-to-word": "./bin/md-to-word.js",
+    "md-to-word-config": "./bin/config.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "config": "node bin/config.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-deps": "node debug_dependencies.js",
+    "check-network": "node debug_network_connectivity.js"
+  },
+  "keywords": [
+    "markdown",
+    "word",
+    "docx",
+    "converter",
+    "chart",
+    "mermaid",
+    "plantuml"
+  ],
+  "author": "木易君",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "fs-extra": "^11.1.1",
+    "glob": "^8.1.0",
+    "docx": "^8.5.0",
+    "markdown-it": "^13.0.2",
+    "cheerio": "^1.0.0-rc.12",
+    "opencc-js": "^1.0.5",
+    "js-yaml": "^4.1.0",
+    "yargs": "^17.7.2",
+    "inquirer": "^9.2.11"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "your-repository-url"
+  },
+  "bugs": {
+    "url": "your-issues-url"
+  },
+  "homepage": "your-homepage-url"
+}

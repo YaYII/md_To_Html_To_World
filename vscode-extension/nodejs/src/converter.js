@@ -8,7 +8,7 @@ const glob = require('glob');
 const { Packer } = require('docx');
 
 const MarkdownToHtml = require('./markdownToHtml');
-const HtmlToWordConverter = require('./htmlToWord');
+const { HtmlToWordConverter } = require('./htmlToWord');
 const ConfigManager = require('./utils/configManager');
 const FileHandler = require('./utils/fileHandler');
 const ErrorHandler = require('./utils/errorHandler');
@@ -140,7 +140,7 @@ class Converter {
       } else {
         try {
           console.log('开始HTML到Word转换...');
-          doc = this.html_to_word.convertHtml(html_content, path.dirname(input_file));
+          doc = await this.html_to_word.convertHtml(html_content, path.dirname(input_file));
           
           // 创建输出目录（如果不存在）
           await fs.ensureDir(path.dirname(output_file));
@@ -289,4 +289,4 @@ class Converter {
   }
 }
 
-module.exports = Converter; 
+module.exports = Converter;

@@ -1,0 +1,342 @@
+{
+  "name": "markdown-to-word",
+  "displayName": "Markdown to Word",
+  "description": "Convert Markdown files to Word documents with support for tables, charts, and custom styling",
+  "version": "0.1.21",
+  "publisher": "markdowntoword",
+  "icon": "images/WechatIMG15.jpg",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/markdown-to-word.git"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:markdowntoword.markdown-to-word.convert",
+    "onCommand:markdowntoword.markdown-to-word.convertDirect",
+    "onCommand:markdowntoword.markdown-to-word.convertToHtml",
+    "onCommand:markdowntoword.markdown-to-word.batchConvertToWord",
+    "onCommand:markdowntoword.markdown-to-word.batchConvertToHtml",
+    "onCommand:markdowntoword.markdown-to-word.editConfig",
+    "onCommand:markdowntoword.markdown-to-word.convertToExcel",
+    "onCommand:markdowntoword.markdown-to-word.batchConvertToExcel",
+    "onCommand:markdowntoword.markdown-to-word.configExcel",
+    "onCommand:markdowntoword.markdown-to-word.installDependencies",
+    "onCommand:markdowntoword.markdown-to-word.checkDependencies",
+    "onLanguage:markdown"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdowntoword.markdown-to-word.convert",
+        "title": "配置world文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.convertDirect",
+        "title": "生成Word文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.convertToHtml",
+        "title": "生成HTML文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.batchConvertToWord",
+        "title": "批量生成Word文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.batchConvertToHtml",
+        "title": "批量生成HTML文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.editConfig",
+        "title": "编辑配置",
+        "category": "Markdown to Word"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.convertToExcel",
+        "title": "生成Excel文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.batchConvertToExcel",
+        "title": "批量生成Excel文档",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.configExcel",
+        "title": "配置Excel转换",
+        "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.installDependencies",
+        "title": "手动安装依赖",
+        "category": "Markdown to Word"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.checkDependencies",
+        "title": "检查依赖状态",
+        "category": "Markdown to Word"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convert",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convertDirect",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convertToHtml",
+          "group": "navigation"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "markdowntoword.markdown-to-word.batchConvertToWord",
+          "group": "navigation"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "markdowntoword.markdown-to-word.batchConvertToHtml",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convertToExcel",
+          "group": "navigation"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "markdowntoword.markdown-to-word.batchConvertToExcel",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convert",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convertDirect",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convertToHtml",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(md|MD)$/",
+          "command": "markdowntoword.markdown-to-word.convertToExcel",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "markdowntoword.markdown-to-word.convert",
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.convertDirect",
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.convertToHtml",
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.batchConvertToWord",
+          "when": "explorerViewletVisible"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.batchConvertToHtml",
+          "when": "explorerViewletVisible"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.editConfig"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.convertToExcel",
+          "when": "resourceExtname =~ /\\.(md|MD)$/"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.batchConvertToExcel",
+          "when": "explorerViewletVisible"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.configExcel"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.installDependencies"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.checkDependencies"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Markdown to Word",
+      "properties": {
+        "markdown-to-word.defaultOutputDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "默认输出目录"
+        },
+        "markdown-to-word.defaultPageSize": {
+          "type": "string",
+          "enum": [
+            "A4",
+            "Letter",
+            "Legal"
+          ],
+          "default": "A4",
+          "description": "默认页面大小"
+        },
+        "markdown-to-word.defaultOrientation": {
+          "type": "string",
+          "enum": [
+            "portrait",
+            "landscape"
+          ],
+          "default": "portrait",
+          "description": "默认页面方向"
+        },
+        "markdown-to-word.defaultFontFamily": {
+          "type": "string",
+          "default": "微软雅黑",
+          "description": "默认字体"
+        },
+        "markdown-to-word.defaultFontSize": {
+          "type": "number",
+          "default": 12,
+          "description": "默认字号"
+        },
+        "markdown-to-word.defaultLineSpacing": {
+          "type": "number",
+          "default": 1.5,
+          "description": "默认行间距"
+        },
+        "markdown-to-word.includeToc": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否包含目录"
+        },
+        "markdown-to-word.tocDepth": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 6,
+          "description": "目录深度"
+        },
+        "markdown-to-word.preserveImages": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否保留图片"
+        },
+        "markdown-to-word.imageMaxWidth": {
+          "type": "number",
+          "default": 800,
+          "description": "图片最大宽度（像素）"
+        },
+        "markdown-to-word.showHorizontalRules": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否显示章节分隔线"
+        },
+        "markdown-to-word.keepHtml": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否保留中间HTML文件"
+        },
+        "markdown-to-word.showDiagnosticInfo": {
+          "type": "boolean",
+          "default": false,
+          "description": "在转换过程中显示诊断信息"
+        },
+        "markdown-to-word.markdownToWordUserConfig": {
+          "type": "object",
+          "default": {},
+          "description": "用户自定义配置"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run webpack",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "webpack": "webpack --config webpack.config.js",
+    "webpack:dev": "webpack --config webpack.config.js --mode development",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "update-version": "node ./scripts/update-version.js",
+    "package": "pnpm run update-version && vsce package --no-dependencies",
+    "clean": "rimraf out dist *.vsix",
+    "build": "pnpm run clean && pnpm run webpack"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/glob": "^8.1.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.3.4",
+    "@vscode/vsce": "^3.3.2",
+    "eslint": "^8.47.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "rimraf": "^5.0.5",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.1.6",
+    "webpack": "^5.99.8",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "cheerio": "^1.0.0-rc.12",
+    "convert-svg-to-png": "^0.6.4",
+    "docx": "^8.2.2",
+    "exceljs": "^4.4.0",
+    "fs-extra": "^11.1.1",
+    "glob": "^10.3.3",
+    "inquirer": "^8.2.5",
+    "js-yaml": "^4.1.0",
+    "markdown-it": "^13.0.1",
+    "markdown-it-anchor": "^8.6.7",
+    "markdown-it-table-of-contents": "^0.6.0",
+    "marked": "^15.0.12",
+    "opencc-js": "^1.0.5",
+    "sharp": "^0.34.2",
+    "universalify": "^2.0.1",
+    "yargs": "^17.7.2"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@vscode/vsce-sign",
+      "keytar",
+      "puppeteer",
+      "sharp"
+    ]
+  }
+}

@@ -1,14 +1,29 @@
 {
   "name": "markdown-to-word",
   "displayName": "Markdown to Word",
-  "description": "将Markdown文档转换为Word文档:作者杨英：抖音：木易君，抖音号：YI_11_13",
-  "version": "0.1.9",
+  "description": "Convert Markdown files to Word documents with support for tables, charts, and custom styling",
+  "version": "0.1.17",
   "publisher": "markdowntoword",
   "icon": "images/WechatIMG15.jpg",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/markdown-to-word.git"
+    "url": "https://github.com/YaYII/md_To_Html_To_World.git"
   },
+  "bugs": {
+    "url": "https://github.com/YaYII/md_To_Html_To_World/issues"
+  },
+  "homepage": "https://github.com/YaYII/md_To_Html_To_World/blob/main/vscode-extension/README.md",
+  "license": "MIT",
+  "keywords": [
+    "markdown",
+    "word",
+    "docx",
+    "html",
+    "excel",
+    "converter",
+    "document",
+    "export"
+  ],
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -16,10 +31,8 @@
     "Other"
   ],
   "activationEvents": [
-    "*",
-    "onCommand:markdowntoword.markdown-to-word.convert",
-    "onCommand:markdowntoword.markdown-to-word.convertDirect",
-    "onCommand:markdowntoword.markdown-to-word.convertToHtml"
+    "onStartupFinished",
+    "onLanguage:markdown"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -68,6 +81,16 @@
         "command": "markdowntoword.markdown-to-word.configExcel",
         "title": "配置Excel转换",
         "category": "Markdown"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.installDependencies",
+        "title": "手动安装依赖",
+        "category": "Markdown to Word"
+      },
+      {
+        "command": "markdowntoword.markdown-to-word.checkDependencies",
+        "title": "检查依赖状态",
+        "category": "Markdown to Word"
       }
     ],
     "menus": {
@@ -164,6 +187,12 @@
         },
         {
           "command": "markdowntoword.markdown-to-word.configExcel"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.installDependencies"
+        },
+        {
+          "command": "markdowntoword.markdown-to-word.checkDependencies"
         }
       ]
     },
@@ -255,18 +284,27 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run webpack",
+    "vscode:prepublish": "pnpm run webpack",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "webpack": "webpack --config webpack.config.js",
     "webpack:dev": "webpack --config webpack.config.js --mode development",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "update-version": "node ./scripts/update-version.js",
-    "package": "npm run update-version && vsce package",
+    "package": "vsce package --no-dependencies",
     "clean": "rimraf out dist *.vsix",
-    "build": "npm run clean && npm run webpack"
+    "build": "pnpm version patch && pnpm run clean && pnpm run webpack && pnpm run compile && pnpm run package",
+    "build:no-version": "pnpm run clean && pnpm run webpack && pnpm run compile && pnpm run package",
+    "build:minor": "pnpm version minor && pnpm run clean && pnpm run webpack && pnpm run compile && pnpm run package",
+    "build:major": "pnpm version major && pnpm run clean && pnpm run webpack && pnpm run compile && pnpm run package",
+    "version:patch": "pnpm version patch",
+    "version:minor": "pnpm version minor",
+    "version:major": "pnpm version major",
+    "release:patch": "pnpm version patch && pnpm run build:no-version",
+    "release:minor": "pnpm version minor && pnpm run build:no-version",
+    "release:major": "pnpm version major && pnpm run build:no-version",
+    "release": "pnpm run build:no-version"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
@@ -289,7 +327,9 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "axios": "^1.10.0",
     "cheerio": "^1.0.0-rc.12",
+    "convert-svg-to-png": "^0.6.4",
     "docx": "^8.2.2",
     "exceljs": "^4.4.0",
     "fs-extra": "^11.1.1",
@@ -297,7 +337,20 @@
     "inquirer": "^8.2.5",
     "js-yaml": "^4.1.0",
     "markdown-it": "^13.0.1",
+    "markdown-it-anchor": "^8.6.7",
+    "markdown-it-table-of-contents": "^0.6.0",
+    "marked": "^15.0.12",
+    "opencc-js": "^1.0.5",
+    "sharp": "^0.34.2",
     "universalify": "^2.0.1",
     "yargs": "^17.7.2"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@vscode/vsce-sign",
+      "keytar",
+      "puppeteer",
+      "sharp"
+    ]
   }
 }

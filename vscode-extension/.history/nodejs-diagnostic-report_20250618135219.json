@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-06-18T05:52:20.598Z",
+  "platform": "darwin",
+  "arch": "arm64",
+  "nodeVersion": "v22.12.0",
+  "environment": {
+    "node": true,
+    "npm": true,
+    "pnpm": true,
+    "yarn": true
+  },
+  "recommendations": [
+    "环境正常，检查其他问题"
+  ],
+  "status": "good"
+}

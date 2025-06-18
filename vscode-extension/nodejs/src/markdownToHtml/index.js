@@ -7,6 +7,7 @@ const path = require('path');
 const MarkdownIt = require('markdown-it');
 const cheerio = require('cheerio');
 const OpenCC = require('opencc-js'); // 引入OpenCC简繁转换库
+const ChartProcessor = require('./chartProcessor'); // 引入图表处理器
 
 /**
  * @class MarkdownToHtml
@@ -26,6 +27,9 @@ class MarkdownToHtml {
       linkify: true,
       typographer: true
     });
+
+    // 初始化图表处理器
+    this.chartProcessor = new ChartProcessor(config);
 
     // 注意：暂时不加载可能有问题的扩展
     // 只使用基本的markdown-it功能
@@ -61,9 +65,10 @@ class MarkdownToHtml {
    * @method convertString
    * @description 将Markdown字符串转换为HTML
    * @param {string} markdownContent - Markdown内容
-   * @returns {string} - HTML内容
+   * @param {string} outputDir - 输出目录（可选，用于保存图片文件）
+   * @returns {Promise<string>} - HTML内容
    */
-  convertString(markdownContent) {
+  async convertString(markdownContent, outputDir = null) {
     try {
       // 检查是否需要进行简繁转换
       let processedContent = markdownContent;
@@ -80,6 +85,9 @@ class MarkdownToHtml {
       
       // 处理[TOC]标记
       processedContent = this.processTocMarker(processedContent);
+      
+      // 处理图表（在Markdown渲染之前）
+      processedContent = await this.chartProcessor.processCharts(processedContent, outputDir);
       
       // 转换为基本HTML
       const html = this.md.render(processedContent);
@@ -190,8 +198,17 @@ class MarkdownToHtml {
       // 读取Markdown文件
       const markdownContent = await fs.readFile(inputFile, 'utf-8');
       
+      // 确定输出目录
+      let outputDir = null;
+      if (outputFile) {
+        outputDir = path.dirname(outputFile);
+      } else {
+        // 如果没有指定输出文件，使用输入文件的目录
+        outputDir = path.dirname(inputFile);
+      }
+      
       // 转换为HTML
-      const htmlContent = this.convertString(markdownContent);
+      const htmlContent = await this.convertString(markdownContent, outputDir);
       
       // 如果指定了输出文件，则写入文件
       if (outputFile) {
@@ -207,4 +224,4 @@ class MarkdownToHtml {
   }
 }
 
-module.exports = MarkdownToHtml; 
+module.exports = MarkdownToHtml;

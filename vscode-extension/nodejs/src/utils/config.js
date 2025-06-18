@@ -17,7 +17,7 @@ class Config {
   constructor(initialConfig = {}) {
     // 默认配置
     this.defaultConfig = {
-      fontName: 'Microsoft YaHei',
+      fontName: '微软雅黑',
       fontSize: 12,
       chinese: {
         convertToTraditional: false
@@ -166,4 +166,4 @@ class Config {
   }
 }
 
-module.exports = Config; 
+module.exports = Config;

@@ -1,0 +1,35 @@
+# VS Code 插件项目中需要忽略的文件
+.vscode/**
+.vscode-test/**
+out/**
+test/**
+src/**
+**/*.ts
+**/*.map
+.gitignore
+tsconfig.json
+vsc-extension-quickstart.md
+*.vsix
+.eslintrc.json
+webpack.config.js
+
+# Node.js模块相关
+nodejs/node_modules/**
+nodejs/examples/**
+nodejs/test-config.yaml
+nodejs/package-lock.json
+
+# 排除所有node_modules
+node_modules/**
+
+# 不要忽略的文件 (这些是必需的)
+!dist/**
+!scripts/**
+!nodejs/src/**
+!nodejs/bin/**
+!nodejs/config_example.yaml
+!nodejs/package.json
+
+# 临时文件和日志
+temp/**
+*.log 

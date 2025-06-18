@@ -83,7 +83,7 @@ class HtmlToWordConverter {
    * @param {string} basePath - 基础路径，用于处理相对路径的图片
    * @returns {Document} - 生成的Word文档对象
    */
-  convertHtml(htmlContent, basePath = '') {
+  async convertHtml(htmlContent, basePath = '') {
     try {
       // 如果提供了基础路径，设置为当前基础路径（用于处理相对路径的图片）
       if (basePath) {
@@ -101,7 +101,7 @@ class HtmlToWordConverter {
       
       // 处理HTML内容
       const children = $('body').children().toArray();
-      this.processElements(children, $);
+      await this.processElements(children, $);
       
       // 获取页面大小和边距配置
       const docConfig = this.config.document || {};
@@ -255,7 +255,7 @@ class HtmlToWordConverter {
       const basePath = path.dirname(inputFile);
       
       // 转换为Word文档
-      const doc = this.convertHtml(htmlContent, basePath);
+      const doc = await this.convertHtml(htmlContent, basePath);
       console.log('HTML到Word转换完成，开始保存文件...');
       
       // 生成Word文档缓冲区
@@ -300,7 +300,7 @@ class HtmlToWordConverter {
    * @param {Array} elements - HTML元素数组
    * @param {CheerioAPI} $ - Cheerio实例
    */
-  processElements(elements, $) {
+  async processElements(elements, $) {
     for (const element of elements) {
       const $el = $(element);
       const tagName = element.tagName?.toLowerCase();
@@ -341,6 +341,9 @@ class HtmlToWordConverter {
         case 'img':
           this.mediaProcessor.processImage($el);
           break;
+        case 'svg':
+          await this.mediaProcessor.processSvg($el, $);
+          break;
         case 'div':
           // 检查是否是TOC占位符
           if ($el.hasClass('toc-placeholder') && $el.attr('data-toc-marker') === 'true') {
@@ -348,7 +351,7 @@ class HtmlToWordConverter {
             this.insertTocPlaceholder();
           } else {
             // 递归处理div内的元素
-            this.processElements($el.children().toArray(), $);
+            await this.processElements($el.children().toArray(), $);
           }
           break;
       }
@@ -483,4 +486,4 @@ class HtmlToWordConverter {
   }
 }
 
-module.exports = HtmlToWordConverter; 
+module.exports = HtmlToWordConverter;

@@ -1,0 +1,9 @@
+python-docx>=0.8.11
+markdown>=3.4.3
+beautifulsoup4>=4.9.3
+opencc-python-reimplemented>=0.1.6
+pyyaml>=6.0
+requests>=2.25.0
+lxml>=4.9.3
+pygments>=2.15.0  # 用于代码高亮
+zhconv>=1.4.3  # 用于中文简繁转换 
