@@ -1,0 +1,10 @@
+export declare const convertMillimetersToTwip: (millimeters: number) => number;
+export declare const convertInchesToTwip: (inches: number) => number;
+export type UniqueNumericIdCreator = () => number;
+export declare const uniqueNumericIdCreator: (initial?: number) => UniqueNumericIdCreator;
+export declare const abstractNumUniqueNumericIdGen: () => UniqueNumericIdCreator;
+export declare const concreteNumUniqueNumericIdGen: () => UniqueNumericIdCreator;
+export declare const docPropertiesUniqueNumericIdGen: () => UniqueNumericIdCreator;
+export declare const bookmarkUniqueNumericIdGen: () => UniqueNumericIdCreator;
+export declare const uniqueId: () => string;
+export declare const uniqueUuid: () => string;

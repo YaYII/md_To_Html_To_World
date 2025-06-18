@@ -41,23 +41,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NodeMarkdownConverter = void 0;
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs-extra"));
 const vscode = __importStar(require("vscode"));
 const os = __importStar(require("os"));
-const NodeJsConverter = require('../../nodejs/src/converter');
-const ConfigManager = require('../../nodejs/src/utils/configManager');
-const ConfigUI = require('../../nodejs/src/utils/configUI');
+const glob = __importStar(require("glob"));
+const converter_1 = __importDefault(require("../../nodejs/src/converter"));
+const configManager_1 = __importDefault(require("../../nodejs/src/utils/configManager"));
+const configUI_1 = __importDefault(require("../../nodejs/src/utils/configUI"));
 const CONFIG_FILE_PATH = path.join(os.tmpdir(), 'markdown-to-word', 'user-config.yaml');
 class NodeMarkdownConverter {
     constructor() {
+        this.nodeConverter = null;
         const tempDir = path.dirname(CONFIG_FILE_PATH);
         if (!fs.existsSync(tempDir)) {
             fs.mkdirSync(tempDir, { recursive: true });
         }
-        this.configManager = new ConfigManager();
+        this.configManager = new configManager_1.default();
         if (fs.existsSync(CONFIG_FILE_PATH)) {
             try {
                 this.configManager.loadFromYaml(CONFIG_FILE_PATH);
@@ -81,7 +86,7 @@ class NodeMarkdownConverter {
                 console.log('未找到现有配置，使用默认配置');
             }
         }
-        this.nodeConverter = new NodeJsConverter(this.configManager.getAll());
+        this.nodeConverter = new converter_1.default(this.configManager.config);
     }
     static getInstance() {
         if (!NodeMarkdownConverter.instance) {
@@ -111,7 +116,7 @@ class NodeMarkdownConverter {
                         chinese: nodeConfig.chinese
                     }, null, 2));
                     this.configManager.config = nodeConfig;
-                    this.nodeConverter = new NodeJsConverter(nodeConfig);
+                    this.nodeConverter = new converter_1.default(nodeConfig);
                     yield this.configManager.saveToYaml(CONFIG_FILE_PATH);
                     console.log('更新配置并保存到文件:', CONFIG_FILE_PATH);
                     yield this.updateVSCodeConfig(nodeConfig);
@@ -123,6 +128,9 @@ class NodeMarkdownConverter {
                     options.onProgress('正在执行转换...');
                 }
                 console.log(`开始转换 ${inputFile} 到 ${outputFile}`);
+                if (!this.nodeConverter) {
+                    throw new Error('Node.js转换器未初始化');
+                }
                 const result = yield this.nodeConverter.convert_file(inputFile, outputFile, options.keepHtml || false);
                 if (result.success) {
                     const message = `成功将 ${inputBaseName}.md 转换为 ${path.basename(outputFile)}`;
@@ -164,10 +172,13 @@ class NodeMarkdownConverter {
                 yield fs.ensureDir(outputDir);
                 if (options.useConfig) {
                     const nodeConfig = this.convertConfig(options.useConfig);
-                    this.nodeConverter = new NodeJsConverter(nodeConfig);
+                    this.nodeConverter = new converter_1.default(nodeConfig);
                 }
                 if (options.onProgress) {
                     options.onProgress('正在批量转换...');
+                }
+                if (!this.nodeConverter) {
+                    throw new Error('Node.js转换器未初始化');
                 }
                 const results = yield this.nodeConverter.batch_convert(inputDir, outputDir, options.keepHtml || false);
                 return results;
@@ -187,10 +198,13 @@ class NodeMarkdownConverter {
                 yield fs.ensureDir(outputDir);
                 if (options.useConfig) {
                     const nodeConfig = this.convertConfig(options.useConfig);
-                    this.nodeConverter = new NodeJsConverter(nodeConfig);
+                    this.nodeConverter = new converter_1.default(nodeConfig);
                 }
                 if (options.onProgress) {
                     options.onProgress('正在转换为HTML...');
+                }
+                if (!this.nodeConverter) {
+                    throw new Error('Node.js转换器未初始化');
                 }
                 const htmlContent = yield this.nodeConverter.md_to_html.convertFile(inputFile, outputFile);
                 if (htmlContent) {
@@ -232,12 +246,11 @@ class NodeMarkdownConverter {
                 yield fs.ensureDir(outputDir);
                 if (options.useConfig) {
                     const nodeConfig = this.convertConfig(options.useConfig);
-                    this.nodeConverter = new NodeJsConverter(nodeConfig);
+                    this.nodeConverter = new converter_1.default(nodeConfig);
                 }
                 if (options.onProgress) {
                     options.onProgress('正在批量转换为HTML...');
                 }
-                const glob = require('glob');
                 const files = glob.sync(path.join(inputDir, '**', '*.md'));
                 const results = {};
                 for (const file of files) {
@@ -247,6 +260,9 @@ class NodeMarkdownConverter {
                         const dirName = path.dirname(relPath);
                         const outputFile = path.join(outputDir, dirName, `${baseName}.html`);
                         yield fs.ensureDir(path.dirname(outputFile));
+                        if (!this.nodeConverter) {
+                            throw new Error('Node.js转换器未初始化');
+                        }
                         const htmlContent = yield this.nodeConverter.md_to_html.convertFile(file, outputFile);
                         results[relPath] = !!htmlContent;
                     }
@@ -271,12 +287,12 @@ class NodeMarkdownConverter {
                 this.configManager.config = nodeConfig;
                 yield this.configManager.saveToYaml(CONFIG_FILE_PATH);
                 console.log('配置已保存到文件:', CONFIG_FILE_PATH);
-                const configUI = new ConfigUI();
+                const configUI = new configUI_1.default();
                 yield configUI.start(CONFIG_FILE_PATH);
                 yield this.configManager.loadFromYaml(CONFIG_FILE_PATH);
-                const updatedConfig = this.configManager.getAll();
+                const updatedConfig = this.configManager.config;
                 yield this.updateVSCodeConfig(updatedConfig);
-                this.nodeConverter = new NodeJsConverter(updatedConfig);
+                this.nodeConverter = new converter_1.default(updatedConfig);
                 vscode.window.showInformationMessage('配置已更新');
             }
             catch (error) {
@@ -298,7 +314,7 @@ class NodeMarkdownConverter {
                 }
                 const success = yield this.configManager.loadFromYaml(pathToLoad);
                 if (success) {
-                    this.nodeConverter = new NodeJsConverter(this.configManager.getAll());
+                    this.nodeConverter = new converter_1.default(this.configManager.config);
                     console.log('成功加载配置文件:', pathToLoad);
                     return true;
                 }
@@ -318,7 +334,7 @@ class NodeMarkdownConverter {
                 yield this.configManager.saveToYaml(pathToSave);
                 console.log('配置已保存到文件:', pathToSave);
                 yield this.updateVSCodeConfig(config);
-                this.nodeConverter = new NodeJsConverter(config);
+                this.nodeConverter = new converter_1.default(config);
                 return true;
             }
             catch (error) {

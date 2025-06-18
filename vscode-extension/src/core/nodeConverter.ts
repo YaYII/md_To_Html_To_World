@@ -5,13 +5,20 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as vscode from 'vscode';
 import * as os from 'os';
+import * as glob from 'glob';
 import { IDocumentConfig } from '../ui/configPanel';
 
 // 导入 Node.js 模块
 // 注意：这里使用相对路径导入，假设nodejs目录位于扩展根目录下
-const NodeJsConverter = require('../../nodejs/src/converter');
-const ConfigManager = require('../../nodejs/src/utils/configManager');
-const ConfigUI = require('../../nodejs/src/utils/configUI');
+// @ts-ignore
+import NodeJsConverter from '../../nodejs/src/converter';
+// @ts-ignore
+import ConfigManager from '../../nodejs/src/utils/configManager';
+// @ts-ignore
+import ConfigUI from '../../nodejs/src/utils/configUI';
+
+// 类型声明
+declare const require: any;
 
 // 定义配置文件路径
 const CONFIG_FILE_PATH = path.join(os.tmpdir(), 'markdown-to-word', 'user-config.yaml');
@@ -41,10 +48,28 @@ export interface IConversionResult {
 /**
  * @description Node.js版Markdown转换器类
  */
+// 定义配置管理器接口
+interface IConfigManager {
+    config: Record<string, unknown>;
+    saveToYaml(path: string): Promise<void>;
+    loadFromYaml(path: string): Promise<Record<string, unknown>>;
+    getAll(): Record<string, unknown>;
+}
+
+// 定义Node.js转换器接口
+interface INodeJsConverter {
+    convertFile(inputPath: string, outputPath: string, options?: Record<string, unknown>): Promise<boolean>;
+    convert_file(inputPath: string, outputPath: string, keepHtml: boolean): Promise<any>;
+    batch_convert(inputDir: string, outputDir: string, keepHtml: boolean): Promise<any>;
+    md_to_html: {
+        convertFile(inputPath: string, outputPath: string): Promise<string>;
+    };
+}
+
 export class NodeMarkdownConverter {
     private static instance: NodeMarkdownConverter;
-    private nodeConverter: any;
-    private configManager: any;
+    private nodeConverter: INodeJsConverter | null = null;
+    private configManager: IConfigManager;
     
     private constructor() {
         // 确保临时目录存在
@@ -54,7 +79,7 @@ export class NodeMarkdownConverter {
         }
         
         // 创建配置管理器
-        this.configManager = new ConfigManager();
+        this.configManager = new ConfigManager() as IConfigManager;
         
         // 尝试从配置文件加载配置
         if (fs.existsSync(CONFIG_FILE_PATH)) {
@@ -70,7 +95,7 @@ export class NodeMarkdownConverter {
             const userConfig = vscodeConfig.get('markdownToWordUserConfig');
             
             if (userConfig && typeof userConfig === 'object') {
-                this.configManager.config = userConfig;
+                this.configManager.config = userConfig as Record<string, unknown>;
                 // 保存到配置文件
                 this.configManager.saveToYaml(CONFIG_FILE_PATH)
                     .then(() => console.log('配置已保存到文件:', CONFIG_FILE_PATH))
@@ -82,7 +107,7 @@ export class NodeMarkdownConverter {
         }
         
         // 创建Node.js转换器实例，传入配置
-        this.nodeConverter = new NodeJsConverter(this.configManager.getAll());
+        this.nodeConverter = new NodeJsConverter(this.configManager.config as any);
     }
     
     /**
@@ -123,10 +148,10 @@ export class NodeMarkdownConverter {
                 const nodeConfig = this.convertConfig(options.useConfig);
                 
                 console.log('转换后的Node配置:', JSON.stringify({
-                    document: nodeConfig.document,
-                    fonts: nodeConfig.fonts,
-                    sizes: nodeConfig.sizes,
-                    chinese: nodeConfig.chinese
+                    document: (nodeConfig as any).document,
+            fonts: (nodeConfig as any).fonts,
+            sizes: (nodeConfig as any).sizes,
+            chinese: (nodeConfig as any).chinese
                 }, null, 2));
                 
                 this.configManager.config = nodeConfig;
@@ -149,6 +174,9 @@ export class NodeMarkdownConverter {
             
             // 执行转换
             console.log(`开始转换 ${inputFile} 到 ${outputFile}`);
+            if (!this.nodeConverter) {
+                throw new Error('Node.js转换器未初始化');
+            }
             const result = await this.nodeConverter.convert_file(
                 inputFile, 
                 outputFile, 
@@ -215,6 +243,9 @@ export class NodeMarkdownConverter {
             }
             
             // 执行批量转换
+            if (!this.nodeConverter) {
+                throw new Error('Node.js转换器未初始化');
+            }
             const results = await this.nodeConverter.batch_convert(
                 inputDir, 
                 outputDir, 
@@ -255,6 +286,9 @@ export class NodeMarkdownConverter {
             }
             
             // 执行转换
+            if (!this.nodeConverter) {
+                throw new Error('Node.js转换器未初始化');
+            }
             const htmlContent = await this.nodeConverter.md_to_html.convertFile(inputFile, outputFile);
             
             if (htmlContent) {
@@ -316,7 +350,6 @@ export class NodeMarkdownConverter {
             }
             
             // 使用glob查找所有Markdown文件
-            const glob = require('glob');
             const files = glob.sync(path.join(inputDir, '**', '*.md'));
             const results: Record<string, boolean> = {};
             
@@ -334,6 +367,9 @@ export class NodeMarkdownConverter {
                     await fs.ensureDir(path.dirname(outputFile));
                     
                     // 执行转换
+                    if (!this.nodeConverter) {
+                        throw new Error('Node.js转换器未初始化');
+                    }
                     const htmlContent = await this.nodeConverter.md_to_html.convertFile(file, outputFile);
                     results[relPath] = !!htmlContent;
                 } catch (error) {
@@ -375,7 +411,7 @@ export class NodeMarkdownConverter {
             
             // 读取更新后的配置
             await this.configManager.loadFromYaml(CONFIG_FILE_PATH);
-            const updatedConfig = this.configManager.getAll();
+            const updatedConfig = this.configManager.config;
             
             // 更新VS Code配置
             await this.updateVSCodeConfig(updatedConfig);
@@ -413,7 +449,7 @@ export class NodeMarkdownConverter {
             const success = await this.configManager.loadFromYaml(pathToLoad);
             if (success) {
                 // 更新转换器配置
-                this.nodeConverter = new NodeJsConverter(this.configManager.getAll());
+                this.nodeConverter = new NodeJsConverter(this.configManager.config as any);
                 console.log('成功加载配置文件:', pathToLoad);
                 return true;
             }
@@ -429,7 +465,7 @@ export class NodeMarkdownConverter {
      * @param config 配置对象
      * @param configPath 配置文件路径，如果不提供则使用默认路径
      */
-    async saveConfig(config: any, configPath?: string): Promise<boolean> {
+    async saveConfig(config: Record<string, unknown>, configPath?: string): Promise<boolean> {
         try {
             // 更新内部配置
             this.configManager.config = config;
@@ -443,7 +479,7 @@ export class NodeMarkdownConverter {
             await this.updateVSCodeConfig(config);
             
             // 更新转换器
-            this.nodeConverter = new NodeJsConverter(config);
+            this.nodeConverter = new NodeJsConverter(config) as INodeJsConverter;
             
             return true;
         } catch (error) {
@@ -456,12 +492,12 @@ export class NodeMarkdownConverter {
      * @description 将VS Code配置转换为Node.js模块可用的配置
      * @param vsConfig VS Code配置
      */
-    private getNodeConfigFromVSCode(vsConfig: vscode.WorkspaceConfiguration): any {
+    private getNodeConfigFromVSCode(vsConfig: vscode.WorkspaceConfiguration): Record<string, unknown> {
         // 首先尝试获取完整的用户配置
         const userConfig = vsConfig.get('markdownToWordUserConfig');
         if (userConfig && typeof userConfig === 'object') {
             console.log('使用完整的用户配置');
-            return userConfig;
+            return userConfig as Record<string, unknown>;
         }
         
         // 如果没有完整配置，则使用单独的配置项构建
@@ -519,12 +555,12 @@ export class NodeMarkdownConverter {
      * @description 将IDocumentConfig转换为Node.js模块可用的配置
      * @param config 用户配置
      */
-    private convertConfig(config: IDocumentConfig): any {
+    private convertConfig(config: IDocumentConfig): Record<string, unknown> {
         // 输出调试信息，帮助排查问题
         console.log('转换配置:', JSON.stringify(config, null, 2));
         
         // 构建基本配置结构
-        const convertedConfig: any = {
+        const convertedConfig: Record<string, unknown> = {
             fonts: {
                 default: config.fonts?.default || '微软雅黑',
                 code: config.fonts?.code || 'Courier New',
@@ -604,7 +640,7 @@ export class NodeMarkdownConverter {
      * @description 更新VS Code配置
      * @param nodeConfig Node.js模块配置
      */
-    private async updateVSCodeConfig(nodeConfig: any): Promise<void> {
+    private async updateVSCodeConfig(nodeConfig: Record<string, unknown>): Promise<void> {
         const config = vscode.workspace.getConfiguration('markdown-to-word');
         
         try {
@@ -615,48 +651,48 @@ export class NodeMarkdownConverter {
             // 尝试更新单个配置项，如果失败不影响主要功能
             try {
                 // 更新字体设置
-                if (nodeConfig.fonts?.default) {
-                    await config.update('defaultFontFamily', nodeConfig.fonts.default, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).fonts?.default) {
+                    await config.update('defaultFontFamily', (nodeConfig as any).fonts.default, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新字号设置
-                if (nodeConfig.sizes?.default) {
-                    await config.update('defaultFontSize', nodeConfig.sizes.default, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).sizes?.default) {
+                    await config.update('defaultFontSize', (nodeConfig as any).sizes.default, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新行间距
-                if (nodeConfig.paragraph?.line_spacing) {
-                    await config.update('defaultLineSpacing', nodeConfig.paragraph.line_spacing, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).paragraph?.line_spacing) {
+                    await config.update('defaultLineSpacing', (nodeConfig as any).paragraph.line_spacing, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新页面大小
-                if (nodeConfig.document?.page_size) {
-                    await config.update('defaultPageSize', nodeConfig.document.page_size, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).document?.page_size) {
+                    await config.update('defaultPageSize', (nodeConfig as any).document.page_size, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新页面方向
-                if (nodeConfig.document?.orientation) {
-                    await config.update('defaultOrientation', nodeConfig.document.orientation, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).document?.orientation) {
+                    await config.update('defaultOrientation', (nodeConfig as any).document.orientation, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新目录设置
-                if (nodeConfig.document?.generate_toc !== undefined) {
-                    await config.update('includeToc', nodeConfig.document.generate_toc, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).document?.generate_toc !== undefined) {
+                    await config.update('includeToc', (nodeConfig as any).document.generate_toc, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新目录深度
-                if (nodeConfig.document?.toc_depth) {
-                    await config.update('tocDepth', nodeConfig.document.toc_depth, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).document?.toc_depth) {
+                    await config.update('tocDepth', (nodeConfig as any).document.toc_depth, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新图片设置
-                if (nodeConfig.images?.preserve !== undefined) {
-                    await config.update('preserveImages', nodeConfig.images.preserve, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).images?.preserve !== undefined) {
+                    await config.update('preserveImages', (nodeConfig as any).images.preserve, vscode.ConfigurationTarget.Global);
                 }
                 
                 // 更新图片最大宽度
-                if (nodeConfig.images?.max_width) {
-                    await config.update('imageMaxWidth', nodeConfig.images.max_width, vscode.ConfigurationTarget.Global);
+                if ((nodeConfig as any).images?.max_width) {
+                    await config.update('imageMaxWidth', (nodeConfig as any).images.max_width, vscode.ConfigurationTarget.Global);
                 }
                 
                 console.log('✅ 成功更新所有单个配置项');
@@ -666,9 +702,9 @@ export class NodeMarkdownConverter {
                 console.warn('⚠️ 部分配置项更新失败（不影响功能）:', individualError instanceof Error ? individualError.message : String(individualError));
                 
                 // 特别处理段落线配置，如果失败则使用备用方案
-                if (nodeConfig.document?.show_horizontal_rules !== undefined) {
+                if ((nodeConfig as any).document?.show_horizontal_rules !== undefined) {
                     try {
-                        await config.update('showHorizontalRules', nodeConfig.document.show_horizontal_rules, vscode.ConfigurationTarget.Global);
+                        await config.update('showHorizontalRules', (nodeConfig as any).document.show_horizontal_rules, vscode.ConfigurationTarget.Global);
                         console.log('✅ 段落线配置更新成功');
                     } catch (hrError) {
                         console.warn('⚠️ 段落线配置更新失败（不影响功能）:', hrError instanceof Error ? hrError.message : String(hrError));
@@ -681,4 +717,4 @@ export class NodeMarkdownConverter {
             // 不抛出错误，因为配置更新失败不应该影响转换功能
         }
     }
-} 
+}

@@ -12,6 +12,7 @@ import { NodeMarkdownConverter } from '../core/nodeConverter';
  * @description 配置类型定义，与config_example.yaml完全一致
  */
 export interface IDocumentConfig {
+    [key: string]: unknown;
     fonts: {
         default: string;
         code: string;
@@ -263,7 +264,7 @@ export class ConfigPanel {
                     this._saveConfigToFile(config, this._configFilePath);
                     
                     // 通知NodeMarkdownConverter更新配置
-                    NodeMarkdownConverter.getInstance().saveConfig(config)
+                    NodeMarkdownConverter.getInstance().saveConfig(config as Record<string, unknown>)
                         .catch((err: Error) => {
                             console.error('通知转换器更新配置失败:', err);
                         });
@@ -1120,4 +1121,4 @@ ${yamlStr}`;
         }
         return text;
     }
-} 
+}

@@ -2,7 +2,7 @@
   "name": "markdown-to-word",
   "displayName": "Markdown to Word",
   "description": "Convert Markdown files to Word documents with support for tables, charts, and custom styling",
-  "version": "0.1.17",
+  "version": "0.1.25",
   "publisher": "markdowntoword",
   "icon": "images/WechatIMG15.jpg",
   "repository": {
@@ -32,7 +32,11 @@
   ],
   "activationEvents": [
     "onStartupFinished",
-    "onLanguage:markdown"
+    "onLanguage:markdown",
+    "onCommand:markdowntoword.markdown-to-word.convert",
+    "onCommand:markdowntoword.markdown-to-word.convertDirect",
+    "onCommand:markdowntoword.markdown-to-word.convertToHtml",
+    "onCommand:markdowntoword.markdown-to-word.convertToExcel"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -324,7 +328,9 @@
     "ts-loader": "^9.5.2",
     "typescript": "^5.1.6",
     "webpack": "^5.99.8",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "@types/tar": "^6.1.5",
+    "@types/unzipper": "^0.10.5"
   },
   "dependencies": {
     "axios": "^1.10.0",
@@ -342,6 +348,8 @@
     "marked": "^15.0.12",
     "opencc-js": "^1.0.5",
     "sharp": "^0.34.2",
+    "tar": "^6.1.15",
+    "unzipper": "^0.10.14",
     "universalify": "^2.0.1",
     "yargs": "^17.7.2"
   },
@@ -351,6 +359,12 @@
       "keytar",
       "puppeteer",
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "ws@>=8.0.0 <8.17.1": ">=8.17.1",
+      "tar-fs@>=2.0.0 <2.1.2": ">=2.1.2",
+      "tar-fs@>=2.0.0 <2.1.3": ">=2.1.3",
+      "lodash.pick": "3.1.0"
+    }
   }
 }
