@@ -1,0 +1,39 @@
+# Python (removed: project fully migrated to Node.js)
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+out/
+dist/
+build/
+*.vsix
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Temp
+*.tmp
+*.temp
+.cache/
+
+# 转换中间产物缓存（chartProcessor 生成的 mermaid PNG，HTML 用 SVG 自包含、Word 嵌入 docx，无需外部文件）
+docs/images/
+docs/gov-html-samples/images/
+
+# jsdom 离线渲染依赖（webpack 构建时 npm 安装生成，非源码）
+vscode-extension/src/mdtoworld/markdownToHtml/vendor/jsdom-deps/
+vscode-extension/dist/vendor/jsdom-deps/
+docs/img/

@@ -1,0 +1,5870 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Converted Document</title>
+  <style>
+    body { 
+      font-family: 'Microsoft YaHei', 'SimSun', sans-serif; 
+      margin: 0 auto; 
+      max-width: 960px; 
+      padding: 20px; 
+      line-height: 1.6;
+    }
+    pre { 
+      background-color: #f8f8f8; 
+      border: 1px solid #ddd; 
+      padding: 10px; 
+      border-radius: 3px; 
+      overflow: auto; 
+    }
+    code { 
+      font-family: Consolas, Monaco, monospace; 
+      background-color: #f8f8f8; 
+      padding: 2px 5px; 
+      border-radius: 3px; 
+    }
+    table { 
+      border-collapse: collapse; 
+      width: 100%; 
+      margin-bottom: 20px;
+    }
+    th, td { 
+      border: 1px solid #ddd; 
+      padding: 8px; 
+    }
+    th { 
+      background-color: #f2f2f2; 
+      text-align: left; 
+    }
+    tr:nth-child(even) { 
+      background-color: #f9f9f9; 
+    }
+    img { 
+      max-width: 100%; 
+      height: auto; 
+    }
+    .toc-placeholder {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border: 1px dashed #ccc;
+      text-align: center;
+      color: #666;
+    }
+    /* 数学公式样式 */
+    .math-formula {
+      font-family: 'KaTeX_Main', 'Times New Roman', serif;
+    }
+    .math-block {
+      display: block;
+      text-align: center;
+      margin: 1em 0;
+      padding: 0.5em;
+      overflow-x: auto;
+      background-color: #f9f9f9;
+      border-radius: 4px;
+    }
+    .math-inline {
+      display: inline;
+      padding: 0.1em 0.3em;
+      background-color: #f0f0f0;
+      border-radius: 3px;
+    }
+    .math-fallback code {
+      font-family: 'Times New Roman', serif;
+      font-size: 1.1em;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>CME-TMS 培训管理系统 产品需求文档 (PRD)</h1>
+<blockquote>
+<p><strong>文档版本</strong>：V2.6<br />
+<strong>编制日期</strong>：2026-04-22<br />
+<strong>文档状态</strong>：待确认<br />
+<strong>审阅人</strong>：甲方产品负责人 / 乙方项目组</p>
+<p><strong>阅读说明</strong>：本文档支持<strong>分段确认</strong>。每个章节后标注确认状态（☐待确认 / ☑已确认 / ⚠有异议），甲方可逐段确认，无需一次性审批全部内容。</p>
+<p><strong>V2.4重点</strong>：本版强化用户角色视角——以角色定义系统使用者的职责与可获功能，以用例展示功能的作用与价值，以流程展示系统运作过程。这些是甲方讨论需求的核心工具。</p>
+</blockquote>
+<hr />
+<h2>修订记录</h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>修订内容</th>
+<th>作者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V1.0</td>
+<td>2026-04-16</td>
+<td>初始版本：基础功能列表</td>
+<td>项目组</td>
+</tr>
+<tr>
+<td>V1.1</td>
+<td>2026-04-16</td>
+<td>重构：增加产品架构图、用例图、时序图；功能追溯需求来源</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.2</td>
+<td>2026-04-16</td>
+<td>引入&quot;技能时效性&quot;核心概念；重写匹配算法；增加时效性时序图和用例</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.3</td>
+<td>2026-04-16</td>
+<td>引入&quot;调度可用性&quot;概念；员工可标记可/不可调度；匹配仅返回可调度人员</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.4</td>
+<td>2026-04-17</td>
+<td>批评性审查修订：①补5项遗漏功能（消息中心/操作日志/系统参数/资格定义独立/课程-技能关联）②修复用例编号连续性③修复依赖关系错误④增加分段确认支持⑤修复E04子功能编号重复</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.5</td>
+<td>2026-04-17</td>
+<td>引入&quot;次数法则&quot;；重构人岗匹配为三维度熟练度模型（时效+次数+深度）；更新ER图增加practical_count/total_assignment_count/skill_acquired_at/proficiency_score；更新排序算法和示例</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.6</td>
+<td>2026-04-17</td>
+<td>甲方视角审查修订：①增加TASK实体和任务管理功能②重构次数机制（total_assignment_count权重提升至0.25、增加员工申请评估入口）③调度灵活性（超时释放/容量/覆盖/员工解锁）④A01增加按技能检索+排序解释+可调偏好⑤证书增加实操等级门槛⑥增加班级状态机⑦增加报名审核策略⑧角色与岗位关系澄清⑨衰减参数引导⑩外部人员处理⑪成绩批量导入⑫补考安排细节⑬状态可视化规范</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.7</td>
+<td>2026-04-17</td>
+<td>引入&quot;人才梯队法则&quot;；重构人岗匹配为&quot;推荐+自由筛选&quot;模式（系统推荐但不强制）；增加5种筛选视图（推荐/培养/探索/风险可控/自定义）；打破马太效应——防止熟练工越熟练、新人永远没机会</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.8</td>
+<td>2026-04-17</td>
+<td>引入&quot;透明晋升法则&quot;和&quot;终生学习&quot;核心理念；员工从被动对象升级为主动用户；增加员工侧核心功能（我的晋升路径/岗位技能查询/技能差距分析/成长记录审计）；重塑产品定位——不只是培训管理工具，更是每个人职业成长的导航仪</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V1.9</td>
+<td>2026-04-17</td>
+<td>引入&quot;技能驱动岗位&quot;核心逻辑——岗位是技能的推导结果不是固定分配；增加&quot;我的适配岗位&quot;动态计算功能；角色定义增加版本管理（技能要求变更有据可查）；视角翻转——从&quot;岗位找人&quot;变为&quot;人的技能推导出满足哪些岗位&quot;</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V2.0</td>
+<td>2026-04-17</td>
+<td><strong>甲方3/23会议需求细化</strong>：①新增培训需求收集与预算管理(T07)——部门报需求→报budget→HRS预留②新增面试/Board审核流程(E07)——DLAP见部门经理/CLAP见更高级③新增外部认证记录管理(B07)——职安卡/身体检查/劳工局/消防局/澳门注册电工④细化月度自动报表推送(A06)——非看板而是按月自动推送给部门⑤细化证书持有人查询(E05b)——按证书名查持有人列表+部门维度统计⑥细化通知部门负责人——证书到期不仅通知员工也通知部门Head⑦细化外部培训记录Excel导入——非报名场景的批量导入⑧增加证书熄灯制度规则——任一组成项过期即熄灯</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V2.1</td>
+<td>2026-04-17</td>
+<td><strong>甲方TMS系统架构讨论会议细化</strong>：①新增课程组合必修/选修概念——技能认证的课程组合中区分必修(compulsory)与选修(elective)②新增职位(Position)前置条件——角色可要求员工达到特定职位阶层(Senior Technician等)才能担任③新增体检查询矩阵(Fitness Matrix)——结构化定义各角色对体检的要求(可实操/仅可观察/不可参与)，非简单的外部认证④新增课程编号体系约定(K=知识/S=技能/FF=安全消防)⑤新增条件性有效期——证书有效期可按条件(如年龄)动态计算⑥声明数据不覆盖原则——所有记录追加式写入，历史数据永不覆盖⑦细化课程前置/豁免/相依逻辑</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V2.2</td>
+<td>2026-04-17</td>
+<td><strong>甲方TMS优化会议需求补充</strong>：①新增&quot;我的证书&quot;功能——员工一站式查看自己所有证书(有效/即将过期/已过期/已熄灯)+续期建议②新增部门主管自助视图——主管查看部门员工证书分布+即将过期人员+一键提醒③新增外部人员ID标准化规则——外部人员标识方式统一④新增HR/ERP体检数据对接规划——长期目标体检数据自动同步⑤调整开发阶段优先级——第1阶段增加基础自动化(证书到期提醒+月度报表框架)，响应甲方&quot;先基础自动化再逐步扩展&quot;策略</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V2.3</td>
+<td>2026-04-17</td>
+<td><strong>架构级修正——三维度经验模型(project audit发现)</strong>：①TASK实体增加role_seq_FK——任务必须关联岗位上下文②新增ROLE_SKILL_EXPERIENCE实体——按(employee,skill,role)三维度记录任务指派次数/任务完成次数/正式评估次数③SKILL_ASSESSMENT移除practical_count和total_assignment_count——次数不再按技能全局累计而是按(技能+岗位)分别累计④practical_count重命名为evaluated_count(正式评估次数)⑤新增task_completion_count(任务完成次数=真正的实际操作次数)⑥澄清三件事关系：任务指派≥任务完成≥正式评估⑦人岗匹配算法改用ROLE_SKILL_EXPERIENCE的role-specific次数⑧更新排序算法和示例</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V2.4</td>
+<td>2026-04-20</td>
+<td><strong>甲方TAD需求+角色/用例/权限强化</strong>：①强化用户角色定义——每个角色明确职责、系统提供功能和核心价值诉求②新增§1.6组织架构与权限矩阵——角色关系图+详细权限矩阵(✏️编辑/👁️查看/✅审批/🔔通知)+角色聚焦指南(快速入口)③新增部门职能概览(A08)——三级检视(部门/单位/个人)+时间轴+有效期管理④新增趋势分析与异动预测(A09)——基于人员变动数据(退休/离职预测)生成职能缺口报告⑤搜索维度优化——支持按课程类型+课程中文名过滤⑥人员清单备注字段——搜索结果和人员列表加入Remarks便于查核⑦考核分数便捷导入——成绩批量导入增强为自动化评分录入⑧项目时程与预算——Phase 1/2详细时程表+各阶段费用分配</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V2.5</td>
+<td>2026-04-21</td>
+<td><strong>产品生命周期审计升级</strong>：①新增§1.4d数据纠错原则——数据不覆盖≠不可纠错，引入superseding record机制②新增§1.4e级联影响规则——7条核心级联链③新增§6.7数据生命周期业务规则(22~30)——每个实体的CRUD边界条件④新增系统支撑层功能(F-S05~F-S14)：数据纠错机制/批量操作框架/系统健康监控/SAP对账/证书宽限期/并发锁/等级模型保护/角色停用级联/数据保留策略/通知节流⑤更新ER图：SKILL_ASSESSMENT增加superseded_by_seq⑥更新权限矩阵+验收标准+术语表⑦配套产品生命周期文档(含29+5测试用例)</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>V2.6</td>
+<td>2026-04-22</td>
+<td><strong>用户体验与业务价值强化</strong>：①新增§7用户旅程地图——3个典型旅程(新员工入职/紧急调配/人才规划)②新增§8业务成功指标体系——组织效能+员工成长+运营效率3维度量化指标③新增§9业务异常场景处理——4个关键异常场景(离职未完成任务/评估纠错/岗位要求升级/SAP同步失败)④新增§10业务决策支持场景——3个典型决策场景(培训计划/紧急调配/晋升评审)⑤新增§11业务演进路线图——3阶段投资回报路径⑥非功能需求重编号为§12⑦项目范围重编号为§13⑧验收标准重编号为§14</td>
+<td>产品经理</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>1. 产品概述</h2>
+<h3>1.1 产品定位</h3>
+<p>CME-TMS 是一套<strong>以技能为中心、以终生学习为理念</strong>的企业培训与职业发展平台。</p>
+<p>系统的核心使命有双重维度：</p>
+<blockquote>
+<p><strong>组织视角</strong>：“谁现在真正具备什么技能、达到了什么等级，并且当前可以接受任务调度？”</p>
+<p><strong>个人视角</strong>：“我想要达到什么岗位？还差什么？每一步怎么走？我的每一条数据都经得起审计吗？”</p>
+</blockquote>
+<p>传统培训系统只回答第一个问题——把员工当作被管理的对象。<strong>CME-TMS同时回答第二个问题</strong>——把员工作为主动成长的主体。技能不是HR的表格数据，而是每个人职业成长的阶梯。每一个技能等级、每一次实操次数、每一条时效系数，都不是系统&quot;赋&quot;给员工的，而是员工<strong>通过真实执行任务一步步堆出来的</strong>——每条数据都有来源、有依据、经得起审计。</p>
+<p>围绕这个认知，系统建立了一条<strong>双向闭环</strong>：</p>
+<blockquote>
+<p><strong>组织侧闭环</strong>：技能定义 → 培训传授 → 评估验证 → 熟练度量化 → 人岗应用（推荐+自由筛选）</p>
+<p><strong>个人侧闭环</strong>：我想达到什么岗位 → 差什么技能/等级 → 选择学习路径 → 通过实战堆数据 → 数据经审计可溯源 → 达到目标 → 设定更高目标</p>
+</blockquote>
+<h3>1.2 核心价值主张</h3>
+<table>
+<thead>
+<tr>
+<th>价值维度</th>
+<th>现状痛点</th>
+<th>系统价值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>技能不可见</td>
+<td>员工技能散落在各人脑中，无法量化</td>
+<td>建立数字化技能图谱，技能等级可视化</td>
+</tr>
+<tr>
+<td>评估双轨断裂</td>
+<td>理论考试与实操评估各自为政，无法联动</td>
+<td>理论达标由HR触发，实操定级由业务方触发，双轨联动</td>
+</tr>
+<tr>
+<td><strong>时效性盲区</strong></td>
+<td><strong>只看&quot;达没达标&quot;，不看&quot;多久以前达标的&quot;，导致推荐了早已生疏的人</strong></td>
+<td><strong>引入时效系数，最近学习和最近实操的人优先推荐，符合熟练度法则</strong></td>
+</tr>
+<tr>
+<td><strong>次数盲区</strong></td>
+<td><strong>只看&quot;最近做没做过&quot;，不看&quot;做过多少次&quot;，导致推荐了只碰过一次的生手</strong></td>
+<td><strong>引入操作频次和掌握深度，做过50次的人远比做过1次的人可靠，符合次数法则</strong></td>
+</tr>
+<tr>
+<td>人岗匹配靠经验</td>
+<td>业务方凭记忆找人，效率低、遗漏多</td>
+<td>系统根据技能覆盖率、等级、时效性、操作频次综合排序<strong>推荐</strong>；提供5种筛选视图满足不同用人策略</td>
+</tr>
+<tr>
+<td><strong>马太效应陷阱</strong></td>
+<td><strong>永远只用最熟练的人，新人永远没有成长机会，人才梯队断裂</strong></td>
+<td><strong>培养视图将经验不足的人推到前面，给新人练手机会；系统是参谋不是决策者</strong></td>
+</tr>
+<tr>
+<td><strong>调度冲突盲区</strong></td>
+<td><strong>找到人但派不了人——同一人被多个业务方同时选中，或已在执行任务却被推荐</strong></td>
+<td><strong>引入调度可用性：员工可标记可/不可调度；被指派后自动不可调度；匹配检索只返回可调度人员</strong></td>
+</tr>
+<tr>
+<td>资格计算靠人工</td>
+<td>手工判断员工是否满足资格条件，易出错</td>
+<td>规则引擎自动计算资格证书，实时签发与过期管理</td>
+</tr>
+<tr>
+<td><strong>晋升路径不透明</strong></td>
+<td><strong>员工不知道达到目标岗位需要什么技能什么等级，没有方向，不知道怎么进步</strong></td>
+<td><strong>透明晋升：岗位技能要求完全公开，员工可查询任意岗位的技能要求，看到差距，明确方向</strong></td>
+</tr>
+<tr>
+<td><strong>成长数据不可溯源</strong></td>
+<td><strong>技能等级靠人说了算，不透明，无法审计</strong></td>
+<td><strong>每条数据来自真实执行：任务记录→评估记录→次数累计→等级变更，全链路可审计可溯源</strong></td>
+</tr>
+<tr>
+<td><strong>技能规范缺失</strong></td>
+<td><strong>技能没有标准化定义，每个人理解不同，学无方向</strong></td>
+<td><strong>技能库+等级模型+衰减参数，将技能规范化，让所有人按同一标准学习和成长</strong></td>
+</tr>
+<tr>
+<td><strong>培训需求靠人工收集</strong></td>
+<td><strong>各部门用邮件/口头报培训需求，报budget流程混乱，HRS无法统一预留时间和预算</strong></td>
+<td><strong>培训许愿池+预算管理：部门在线报需求→报budget→HRS预留时间和预算，全流程在线可追溯</strong></td>
+</tr>
+<tr>
+<td><strong>面试/Board审核无记录</strong></td>
+<td><strong>DLAP/CLAP申请者需见Board面试审核，但面试流程和结果散落在邮件和纸质文件中</strong></td>
+<td><strong>面试审核流程在线化：课程通过→面试申请→Board审核→结果记录，全流程在TMS中可追溯</strong></td>
+</tr>
+<tr>
+<td><strong>外部认证无统一管理</strong></td>
+<td><strong>职安卡/密闭空间卡/身体检查/劳工局/消防局等外部认证散落在各Excel中，无法与内部技能联动</strong></td>
+<td><strong>外部认证记录管理：统一录入外部认证+有效期+自动预警+与资格计算联动（任一组成项过期即熄灯）</strong></td>
+</tr>
+<tr>
+<td><strong>月度报表靠人手制作</strong></td>
+<td><strong>每月需要人工导出数据制作培训报表，耗时且容易遗漏，部门负责人无法及时获取</strong></td>
+<td><strong>月度自动报表：按月自动生成报表推送给相关部门，含证书持有人统计/部门证书分布/过期预警汇总</strong></td>
+</tr>
+<tr>
+<td><strong>证书查询维度不足</strong></td>
+<td><strong>无法按证书名称查持有人列表，无法按部门查证书分布和数量，无法看合资格人数趋势</strong></td>
+<td><strong>证书持有人查询+部门维度统计+合资格人数趋势折线图</strong></td>
+</tr>
+<tr>
+<td><strong>部门职能全貌不可见</strong></td>
+<td><strong>部门主管无法一眼看清本部门职能覆盖全貌——谁靠谱谁需复训、职能缺口在哪里、未来几年谁退休谁离职</strong></td>
+<td><strong>部门职能概览(三级检视)+趋势分析(退休/离职预测+职能缺口预警)</strong></td>
+</tr>
+<tr>
+<td><strong>趋势分析缺位</strong></td>
+<td><strong>无法预测未来几年因退休/离职导致的职能缺口，HR和部门主管被动应对</strong></td>
+<td><strong>趋势分析与异动预测：基于人员变动数据生成职能缺口趋势报告</strong></td>
+</tr>
+<tr>
+<td><strong>搜索查课效率低</strong></td>
+<td><strong>无法按课程类型或中文名快速定位课程，依赖逐页翻找</strong></td>
+<td><strong>搜索维度优化：课程类型+中文名作为主要过滤条件</strong></td>
+</tr>
+<tr>
+<td><strong>查核缺少备注</strong></td>
+<td><strong>人员清单中无法标注备注用于实时核对，需切出系统手工记录</strong></td>
+<td><strong>人员清单中增加Remarks备注字段</strong></td>
+</tr>
+<tr>
+<td><strong>考核分数录入繁琐</strong></td>
+<td><strong>设有考核环节的课程需逐人录入成绩，人工操作易错</strong></td>
+<td><strong>便捷的成绩数据导入——支持Excel模板批量导入+校验</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>1.3 核心业务原则：熟练度法则</h3>
+<blockquote>
+<p><strong>昨天做过，今天一定更熟练。很久没做，一定更生疏。</strong></p>
+</blockquote>
+<p>这是本系统人岗匹配的底层逻辑之一。具体体现为：</p>
+<ol>
+<li><strong>理论有时效</strong>：学习时间越近，理论掌握越牢固；时间越久，记忆衰减</li>
+<li><strong>实操更依赖近期</strong>：实操的熟练度衰减速度远快于理论——&quot;三年前操作过&quot;和&quot;昨天操作过&quot;是两个完全不同的概念</li>
+<li><strong>排序遵循时效</strong>：同等级的人，最近学习和最近实操的优先排列；久未实操的人即使等级高，也排在近期实操者之后</li>
+<li><strong>衰减可以刷新</strong>：重新学习（复训）或重新实操，时效性归零重新计算</li>
+</ol>
+<h3>1.3a 核心业务原则：次数法则（V1.5新增）</h3>
+<blockquote>
+<p><strong>做过十次的人，一定比做过一次的人更可靠。掌握三年的技能，一定比刚学会的更扎实。</strong></p>
+</blockquote>
+<p>这是用人部门最关心的逻辑——<strong>用人部门要的是&quot;一定不会出问题的人&quot;，不是&quot;最近碰过一次的人&quot;。</strong> 具体体现为：</p>
+<ol>
+<li><strong>实操次数是可靠性的直接证据</strong>：操作过50次的人几乎不可能出错，操作过1次的人风险极高。次数越多，肌肉记忆和异常处理能力越强</li>
+<li><strong>技能掌握时长是深度的体现</strong>：掌握某技能3年的人，比上个月刚学会的人，对该技能的理解和应变能力完全不同</li>
+<li><strong>次数与时效互补</strong>：时效法则看&quot;最近&quot;，次数法则看&quot;积累&quot;——一个做过50次但3个月没做的人，和一个做过1次但昨天刚做的人，谁更靠谱？答案是两者都要考虑，但<strong>次数的权重不应低于时效</strong></li>
+<li><strong>用人部门的核心关切</strong>：消费者（业务方）找人是为了完成任务，不是做实验。推荐的人必须&quot;来了就能干，干了就不出错&quot;。排序算法必须体现这个诉求</li>
+</ol>
+<p><strong>两大法则的关系</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>熟练度法则（时效）</th>
+<th>次数法则（积累）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>关注点</td>
+<td>“最近做过没有”</td>
+<td>“做过多少次、掌握多久”</td>
+</tr>
+<tr>
+<td>衡量指标</td>
+<td>时效系数（距上次操作的时间）</td>
+<td>操作次数、技能掌握时长</td>
+</tr>
+<tr>
+<td>风险场景</td>
+<td>推荐了&quot;做过很多次但太久没做&quot;的生疏者</td>
+<td>推荐了&quot;昨天刚碰过但只做过一次&quot;的生手</td>
+</tr>
+<tr>
+<td>互补关系</td>
+<td>时效保证&quot;手感还在&quot;</td>
+<td>次数保证&quot;经验足够&quot;</td>
+</tr>
+<tr>
+<td>核心逻辑</td>
+<td>防止推荐&quot;曾经厉害但已生疏&quot;的人</td>
+<td>防止推荐&quot;最近碰过但经验不足&quot;的人</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>关键洞察</strong>：旧算法只看时效，会出现严重误判——一个操作过100次但3个月没做的人，会被排在一个只做过1次但昨天刚做的人后面。这对用人部门来说是不可接受的：1次经验的人出错概率远高于100次经验但稍久未操作的人。</p>
+</blockquote>
+<h3>1.3b 核心业务原则：人才梯队法则（V1.7新增）</h3>
+<blockquote>
+<p><strong>如果永远只用最熟练的人，新人永远没有成长的机会。人才梯队需要刻意培养，不会自然形成。</strong></p>
+</blockquote>
+<p>这是次数法则的反面——次数法则保证&quot;找最靠谱的人&quot;，但<strong>如果系统永远把熟练工排第一，就会产生马太效应</strong>：熟练工越做越熟练（次数越来越多、排序越来越靠前），新人永远没机会（没人指派→次数永远为0→排序永远靠后）。</p>
+<p>具体体现为：</p>
+<ol>
+<li><strong>马太效应陷阱</strong>：算法推荐系统天然偏向&quot;强者越强&quot;——做过50次的人永远排第一，做过0次的人永远排最后。如果不刻意打破，新人永远无法获得第一次实操机会</li>
+<li><strong>梯队培养是战略需求</strong>：用人部门不只解决当下任务，更要考虑3个月、6个月后谁来做。今天给新人一次机会，3个月后他就不是新人了</li>
+<li><strong>用人不唯规则，也唯心</strong>：部门有意让新人练手、有意让老带新、有意给某人特殊机会——这些都是合理的用人决策，系统不应强制束缚</li>
+<li><strong>系统是参谋，不是决策者</strong>：系统提供推荐排序和多元视角，但<strong>最终用人决策权在用人部门手中</strong></li>
+</ol>
+<p><strong>三大法则的关系</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>法则</th>
+<th>解决什么问题</th>
+<th>风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>熟练度法则（时效）</td>
+<td>防止推荐生疏的人</td>
+<td>无</td>
+</tr>
+<tr>
+<td>次数法则（积累）</td>
+<td>防止推荐经验不足的人</td>
+<td><strong>马太效应——新人永远没机会</strong></td>
+</tr>
+<tr>
+<td><strong>人才梯队法则</strong></td>
+<td><strong>打破马太效应，给新人成长空间</strong></td>
+<td><strong>如果过度偏向培养，可能推荐不胜任的人</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>关键设计决策</strong>：系统必须同时服务两种诉求——“找最靠谱的人完成任务&quot;和&quot;培养梯队让新人成长”。<strong>解决方案：系统默认按熟练度推荐（保底线），同时提供多元筛选视图让部门自由选择（给空间）。系统是参谋，不是决策者。</strong></p>
+</blockquote>
+<h3>1.3c 核心业务原则：透明晋升法则（V1.8新增）</h3>
+<blockquote>
+<p><strong>每个人有权知道自己距离目标岗位还差什么。每一条成长数据都来自真实执行，经得起审计。晋升不是黑箱，而是透明的阶梯。</strong></p>
+</blockquote>
+<p>这是系统的<strong>灵魂</strong>——前三个法则服务组织，这个法则服务个人。具体体现为：</p>
+<ol>
+<li><strong>岗位技能要求透明</strong>：任何员工可以查询任意岗位/角色需要哪些技能、什么等级。不是HR告诉他，而是他自己看得见。没有黑箱，没有信息差</li>
+<li><strong>技能差距可视化</strong>：员工选定目标岗位后，系统自动对比当前技能与目标要求，清晰展示&quot;还差什么&quot;——差几个技能、差几个等级、差多少次实操经验</li>
+<li><strong>成长路径自驱动</strong>：知道差距后，员工主动选择学习路径——报名课程、申请任务、请求评估。<strong>每一步都是他自己走的，不是系统安排的</strong></li>
+<li><strong>数据可审计可溯源</strong>：技能等级不是&quot;HR说了算&quot;，而是由一条条可追溯的记录堆砌而成——“2024-03通过XX课程理论达标”、“2024-06执行XX任务被评定L3”、“2024-09再次执行同类任务被评定L4”。每条记录都有触发者、触发时间、原始证据</li>
+<li><strong>技能规范化=学习方向化</strong>：技能没有标准化定义时，每个人理解不同，学无方向。系统将技能规范化（等级模型+衰减参数+实操要求），让所有人按同一标准学习，<strong>让数字化时代的技能不再是模糊的感觉，而是可衡量、可追赶的目标</strong></li>
+</ol>
+<p><strong>四大法则的关系</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>法则</th>
+<th>服务谁</th>
+<th>回答什么问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>熟练度法则</td>
+<td>组织</td>
+<td>“这个人最近做没做过？”</td>
+</tr>
+<tr>
+<td>次数法则</td>
+<td>组织</td>
+<td>“这个人做过多少次？”</td>
+</tr>
+<tr>
+<td>人才梯队法则</td>
+<td>组织+个人</td>
+<td>“新人有没有成长机会？”</td>
+</tr>
+<tr>
+<td><strong>透明晋升法则</strong></td>
+<td><strong>个人</strong></td>
+<td><strong>“我想达到什么岗位？还差什么？怎么走？”</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>1.3d 核心理念：终生学习（V1.8确立）</h3>
+<blockquote>
+<p><strong>技能不是一次达标就永远有效的。它会衰减，需要复训。岗位不是一成不变的，它会升级，需要进阶。学习不是阶段性的，它是终生的。</strong></p>
+</blockquote>
+<p>CME-TMS的核心理念是<strong>终生学习</strong>——系统从三个层面支撑：</p>
+<table>
+<thead>
+<tr>
+<th>层面</th>
+<th>含义</th>
+<th>系统支撑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>技能会衰减</strong></td>
+<td>达标不是终点，3个月不实操就会生疏</td>
+<td>时效衰减+复训提醒，推动持续练习</td>
+</tr>
+<tr>
+<td><strong>岗位会升级</strong></td>
+<td>今天胜任的岗位，明天可能需要更高等级</td>
+<td>岗位技能要求更新时，员工自动收到差距通知</td>
+</tr>
+<tr>
+<td><strong>成长无止境</strong></td>
+<td>达到一个目标后，还有更高的目标</td>
+<td>晋升路径不断延伸：L1→L2→L3→L4→L5，每级都有明确条件</td>
+</tr>
+</tbody>
+</table>
+<h3>1.3e 核心业务原则：技能驱动岗位（V1.9新增）</h3>
+<blockquote>
+<p><strong>岗位不是分配给人的，而是人的技能推导出来的。人掌握了什么技能，系统就显示你满足哪些岗位。岗位的要求是动态变化的，但永远是技能决定岗位，不是岗位决定人。</strong></p>
+</blockquote>
+<p>这是一个根本性的视角翻转：</p>
+<table>
+<thead>
+<tr>
+<th>旧视角</th>
+<th>新视角</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>岗位找人（top-down）</td>
+<td>人的技能推导岗位（bottom-up）</td>
+</tr>
+<tr>
+<td>员工的岗位是HR指定的</td>
+<td>员工的适配岗位是技能实时计算的</td>
+</tr>
+<tr>
+<td>岗位要求固定不变</td>
+<td>岗位要求动态演进，技能要求随业务变化</td>
+</tr>
+<tr>
+<td>“你是XX岗位的人”</td>
+<td>“基于你当前的技能，你满足XX、YY、ZZ岗位”</td>
+</tr>
+</tbody>
+</table>
+<p>具体体现为：</p>
+<ol>
+<li><strong>&quot;我的适配岗位&quot;是实时推导</strong>：员工的页面上有一个动态区域——“基于你当前掌握的技能，你满足以下岗位”——这不是HR指定的，是系统根据你的技能+所有岗位的技能要求实时计算的。你多学一个技能，可能就多满足一个岗位；岗位要求变了，你的适配列表也变</li>
+<li><strong>岗位要求动态演进</strong>：一年前高级电工只需要5个技能，一年后可能需要7个。系统记录岗位要求的每次变更，员工能清楚看到&quot;我去年满足的岗位，今年因为要求升级可能不再满足了&quot;</li>
+<li><strong>技能是因，岗位是果</strong>：人不是&quot;被放在某个岗位上&quot;，而是&quot;因为具备了某些技能，所以自然适配某些岗位&quot;。人主动堆技能，岗位自然出现——这才是透明晋升的底层逻辑</li>
+<li><strong>一个技能组合可适配多个岗位</strong>：人掌握了高压操作L4+应急处理L3+安全管理L2，可能同时满足&quot;高级电工&quot;和&quot;安全主管&quot;——系统同时展示所有满足的岗位，由人选择往哪个方向发展</li>
+</ol>
+<p><strong>六大法则的关系</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>法则</th>
+<th>核心逻辑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>熟练度法则</td>
+<td>技能有时效，需要持续练习</td>
+</tr>
+<tr>
+<td>次数法则</td>
+<td>技能有积累，经验是堆出来的</td>
+</tr>
+<tr>
+<td>人才梯队法则</td>
+<td>新人需要机会，不能永远用熟练工</td>
+</tr>
+<tr>
+<td>透明晋升法则</td>
+<td>每个人知道差距和方向</td>
+</tr>
+<tr>
+<td>终生学习</td>
+<td>达标不是终点，成长无止境</td>
+</tr>
+<tr>
+<td><strong>技能驱动岗位</strong></td>
+<td><strong>技能是因，岗位是果。不是岗位决定人，是技能决定岗位</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>1.4 核心业务原则：调度排他性</h3>
+<blockquote>
+<p><strong>一个人同一时间只能执行一个任务。已被调度的人，不应再出现在检索结果中。</strong></p>
+</blockquote>
+<p>这是人岗匹配的现实约束。具体体现为：</p>
+<ol>
+<li><strong>可调度/不可调度</strong>：员工有明确的调度状态，只有&quot;可调度&quot;的人才出现在匹配检索结果中</li>
+<li><strong>指派即锁定</strong>：业务方指派任务后，员工自动切换为&quot;不可调度&quot;，其他业务方无法再选中该人</li>
+<li><strong>完成即释放</strong>：任务完成或取消后，员工自动恢复为&quot;可调度&quot;</li>
+<li><strong>主动声明</strong>：员工可主动标记自己为&quot;不可调度&quot;（休假、忙于其他非系统管理的项目等）</li>
+<li><strong>调度日历</strong>：员工可设置未来的可调度/不可调度时间段，系统按时间自动切换状态</li>
+</ol>
+<h4>1.4.1 调度灵活性规则（V1.6新增——回应甲方关切）</h4>
+<blockquote>
+<p>现实中&quot;一个人只能做一个任务&quot;过于绝对——任务可能只需半天但锁定两周，业务方可能忘记释放，员工可能同时做2-3个轻量任务。系统需要更灵活的调度机制。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>说明</th>
+<th>解决的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>任务预计时长</strong></td>
+<td>创建任务时填写预计结束时间(expected_end_at)。超时未完成的任务，系统自动释放调度状态并通知业务方</td>
+<td>业务方忘记释放导致员工一直被锁定</td>
+</tr>
+<tr>
+<td><strong>超时自动释放</strong></td>
+<td>超过expected_end_at后，系统每日检查：①通知业务方&quot;任务已超期，请确认完成或延期&quot;②若3天内无响应，自动释放调度状态</td>
+<td>防止永久锁定</td>
+</tr>
+<tr>
+<td><strong>并发任务数</strong></td>
+<td>员工可设置max_concurrent_tasks（默认1）。若设为2，则可同时被指派2个任务，第3个起锁定</td>
+<td>允许轻量任务并行</td>
+</tr>
+<tr>
+<td><strong>HR强制覆盖</strong></td>
+<td>HR管理员可强制将员工从&quot;不可调度&quot;切换为&quot;可调度&quot;（需填写覆盖原因，记入操作日志）</td>
+<td>紧急任务需要调人</td>
+</tr>
+<tr>
+<td><strong>员工申请解锁</strong></td>
+<td>员工可申请提前释放（如任务实际已结束但业务方未确认），HR审批后释放</td>
+<td>业务方不确认时员工自救</td>
+</tr>
+<tr>
+<td><strong>任务取消释放</strong></td>
+<td>业务方取消任务后，调度状态立即释放</td>
+<td>任务变更</td>
+</tr>
+</tbody>
+</table>
+<h3>1.4a 核心设计原则：课程治理模型与系统边界（V2.4新增）</h3>
+<blockquote>
+<p><strong>TMS管理的是&quot;经过审核的课程信息&quot;，不是课程内容本身。课程研发、内容评审在系统外完成，TMS只管理审核通过后的课程记录和开班执行。</strong></p>
+</blockquote>
+<p>课程不是讲师想教就教的，也不是HR随意定义的。课程治理遵循<strong>需求驱动→审核确认→系统录入</strong>的流程：</p>
+<pre><code>用人部门提出技能需求 ─→ HR与用人部门确认课程内容 ─→ 课程审核通过 ─→ 录入TMS ─→ 授权讲师 ─→ 开班执行
+        ↑                                    ↑
+   市场需求驱动                        课程研发在系统外
+</code></pre>
+<p><strong>系统边界确认</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>在系统内（TMS管理）</th>
+<th>在系统外（非TMS管理）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>课程基本信息（名称、类型、时长、考试要求、技能关联）</td>
+<td>课程内容研发（课件制作、教案编写）</td>
+</tr>
+<tr>
+<td>讲师授权关系（谁有资格教什么课）</td>
+<td>讲师培训与考核</td>
+</tr>
+<tr>
+<td>班级排期与考勤</td>
+<td>在线教学/考试平台</td>
+</tr>
+<tr>
+<td>课程关联的技能点和等级要求</td>
+<td>课程内容质量评审</td>
+</tr>
+<tr>
+<td>课程的&quot;使用中/已停用&quot;状态</td>
+<td>课程内容本身的时效性判断</td>
+</tr>
+<tr>
+<td>报名、完结、成绩管理</td>
+<td>薪酬/绩效/招聘系统</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>关键假设（待甲方确认）</strong>：课程&quot;停用&quot;由HR手动操作，基于HR与用人部门的评审结论。系统不自动判定课程内容是否过时——这是人的判断，不是系统的判断。技能衰减参数（理论周期、实操周期）的初始值由HR设定，但需要与用人部门确认是否符合业务实际。这些问题详见《问题清单》(Q-02, Q-04a)。</p>
+</blockquote>
+<h3>1.4b 核心设计原则：账号体系与身份来源（V2.4新增）</h3>
+<blockquote>
+<p><strong>用户身份来源于SAP同步+企业微信SSO，系统不提供独立的用户自注册机制。</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>当前假设（待确认）</th>
+<th>需要甲方确认</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>账号如何创建？</td>
+<td>SAP同步员工数据时自动创建TMS账号</td>
+<td>Q-01</td>
+</tr>
+<tr>
+<td>外部人员如何获得账号？</td>
+<td>HR手动创建&quot;外部人员&quot;账号（ext_前缀编号）</td>
+<td>Q-01b</td>
+</tr>
+<tr>
+<td>登录方式？</td>
+<td>企业微信扫码登录（主要）+ 账号密码（备用）</td>
+<td>Q-01f</td>
+</tr>
+<tr>
+<td>角色如何分配？</td>
+<td>SAP职位数据自动识别+HR手动指定角色</td>
+<td>Q-01d</td>
+</tr>
+<tr>
+<td>一人能否多角色？</td>
+<td>支持一人多角色，但同一时间只以一个角色身份操作</td>
+<td>Q-01e</td>
+</tr>
+<tr>
+<td>离职后如何处理？</td>
+<td>SAP标记离职后TMS账号自动停用，但保留历史数据</td>
+<td>Q-01c</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ 以上均为当前假设，需甲方确认后纳入正式需求。详见《问题清单》第一类(Q-01)。</p>
+</blockquote>
+<h3>1.4c 核心设计原则：数据不覆盖（V2.1新增）</h3>
+<blockquote>
+<p><strong>所有记录追加式写入，历史数据永不覆盖。新的评估、新的达标、新的认证，都产生新记录而非修改旧记录。</strong></p>
+</blockquote>
+<p>这是系统的数据完整性底线：</p>
+<ol>
+<li><strong>追加不覆盖</strong>：员工重新评估实操等级时，不修改旧评估记录，而是新增一条评估记录，旧记录保留</li>
+<li><strong>历史可追溯</strong>：任何时刻都可以回溯到某个时间点的技能状态——&quot;这个人2024年3月的实操等级是什么&quot;是可查询的</li>
+<li><strong>外部认证续期</strong>：职安卡续期后，旧卡记录保留（含生效/过期时间），新卡记录追加，两张卡的历史都可见</li>
+<li><strong>体检记录</strong>：每次体检结果新增记录，旧体检结果保留——&quot;这个人去年的体检能否实操&quot;是可查询的</li>
+<li><strong>批量导入不覆盖</strong>：Excel/CSV批量导入时，系统比对现有记录，匹配到同一员工同一认证则新增续期记录，不覆盖旧记录</li>
+</ol>
+<h3>1.4d 核心设计原则：数据纠错机制（V2.5新增——产品生命周期审计发现）</h3>
+<blockquote>
+<p><strong>数据不覆盖 ≠ 数据不可纠错。</strong> 追加式写入保证历史可追溯，但评估数据出错必须有纠正路径。</p>
+</blockquote>
+<p>纠错遵循<strong>superseding record（覆盖记录）机制</strong>：</p>
+<ol>
+<li><strong>纠错创建新记录</strong>：不修改原记录，而是创建一条新记录，标记<code>supersedes_seq</code>指向被纠正的旧记录</li>
+<li><strong>旧记录标记为superseded</strong>：原记录的<code>status</code>从<code>active</code>变为<code>superseded</code>，不再作为当前有效记录，但历史可查</li>
+<li><strong>纠错审计</strong>：操作日志区分<code>OPERATIONAL</code>（正常操作）/<code>CORRECTION</code>（纠错）/<code>OVERRIDE</code>（HR强制覆盖）/<code>SYSTEM_ADJUSTMENT</code>（系统调整）四种类型</li>
+<li><strong>纠错必须填写原因</strong>：任何纠错操作必须选择原因码（如：评估员录入错误/系统计算错误/HR行政纠正等）和审批人</li>
+<li><strong>级联触发</strong>：纠错后自动触发资格重算(E05a)和熟练度重算(E06)</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>ROLE_SKILL_EXPERIENCE的计数只能增加不能减少</strong>：如果任务是错误完成标记，不减少task_completion_count，而是<strong>追加一条反向纠错记录</strong>（type=correction, delta=-1），在汇总时净额计算。这保证了&quot;数据不覆盖&quot;原则与&quot;错必可纠&quot;原则的统一。</p>
+</blockquote>
+<h3>1.4e 核心设计原则：级联影响规则（V2.5新增——产品生命周期审计发现）</h3>
+<blockquote>
+<p><strong>系统中的数据不是孤立的。一个数据点的变更会像波纹一样影响下游所有相关数据。以下7条级联规则必须被严格执行和测试。</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>触发事件</th>
+<th>级联动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CASCADE-01</td>
+<td>理论达标(E03)</td>
+<td>→ theory_certified_at写入 → theory_freshness=1.0 → 资格重算入队 → proficiency重算</td>
+</tr>
+<tr>
+<td>CASCADE-02</td>
+<td>实操评估(E04)</td>
+<td>→ practical_rated_at写入 → practical_freshness=1.0 → ROLE_SKILL_EXPERIENCE.evaluated_count+1 → 资格重算入队 → proficiency重算</td>
+</tr>
+<tr>
+<td>CASCADE-03</td>
+<td>任务指派(A05.2)</td>
+<td>→ ROLE_SKILL_EXPERIENCE.total_assignment_count+1 → 调度锁定</td>
+</tr>
+<tr>
+<td>CASCADE-04</td>
+<td>任务完成(A05.5)</td>
+<td>→ ROLE_SKILL_EXPERIENCE.task_completion_count+1 → 调度释放</td>
+</tr>
+<tr>
+<td>CASCADE-05</td>
+<td>外部认证过期</td>
+<td>→ 关联证书熄灯⚫ → 匹配排除 → 部门主管通知 → A08概览刷新 → A09趋势更新</td>
+</tr>
+<tr>
+<td>CASCADE-06</td>
+<td>角色技能要求变更(B03.7)</td>
+<td>→ 版本记录 → G05通知所有设该岗位为目标的员工 → G01重算 → G02差距重算 → G07适配岗位重算 → A08概览刷新 → A09趋势更新</td>
+</tr>
+<tr>
+<td>CASCADE-07</td>
+<td>衰减参数变更(S03)</td>
+<td>→ 影响预览(S03.3) → 确认后全员proficiency重算 → A01排序变化 → A02可能触发复训提醒 → A08概览刷新</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>级联执行策略</strong>：资格重算(E05a)和熟练度重算(E06)采用队列异步处理，不阻塞用户操作。重算期间查询返回上次计算结果（最终一致性）。批量重算失败时支持断点续算，不从头开始。</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>甲方明确要求</strong>：歷程資料不可遺失，需能追溯所有紀錄。系統需保留完整學習歷史，不覆蓋舊紀錄。</p>
+</blockquote>
+<h3>1.5 目标用户与核心诉求</h3>
+<blockquote>
+<p>角色定义了系统使用者的职责及系统提供给他的功能。以下为系统五大用户角色及其核心诉求、系统能力、核心价值对照。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>用户</th>
+<th>职责</th>
+<th>系统提供的主要功能</th>
+<th>核心价值诉求</th>
+<th>一句话描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HR管理员</strong></td>
+<td>管好培训全流程，确保每人接受正确培训并保持技能新鲜</td>
+<td>技能库管理、角色定义、课程/班级管理、报名审核、完结达标、资格计算配置、系统参数、员工档案、外部认证、报表推送</td>
+<td>确保合规、追踪全面、数据可审计</td>
+<td>“我要确保每个人接受到正确的培训，并保持技能新鲜”</td>
+</tr>
+<tr>
+<td><strong>业务方/消费者</strong></td>
+<td>找到最合适的人执行任务，或培养新人</td>
+<td>人岗匹配检索(5种视图)、任务指派与调度、实操评估、部门职能概览</td>
+<td>找对人、用好人的长短搭配、梯队清晰</td>
+<td>“系统推荐但我不受束缚，用人决策权在我手中”</td>
+</tr>
+<tr>
+<td><strong>部门主管</strong></td>
+<td>掌握本部门职能全貌、及时发现缺口和风险</td>
+<td>部门职能概览(三级检视)、趋势分析(含退休预测)、部门证书分布、一键提醒续期、备注查核</td>
+<td>一眼看清部门谁靠谱谁需复训、职能缺口在哪里</td>
+<td>“我要一眼看到部门谁快过期、哪里有缺口”</td>
+</tr>
+<tr>
+<td><strong>员工</strong></td>
+<td>知道自己距离目标岗位还差什么，主动成长</td>
+<td>我的技能全景、我的适配岗位、我的晋升路径、我的证书、成长记录审计、岗位技能查询、申请实操评估、备注查看</td>
+<td>透明晋升、方向明确、数据经审计可溯源</td>
+<td>“我要知道达到目标岗位还差什么，每一步怎么走”</td>
+</tr>
+<tr>
+<td><strong>讲师</strong></td>
+<td>明确授课范围和授权，关注课程交付质量</td>
+<td>授权课程列表、班级安排、考勤确认、<strong>课程内容查看、成绩确认</strong></td>
+<td>授课安排清晰、不超范围、能完成课程交付职责</td>
+<td>“我要明确我的授课范围，确认考勤和成绩”</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>V2.4新增角色说明</strong>：部门主管(TAD)是甲方明确提出的角色——TAD需要掌握内部职能总数、时间轴与有效期管理、按单位/个人检视、趋势分析与异动预测。此角色介于HR与业务方之间，侧重<strong>部门维度的人才健康度管理</strong>。</p>
+</blockquote>
+<h3>1.6 组织架构与权限矩阵（V2.4新增）</h3>
+<blockquote>
+<p>角色定义了&quot;谁负责什么&quot;，权限矩阵定义了&quot;谁能做什么、看什么&quot;。以下内容帮助每位读者快速定位：<strong>我是哪个角色？我能看到什么？我能操作什么？我依赖谁？</strong></p>
+</blockquote>
+<h4>1.6.1 组织架构与角色关系</h4>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_f51161b6.png" alt="mermaid chart" class="chart-image" />
+</div>
+<p><strong>角色间核心依赖关系</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>依赖方向</th>
+<th>依赖内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HR → 业务方</td>
+<td>HR定义技能/角色/课程 → 业务方才能检索匹配</td>
+<td>基础数据是匹配的前提</td>
+</tr>
+<tr>
+<td>HR → 员工</td>
+<td>HR完结课程 → 员工理论达标</td>
+<td>培训是技能获取的起点</td>
+</tr>
+<tr>
+<td>业务方 → 员工</td>
+<td>业务方指派任务+实操评估 → 员工获得实操等级和经验次数</td>
+<td>实操来自业务方派工</td>
+</tr>
+<tr>
+<td>业务方 → 部门主管</td>
+<td>业务方匹配检索 → 部门主管了解团队成员被指派情况</td>
+<td>指派信息部门主管可见</td>
+</tr>
+<tr>
+<td>员工 → HR</td>
+<td>员工报名/申请评估 → HR审核</td>
+<td>员工主动触发流程</td>
+</tr>
+<tr>
+<td>系统自动 → 所有人</td>
+<td>定时计算+预警+签发 → 通知各角色</td>
+<td>系统是自动化引擎</td>
+</tr>
+<tr>
+<td>部门主管 → 员工</td>
+<td>部门主管一键提醒续期 → 员工收到复训通知</td>
+<td>部门主管推动团队复训</td>
+</tr>
+</tbody>
+</table>
+<h4>1.6.2 详细权限矩阵</h4>
+<blockquote>
+<p><strong>权限标识</strong>：✏️=可创建/编辑 | 👁️=可查看 | ✅=可审批/确认 | 🔔=可接收通知 | ➖=无权限</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>功能编号</th>
+<th>功能名称</th>
+<th>HR管理员</th>
+<th>部门主管(TAD)</th>
+<th>业务方(消费者)</th>
+<th>员工</th>
+<th>讲师</th>
+<th>PRD章节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>基础层</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>F-B01</td>
+<td>技能库管理</td>
+<td>✏️➕</td>
+<td>👁️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td>F-B02</td>
+<td>衰减参数配置</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td>F-B03</td>
+<td>角色定义</td>
+<td>✏️</td>
+<td>👁️</td>
+<td>👁️</td>
+<td>👁️</td>
+<td>➖</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td>F-B04</td>
+<td>员工档案</td>
+<td>✏️👁️</td>
+<td>👁️(本部门)</td>
+<td>👁️(指派对象)</td>
+<td>👁️(本人)</td>
+<td>➖</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td>F-B05</td>
+<td>SAP数据同步</td>
+<td>系统自动</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td>F-B07</td>
+<td>外部认证记录</td>
+<td>✏️</td>
+<td>👁️(本部门)</td>
+<td>➖</td>
+<td>👁️(本人)</td>
+<td>➖</td>
+<td>§5.1</td>
+</tr>
+<tr>
+<td><strong>培训层</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>F-T01</td>
+<td>课程管理</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>👁️(本人授权课)</td>
+<td>§5.2</td>
+</tr>
+<tr>
+<td>F-T02</td>
+<td>课程关系</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.2</td>
+</tr>
+<tr>
+<td>F-T03</td>
+<td>班级管理</td>
+<td>✏️</td>
+<td>👁️(本部门班)</td>
+<td>➖</td>
+<td>👁️(报名班)</td>
+<td>👁️(授课班)</td>
+<td>§5.2</td>
+</tr>
+<tr>
+<td>F-T04</td>
+<td>讲师授权</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>👁️(本人授权)</td>
+<td>§5.2</td>
+</tr>
+<tr>
+<td>F-T05</td>
+<td>QR考勤</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>🔔扫码签到</td>
+<td>👁️(考勤确认)</td>
+<td>§5.2</td>
+</tr>
+<tr>
+<td>F-T07</td>
+<td>培训需求与预算</td>
+<td>✏️✅(审核)</td>
+<td>✏️(提交需求)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.2a</td>
+</tr>
+<tr>
+<td><strong>评估层</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>F-E01</td>
+<td>报名管理</td>
+<td>✏️✅(审核)</td>
+<td>➖</td>
+<td>➖</td>
+<td>✏️(报名)</td>
+<td>➖</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>F-E02</td>
+<td>培训记录管理</td>
+<td>✏️👁️</td>
+<td>👁️(本部门)</td>
+<td>➖</td>
+<td>👁️(本人)</td>
+<td>➖</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>F-E03</td>
+<td>课程完结与理论达标</td>
+<td>✏️✅</td>
+<td>➖</td>
+<td>➖</td>
+<td>🔔(通知)</td>
+<td>👁️(授课班成绩)</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>F-E04</td>
+<td>实操评估</td>
+<td>👁️</td>
+<td>➖</td>
+<td>✏️✅</td>
+<td>🔔(通知)</td>
+<td>➖</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>F-E04a</td>
+<td>员工申请实操评估</td>
+<td>➖</td>
+<td>➖</td>
+<td>🔔(提醒)</td>
+<td>✏️</td>
+<td>➖</td>
+<td>§5.5</td>
+</tr>
+<tr>
+<td>F-E05</td>
+<td>资格证书定义</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>F-E05a</td>
+<td>资格计算引擎</td>
+<td>系统自动</td>
+<td>🔔(主管通知)</td>
+<td>➖</td>
+<td>🔔(通知)</td>
+<td>➖</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>F-E06</td>
+<td>时效性计算</td>
+<td>系统自动</td>
+<td>🔔</td>
+<td>➖</td>
+<td>🔔</td>
+<td>➖</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>F-E07</td>
+<td>面试/Board审核</td>
+<td>✅(组织)</td>
+<td>✅(参与)</td>
+<td>➖</td>
+<td>✏️(申请)</td>
+<td>➖</td>
+<td>§5.3a</td>
+</tr>
+<tr>
+<td><strong>应用层</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>F-A01</td>
+<td>人岗匹配检索</td>
+<td>👁️</td>
+<td>👁️(本部门)</td>
+<td>✏️👁️</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A02</td>
+<td>复训提醒</td>
+<td>🔔</td>
+<td>🔔</td>
+<td>➖</td>
+<td>🔔</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A03</td>
+<td>资质预警</td>
+<td>🔔</td>
+<td>🔔(本部门)</td>
+<td>➖</td>
+<td>🔔</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A04</td>
+<td>数据看板</td>
+<td>👁️(全局)</td>
+<td>👁️(本部门)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A05</td>
+<td>权限控制</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A06</td>
+<td>调度可用性</td>
+<td>👁️(全局)</td>
+<td>➖</td>
+<td>✏️(指派时锁定)</td>
+<td>✏️(自行管理)</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A07</td>
+<td>任务管理</td>
+<td>👁️(全局)</td>
+<td>➖</td>
+<td>✏️✅</td>
+<td>🔔(被指派通知)</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A05b</td>
+<td>证书持有人查询</td>
+<td>👁️(全局)</td>
+<td>👁️(本部门)</td>
+<td>➖</td>
+<td>👁️(本人)</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A06</td>
+<td>月度自动报表</td>
+<td>✏️(配置)</td>
+<td>🔔(接收)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A07b</td>
+<td>部门主管自助视图</td>
+<td>👁️(全局)</td>
+<td>✏️👁️(本部门)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A08</td>
+<td>部门职能概览</td>
+<td>👁️(全局)</td>
+<td>✏️👁️(本部门)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>F-A09</td>
+<td>趋势分析与异动预测</td>
+<td>👁️(全局)</td>
+<td>✏️👁️(本部门)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td><strong>员工成长层</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>F-G01</td>
+<td>岗位技能查询</td>
+<td>👁️</td>
+<td>👁️</td>
+<td>👁️</td>
+<td>✏️👁️</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td>F-G02</td>
+<td>我的晋升路径</td>
+<td>👁️(全局)</td>
+<td>➖</td>
+<td>➖</td>
+<td>✏️👁️(本人)</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td>F-G03</td>
+<td>技能差距分析</td>
+<td>👁️(全局)</td>
+<td>➖</td>
+<td>➖</td>
+<td>✏️👁️(本人)</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td>F-G04</td>
+<td>成长记录审计</td>
+<td>👁️(全局)</td>
+<td>👁️(本部门)</td>
+<td>👁️(评估对象)</td>
+<td>✏️👁️(本人)</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td>F-G05</td>
+<td>岗位要求变更通知</td>
+<td>🔔</td>
+<td>🔔</td>
+<td>➖</td>
+<td>🔔</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td>F-G06</td>
+<td>我的技能全景</td>
+<td>👁️(全局)</td>
+<td>👁️(本部门)</td>
+<td>👁️(评估对象)</td>
+<td>✏️👁️(本人)</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td>F-G07</td>
+<td>我的适配岗位</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>✏️👁️(本人)</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td>F-G08</td>
+<td>我的证书</td>
+<td>👁️(全局)</td>
+<td>👁️(本部门)</td>
+<td>➖</td>
+<td>✏️👁️(本人)</td>
+<td>➖</td>
+<td>§5.5a</td>
+</tr>
+<tr>
+<td><strong>系统支撑层</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>F-S01</td>
+<td>统一消息通知</td>
+<td>✏️(配置)</td>
+<td>🔔(接收)</td>
+<td>🔔(接收)</td>
+<td>🔔(接收)</td>
+<td>🔔(接收)</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S02</td>
+<td>操作日志与审计</td>
+<td>✏️👁️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S03</td>
+<td>系统参数管理</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S04</td>
+<td>资格证书定义管理</td>
+<td>✏️</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S05</td>
+<td>数据纠错机制</td>
+<td>✏️✅(审批)</td>
+<td>👁️(本部门)</td>
+<td>✏️(发起纠错)</td>
+<td>👁️(本人被纠错记录)</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S06</td>
+<td>批量操作框架</td>
+<td>✏️✅(审批)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S07</td>
+<td>系统健康监控看板</td>
+<td>✏️👁️</td>
+<td>👁️(本部门概览)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S08</td>
+<td>SAP-TMS数据对账</td>
+<td>✏️👁️✅(修复)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S09</td>
+<td>证书组成变更宽限期</td>
+<td>✏️✅(选策略)</td>
+<td>🔔(部门影响通知)</td>
+<td>➖</td>
+<td>🔔(宽限期通知)</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S10</td>
+<td>并发指派锁</td>
+<td>系统自动</td>
+<td>➖</td>
+<td>👁️(冲突提示)</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S11</td>
+<td>技能等级模型变更保护</td>
+<td>✏️(变更)✅(确认影响)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S12</td>
+<td>角色停用级联</td>
+<td>✏️(触发停用)</td>
+<td>🔔(影响通知)</td>
+<td>➖</td>
+<td>🔔(角色变更通知)</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S13</td>
+<td>数据保留与归档</td>
+<td>✏️(配置策略)</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>➖</td>
+<td>§5.6</td>
+</tr>
+<tr>
+<td>F-S14</td>
+<td>通知节流与去重</td>
+<td>✏️(配置规则)</td>
+<td>🔔(合并通知)</td>
+<td>🔔(合并通知)</td>
+<td>🔔(合并通知)</td>
+<td>🔔(合并通知)</td>
+<td>§5.6</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>权限设计原则</strong>：</p>
+<ol>
+<li><strong>最小权限原则</strong>：每个角色只能看到和操作自己职责范围内的功能和数据</li>
+<li><strong>数据范围隔离</strong>：部门主管只能看本部门数据（👁️本部门），HR看全局（👁️全局），员工只能看自己（👁️本人）</li>
+<li><strong>操作与查看分离</strong>：大部分数据员工可查看自己但不可编辑，HR可创建/编辑，业务方可评估操作但不可定义规则</li>
+</ol>
+</blockquote>
+<h4>1.6.3 角色聚焦指南（我是谁？看哪里？）</h4>
+<blockquote>
+<p>以下是每个角色的**“快速入口”**——打开文档后直接跳转到与自己相关的章节。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>我的核心职责</th>
+<th>我应该关注的PRD章节</th>
+<th>我能做的关键操作</th>
+<th>我依赖谁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HR管理员</strong></td>
+<td>管好培训全流程，确保合规</td>
+<td>§5.1(基础层)、§5.2(培训层)、§5.3(评估层)、§5.6(系统支撑)、§3.2用例UC-01~UC-05、UC-09</td>
+<td>技能库/角色/课程/班级CRUD、报名审核、课程完结、参数配置、报表配置</td>
+<td>业务方(实操评估)、部门主管(需求提交)</td>
+</tr>
+<tr>
+<td><strong>部门主管(TAD)</strong></td>
+<td>掌握本部门人才健康度</td>
+<td>§5.4(F-A07b/F-A08/F-A09)、§3.2用例UC-12/UC-13</td>
+<td>查看部门职能概览(三级)、趋势分析、证书分布、一键提醒续期、提交培训需求</td>
+<td>HR(数据完整)、业务方(派工评估)</td>
+</tr>
+<tr>
+<td><strong>业务方(消费者)</strong></td>
+<td>找对人、派工、评估</td>
+<td>§5.4(F-A01/F-A06/F-A07)、§3.2用例UC-08/UC-10/UC-11</td>
+<td>人岗匹配检索(5种视图)、任务指派与调度、实操评估</td>
+<td>HR(定义/完结)、员工(可调度)</td>
+</tr>
+<tr>
+<td><strong>员工</strong></td>
+<td>主动成长、自助查询</td>
+<td>§5.5a(员工成长层)、§3.2用例UC-04/UC-07</td>
+<td>查看技能全景、我的适配岗位、我的晋升路径、报名、申请评估</td>
+<td>业务方(评估)</td>
+</tr>
+<tr>
+<td><strong>讲师</strong></td>
+<td>授课、考勤确认、关注课程交付</td>
+<td>§5.2(F-T03/F-T04/F-T05)、§5.3(F-E03成绩查看)、§3.2用例UC-06</td>
+<td>查看授权课程、班级安排、考勤确认、查看授课班成绩</td>
+<td>HR(授权/排班/完结)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>2. 产品架构</h2>
+<h3>2.1 产品架构图</h3>
+<p>产品架构采用<strong>四层结构</strong>，从基础定义到最终应用，逐层支撑：</p>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_0e8f3fef.png" alt="mermaid chart" class="chart-image" />
+</div>
+<p><strong>相比V1.1的架构变化：</strong></p>
+<ul>
+<li>评估层新增<strong>时效性计算</strong>模块——评估不只是&quot;达没达标&quot;，还要计算&quot;多久以前达标的&quot;</li>
+<li>应用层<strong>人岗匹配引擎</strong>改为含时效排序——排序规则不再只看等级，更要看时效性</li>
+<li>应用层<strong>资质预警</strong>扩展为时效预警——不只是&quot;即将过期&quot;，还有&quot;太久没用，建议复训&quot;</li>
+<li>应用层新增<strong>调度可用性管理</strong>——确保同一人不会被重复调度，匹配检索只返回可调度人员</li>
+<li><strong>V2.0新增</strong>：基础层新增<strong>外部认证记录管理</strong>——职安卡/密闭空间卡/身体检查/劳工局/消防局/澳门注册电工等外部认证统一管理，与资格计算联动</li>
+<li><strong>V2.0新增</strong>：培训层新增<strong>培训需求收集与预算管理</strong>——部门在线报培训需求→报budget→HRS预留时间和预算</li>
+<li><strong>V2.0新增</strong>：评估层新增<strong>面试/Board审核</strong>——DLAP见部门经理/CLAP见更高级，课程通过后还需面试审核</li>
+<li><strong>V2.0新增</strong>：应用层新增<strong>证书持有人查询+部门维度统计</strong>——按证书名查持有人列表、按部门查证书分布</li>
+<li><strong>V2.0细化</strong>：数据看板扩展为<strong>看板+月度自动报表推送</strong>——非自助看板，按月自动推送给部门</li>
+</ul>
+<h3>2.2 核心业务闭环</h3>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_af076d24.png" alt="mermaid chart" class="chart-image" />
+</div>
+<p><strong>闭环新增环节：时效衰减 → 复训提醒 → 重新学习</strong></p>
+<p>技能达标不是终点，而是起点。随时间推移，时效系数持续下降，当降到阈值以下时：</p>
+<ul>
+<li>人岗匹配排序靠后（不是不能用，但优先级降低）</li>
+<li>触发复训提醒（建议重新学习或重新实操）</li>
+<li>复训后时效系数刷新</li>
+</ul>
+<h3>2.3 闭环断点说明（关键业务逻辑）</h3>
+<table>
+<thead>
+<tr>
+<th>断点</th>
+<th>触发者</th>
+<th>触发条件</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>课程完结 → 理论达标</td>
+<td>HR</td>
+<td>HR确认课程完结；若设考试则需成绩≥及格线</td>
+<td>技能标记&quot;理论已学&quot;<strong>+记录达标时间</strong></td>
+</tr>
+<tr>
+<td>派工执行 → 实操定级</td>
+<td>业务方</td>
+<td>员工实际执行任务后，业务方根据表现评估</td>
+<td>技能更新&quot;实操等级&quot;<strong>+记录评估时间</strong></td>
+</tr>
+<tr>
+<td>理论+实操 → 资格证书</td>
+<td>系统</td>
+<td>完成规定的课程组合</td>
+<td>自动签发资格证书并计算有效期</td>
+</tr>
+<tr>
+<td><strong>时间推移 → 时效衰减</strong></td>
+<td><strong>系统</strong></td>
+<td><strong>距上次学习/实操的时间持续增长</strong></td>
+<td><strong>时效系数下降，匹配排序靠后，触发复训提醒</strong></td>
+</tr>
+<tr>
+<td><strong>复训/重新实操 → 时效刷新</strong></td>
+<td><strong>员工/业务方</strong></td>
+<td><strong>重新完成课程或重新实操评估</strong></td>
+<td><strong>时效系数归零重计，匹配排序提升</strong></td>
+</tr>
+<tr>
+<td><strong>指派任务 → 调度锁定</strong></td>
+<td><strong>业务方</strong></td>
+<td><strong>业务方指派任务给员工</strong></td>
+<td><strong>员工自动切换为&quot;不可调度&quot;，其他业务方检索不到该人</strong></td>
+</tr>
+<tr>
+<td><strong>任务完成/取消 → 调度释放</strong></td>
+<td><strong>系统/业务方</strong></td>
+<td><strong>任务执行完成或被取消</strong></td>
+<td><strong>员工自动恢复为&quot;可调度&quot;，重新出现在匹配检索中</strong></td>
+</tr>
+<tr>
+<td><strong>员工主动声明 → 调度状态变更</strong></td>
+<td><strong>员工</strong></td>
+<td><strong>员工手动标记自己不可调度（休假/忙碌等）</strong></td>
+<td><strong>状态立即生效，匹配检索不再返回该人</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>V1.2新增核心断点</strong>：时效衰减。系统不仅区分&quot;理论已学&quot;和&quot;实操定级&quot;，还必须追踪&quot;什么时候学的/什么时候实操的&quot;。时间越久，熟练度越低；实操的衰减速度远快于理论。</p>
+</blockquote>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<h2>3. 产品用例</h2>
+<h3>3.1 用例图</h3>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_ebec82dd.png" alt="mermaid chart" class="chart-image" />
+</div>
+<h3>3.2 用例详述</h3>
+<h4>UC-01：管理技能库</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>HR管理员</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>已登录系统，具有技能库管理权限</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. HR进入技能库管理页面<br>2. 新增/编辑/停用技能项<br>3. 设置技能等级模型（L1-L5）<br>4. <strong>设置衰减参数</strong>：理论衰减周期（如12个月）、实操衰减周期（如6个月）<br>5. 关联技能到课程</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>技能库更新，关联的课程可引用该技能；衰减参数生效</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td>闭环起点——没有技能定义和衰减参数，时效性计算无法进行</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-02：定义角色</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>HR管理员</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>技能库已建立</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 创建角色（如：高级电工）<br>2. 配置角色所需的技能集合<br>3. 设置每个技能的最低等级要求<br>4. 可选：设置学历、年资等附加条件</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>角色定义生效，可用于人岗匹配检索</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td>业务方的核心诉求——“按角色找人&quot;需要先定义&quot;这个角色需要什么”</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-03：管理课程与创建班级</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>HR管理员</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>技能库已建立，讲师已授权</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 创建课程，关联技能点<br>2. 设置课程属性（考试要求、及格线、有效期、前置课程、豁免课程）<br>3. 基于课程创建班级（时间、场地、讲师、名额、报名窗口）<br>4. 设置目标参加者（专业类别限制）</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>班级发布，员工可报名</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td>技能传递的载体——课程是&quot;教什么&quot;，班级是&quot;什么时候教、谁来教、在哪教&quot;</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-04：报名与参加培训</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>员工（自助报名）、HR（批量指派）</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>班级已创建且在报名期内；员工专业类别符合班级目标参加者要求</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 员工浏览可报名班级列表<br>2. 提交报名申请（或HR批量指派）<br>3. 报名进入暂存表待审核<br>4. HR审核通过，报名确认<br>5. 员工通过QR码签到/签退<br>6. 培训完成</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>生成培训记录（暂存状态）</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td>双轨管理——内部员工自助报名+外部人员管理员建立，流程相似但细节不同</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-05：完结课程与理论达标</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>HR管理员</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>班级培训已完成，出勤记录已确认</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. HR对班级执行完结操作<br>2. 系统检查课程考试设置：<br>   - 若 is_exam=1：检查成绩是否≥passing_line<br>   - 若 is_exam=0：默认理论达标<br>3. 达标的员工，其关联技能标记为&quot;理论已学&quot;<strong>+记录理论达标时间</strong><br>4. 未达标的员工，标记为&quot;未通过&quot;</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>员工技能状态更新为&quot;理论已学&quot;，理论达标时间戳写入；触发资格计算引擎重算；<strong>理论时效系数重置为1.0</strong>；<strong>首次达标时记录skill_acquired_at</strong></td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td><strong>核心断点</strong>——理论达标是实操定级的前提，是&quot;学过&quot;的证明；<strong>达标时间是时效性计算的起点</strong></td>
+</tr>
+</tbody>
+</table>
+<h4>UC-06：实操评估与定级</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>业务方（消费者）</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>员工已理论达标该技能；员工已被指派执行实际任务</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 业务方进入员工技能评估页面<br>2. 选择需评估的技能<br>3. 根据员工实际操作表现，评定等级（L1-L5）<br>4. 提交评估结果</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>员工技能更新&quot;实操等级&quot;，实操评估时间戳写入；触发资格计算引擎重算；<strong>实操时效系数重置为1.0</strong>；<strong>ROLE_SKILL_EXPERIENCE.evaluated_count+1(本角色)</strong></td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td><strong>核心断点</strong>——“学过&quot;≠&quot;会用”，实操等级由业务方在实际派工后评估；<strong>实操时间是时效性计算中衰减最快的维度</strong></td>
+</tr>
+</tbody>
+</table>
+<h4>UC-07：资格自动计算与证书签发</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>系统（自动触发）</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>员工的培训记录或实操等级发生变化</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 变更事件进入资格重算队列<br>2. 规则引擎检查员工是否满足某资格证书的课程组合要求<br>3. 若满足：自动签发证书，计算有效期<br>4. 若不满足：更新匹配度<br>5. 若证书即将过期：触发预警通知</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>资格证书状态更新；人岗匹配数据更新；预警通知发送</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td>资格证书是技能体系的&quot;结算单位&quot;——零散的课程完成记录需要被聚合为有意义的资质证明</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-08：检索匹配人员（自由筛选+推荐排序）</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>业务方（消费者）</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>角色已定义或目标技能已选定</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 业务方选择检索入口：按角色 / 按技能<br>2. <strong>选择筛选视图</strong>：🎯推荐(默认) / 🌱培养 / 🔍探索 / 🛡️风险可控 / ⚙️自定义<br>3. 系统按所选视图的排序规则展示人员列表<br>4. 每位员工后面显示排序解释（为什么排这里）<br>5. 业务方根据需要自由选择人员——<strong>系统推荐但不强制</strong><br>6. 业务方确认指派任务</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>任务指派记录生成；员工进入实操评估等待状态；ROLE_SKILL_EXPERIENCE.evaluated_count+1(本角色)于评估后、ROLE_SKILL_EXPERIENCE.total_assignment_count+1(本角色)于指派时</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td>业务方多元化诉求——“找最靠谱的人”+“培养新人梯队”+“自由选择”。<strong>系统是参谋，不是决策者</strong></td>
+</tr>
+</tbody>
+</table>
+<h4>UC-09：时效衰减计算与复训提醒</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>系统（定时触发）</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>员工存在已达标的技能记录</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 系统定时计算所有技能的时效系数<br>2. 理论时效：距理论达标时间越久，系数越低（缓慢衰减）<br>3. 实操时效：距实操评估时间越久，系数越低（<strong>快速衰减</strong>）<br>4. 当时效系数降至阈值以下时：<br>   - 在人岗匹配中标记&quot;时效衰减&quot;预警<br>   - 向员工和HR发送复训提醒<br>5. 员工重新学习或重新实操后，时效系数重置</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>时效系数更新；复训提醒发送；人岗匹配排序更新</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td><strong>熟练度法则</strong>——昨天做过，今天一定更熟练。很久没做，一定更生疏。系统必须反映这个现实</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-10：调度可用性管理</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>员工</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>员工已登录系统</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 员工进入&quot;我的调度状态&quot;页面<br>2. 查看当前调度状态（可调度/不可调度）<br>3. 若需临时不可调度：手动切换状态，填写原因和预计恢复时间<br>4. 若需设置未来不可调度：添加调度日历条目（如休假期间）<br>5. 系统按时间自动切换状态</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>调度状态立即生效；不可调度时不会出现在匹配检索结果中</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td><strong>调度排他性</strong>——员工可能休假或忙于其他项目，不应在不可用时被调度</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-11：任务指派与调度锁定/释放</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>业务方（消费者）</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>业务方已在匹配检索中选定人员</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 业务方确认指派任务<br>2. <strong>系统检查该员工当前调度状态</strong>：<br>   - 若&quot;可调度&quot;：指派成功，员工自动切换为&quot;不可调度&quot;<br>   - 若&quot;不可调度&quot;：提示&quot;该人员当前不可调度&quot;，指派失败<br>3. 任务执行完成后，业务方标记任务完成<br>4. 员工自动恢复为&quot;可调度&quot;</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>调度状态与任务状态联动；同一人不会被重复指派；<strong>ROLE_SKILL_EXPERIENCE.total_assignment_count+1(本角色)</strong></td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td><strong>调度排他性</strong>——一个人同一时间只能执行一个任务，已被调度的人不应再出现在检索结果中</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-12：部门职能概览（V2.4新增——TAD需求）</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>部门主管（TAD）、HR管理员</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>角色定义已建立，员工技能数据已录入</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 部门主管进入&quot;部门职能概览&quot;页面<br>2. <strong>选择检视层级</strong>：<br>   - 部门层级：查看TAD整体职能概况——总人数、各职能覆盖人数、有效期分布<br>   - 单位层级：按TAD辖下小组(Unit)划分——每个Unit的职能覆盖和缺口<br>   - 个人层级：选择某员工——查看其全部职能状态、时间轴、有效期<br>3. 查看各职能的<strong>时间轴(Timeline)</strong>——何时达标、何时即将过期、何时已过期<br>4. 查看各职能的<strong>有效期(Validity Period)</strong>——当前状态🟢有效/🟡即将过期/🔴已过期<br>5. 切换层级时数据联动下钻——从部门→单位→个人</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>无数据变更；主管获得部门职能全貌与缺口洞察</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td><strong>TAD甲方需求</strong>：掌握内部职能总数，并建立各项职能的时间轴与有效期管理机制。支持部门/单位/个人三级检视</td>
+</tr>
+</tbody>
+</table>
+<h4>UC-13：趋势分析与异动预测（V2.4新增——TAD需求）</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>参与者</strong></td>
+<td>部门主管（TAD）、HR管理员</td>
+</tr>
+<tr>
+<td><strong>前置条件</strong></td>
+<td>员工数据含预计离职/退休日期（来自SAP同步或手动录入）</td>
+</tr>
+<tr>
+<td><strong>主流程</strong></td>
+<td>1. 部门主管进入&quot;趋势分析&quot;页面<br>2. 选择分析维度：时间范围(1年/3年/5年)<br>3. <strong>查看职能人数趋势折线图</strong>——各职能的合资格人数历史变化+预测变化<br>4. <strong>查看异动预测报告</strong>：<br>   - 预计退休人员列表及影响职能<br>   - 预计离职人员(N年)及影响职能<br>   - 职能缺口预警：哪些职能在未来N年可能不足<br>5. 生成<strong>趋势报告</strong>：部门职能健康度评分+缺口建议（需招聘/需培训/需外聘）<br>6. 导出报告或推送至月度报表</td>
+</tr>
+<tr>
+<td><strong>后置条件</strong></td>
+<td>无数据变更；趋势报告可推送至部门负责人</td>
+</tr>
+<tr>
+<td><strong>需求来源</strong></td>
+<td><strong>TAD甲方需求</strong>：需能根据未来几年的员工变动数据（如预计退休人员）生成趋势报告，协助预判职能缺口</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. 核心时序</h2>
+<h3>4.1 培训全流程时序图</h3>
+<p>展示从课程创建到资格证书签发，<strong>含时效性计算</strong>的完整时序：</p>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_81c82a9e.png" alt="mermaid chart" class="chart-image" />
+</div>
+<h3>4.2 时效性计算时序图</h3>
+<p>展示时效系数的计算和影响流转：</p>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_bc633090.png" alt="mermaid chart" class="chart-image" />
+</div>
+<h3>4.3 报名-审核-记录 数据流时序图</h3>
+<p>展示关键的数据流转过程——暂存表（Staging）模式：</p>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_a3730a06.png" alt="mermaid chart" class="chart-image" />
+</div>
+<h3>4.4 资格计算引擎时序图</h3>
+<p>展示系统最复杂的部分——资格计算的内部流程：</p>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_11ac0ac1.png" alt="mermaid chart" class="chart-image" />
+</div>
+<hr />
+<h2>5. 功能需求</h2>
+<blockquote>
+<p>以下每个功能均标注<strong>需求来源</strong>，确保功能可追溯到业务闭环中的断点。</p>
+</blockquote>
+<h3>5.1 基础层功能</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-B01</td>
+<td>技能库管理</td>
+<td>支持技能的CRUD、分类、等级模型配置（L1-L5）</td>
+<td>闭环起点：技能是所有后续逻辑的基础实体</td>
+</tr>
+<tr>
+<td>F-B02</td>
+<td><strong>技能衰减参数</strong></td>
+<td><strong>为每个技能设置理论衰减周期和实操衰减周期</strong></td>
+<td><strong>时效性前提：没有衰减参数，无法计算时效系数</strong></td>
+</tr>
+<tr>
+<td>F-B03</td>
+<td>角色定义</td>
+<td>创建角色，配置所需技能集合及最低等级要求；<strong>可配置职位前置条件(Position Prerequisite)——如&quot;LT Responsible Issuer需Senior Technician以上职级&quot;</strong></td>
+<td>业务方诉求：按角色找人的前提是定义角色；部分角色需特定职位阶层才能担任</td>
+</tr>
+<tr>
+<td>F-B04</td>
+<td>员工档案</td>
+<td>管理员工基本信息、所属部门、当前角色</td>
+<td>SAP同步基础数据，是评估和匹配的对象</td>
+</tr>
+<tr>
+<td>F-B05</td>
+<td>SAP数据同步</td>
+<td>只读同步员工/部门/职位/专业类别(PCGRP)</td>
+<td>企业现有数据源，避免重复维护</td>
+</tr>
+<tr>
+<td>F-B07</td>
+<td><strong>外部认证记录管理（V2.0新增）</strong></td>
+<td><strong>管理员工持有的外部认证/检查记录——职安卡/密闭空间卡/身体检查/劳工局考核/消防局认证/澳门注册电工等。每项外部认证有独立的有效期和生效日期，到期自动预警。外部认证可作为资格证书的组成项之一——当资格定义包含外部认证时，任一组成项过期即触发证书&quot;熄灯&quot;（失效）。体检记录支持结构化判定(Fitness Matrix)——定义各角色对体检的要求(可实操/仅可观察/不可参与)</strong></td>
+<td><strong>甲方痛点</strong>：外部认证散落在各Excel中，无法与内部技能联动。职安卡/密闭空间卡每个人的生效期和有效期都不一样，涉及人员多，手动管理极难。体检需结构化录入：医生只回复能否参与课程/能否实操，不需详细医疗数据</td>
+</tr>
+</tbody>
+</table>
+<h3>5.2 培训层功能</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-T01</td>
+<td>课程管理</td>
+<td>课程CRUD，关联技能，设置考试/及格线/有效期/前置/豁免；<strong>课程类型支持K(知识)/S(技能)/FF(安全消防)分类约定，反映EWCTP三级课程结构</strong></td>
+<td>技能传递的载体：定义&quot;教什么&quot;</td>
+</tr>
+<tr>
+<td>F-T02</td>
+<td>课程替代</td>
+<td>支持课程替代关系，含生效日期</td>
+<td>课程生命周期管理：旧课程被新课程替代后，资格计算需识别</td>
+</tr>
+<tr>
+<td>F-T03</td>
+<td>班级管理</td>
+<td>创建班级，设时段/场地/讲师/名额/报名窗口/目标参加者</td>
+<td>课程的实例化：定义&quot;何时教、何地教、谁来教&quot;</td>
+</tr>
+<tr>
+<td>F-T04</td>
+<td>讲师授权</td>
+<td>管理讲师与课程的M:N授权关系，防重复授权</td>
+<td>班级选讲师的前提：只能从授权池中选择</td>
+</tr>
+<tr>
+<td>F-T05</td>
+<td>QR考勤</td>
+<td>企业微信扫码签到/签退，按课时时段记录</td>
+<td>出勤是理论达标的前置条件：未签到=未参加</td>
+</tr>
+<tr>
+<td>F-T06</td>
+<td>场地与语言管理</td>
+<td>场地列表、授课语言列表的CRUD</td>
+<td>班级资源配置的查找表</td>
+</tr>
+</tbody>
+</table>
+<h3>5.2a 培训层补充功能（V2.0新增——培训需求收集与预算管理）</h3>
+<blockquote>
+<p>甲方核心痛点：各部门用邮件/口头报培训需求，报budget流程混乱，HRS无法统一预留时间和预算。标注<strong>代替人手化</strong>。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-T07</td>
+<td><strong>培训需求收集与预算管理</strong></td>
+<td><strong>“培训许愿池”——部门在线提交培训需求（想学什么课程/什么技能）→填写预估人数和预算→提交至HRS审核→HRS预留时间和预算→需求转化为开班计划。全流程在线可追溯，代替邮件/口头报需求的现状。支持：部门提交需求、HRS审核/驳回/调整、需求状态追踪、预算汇总统计、需求→开班转化</strong></td>
+<td><strong>甲方痛点</strong>：培训需求靠人工收集，预算流程混乱。标注*代替人手化——部门报课程需求→报budget→HRS预留时间/预算</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 评估层功能</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-E01</td>
+<td>报名管理</td>
+<td>员工自助报名 / HR批量指派，审核流程，staging模式</td>
+<td>双轨管理：内部员工自助+外部人员管理员建立</td>
+</tr>
+<tr>
+<td>F-E02</td>
+<td>培训记录管理</td>
+<td>记录员工培训历史、成绩、状态，staging→formal流转；<strong>支持外部培训记录Excel批量导入——非报名场景的批量导入（如：对外培训记录目前用Excel维护，需纳入统一平台）</strong></td>
+<td>培训数据的正式落地，是理论达标的依据</td>
+</tr>
+<tr>
+<td>F-E03</td>
+<td>课程完结与理论达标</td>
+<td>HR完结课程；系统自动判定理论达标（考试/非考试路径）；<strong>记录达标时间</strong></td>
+<td><strong>核心断点</strong>：理论达标是&quot;学过&quot;的证明；<strong>达标时间是时效计算起点</strong></td>
+</tr>
+<tr>
+<td>F-E04</td>
+<td>实操评估</td>
+<td>业务方根据员工实际操作表现评定技能等级（L1-L5）；<strong>记录评估时间；在ROLE_SKILL_EXPERIENCE中累计evaluated_count+1（role-specific）</strong></td>
+<td><strong>核心断点</strong>：“学过&quot;≠&quot;会用”；<strong>正式评估次数是经验凭证之一</strong></td>
+</tr>
+<tr>
+<td>F-E05</td>
+<td>资格计算引擎</td>
+<td>规则引擎自动检查课程组合完成度，签发/更新/吊销证书；<strong>课程组合区分必修(compulsory)与选修(elective)——必修全部完成+选修完成指定数量即可达标；支持条件性有效期——如&quot;年满55岁有效期缩短为3年(而非5年)&quot;</strong></td>
+<td>系统最复杂部分：零散记录→聚合证书，含豁免/替代处理；课程组合非全部必修——选修课只需完成指定数量</td>
+</tr>
+<tr>
+<td>F-E06</td>
+<td><strong>时效性计算</strong></td>
+<td><strong>定时计算每位员工每项技能的时效系数（理论+实操），含衰减曲线和刷新机制</strong></td>
+<td><strong>熟练度法则：技能会随时间衰减，需要量化衰减程度</strong></td>
+</tr>
+<tr>
+<td>F-E07</td>
+<td><strong>熟练度综合计算（V1.5新增）</strong></td>
+<td><strong>综合时效×W时效 + 操作频次得分×W次数 + 任务频次得分×W任务 + 掌握深度得分×W深度 → proficiency_score</strong></td>
+<td><strong>次数法则+熟练度法则的三维度融合：时效保手感，次数保经验，深度保理解</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<h3>5.4 应用层功能</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-A01</td>
+<td>人岗匹配检索</td>
+<td>按角色<strong>或按技能</strong>检索，<strong>5种筛选视图</strong>（推荐/培养/探索/风险可控/自定义），默认推荐视图按综合熟练度排序，培养视图打破马太效应给新人机会；<strong>自定义视图完全由用户控制筛选和排序</strong>；排序始终透明可解释</td>
+<td>业务方诉求多元化：“找最靠谱的人”+“培养新人梯队”+“自由选择”，系统是参谋不是决策者</td>
+</tr>
+<tr>
+<td>F-A02</td>
+<td><strong>复训提醒</strong></td>
+<td><strong>时效系数降至阈值时，自动提醒员工复训和HR安排复训班级；同时通知员工所属部门负责人，确保部门Head及时知晓团队成员的技能衰减情况</strong></td>
+<td><strong>时效衰减的应对：与其让人技能生疏，不如主动提醒复训</strong></td>
+</tr>
+<tr>
+<td>F-A03</td>
+<td>资质预警</td>
+<td>技能过期/等级不达标/证书即将过期/<strong>时效衰减严重</strong>/<strong>外部认证即将过期</strong>时预警；<strong>通知对象包括员工本人、HR、部门负责人</strong></td>
+<td>主动式管理：不等问题发生才处理</td>
+</tr>
+<tr>
+<td>F-A04</td>
+<td>数据看板</td>
+<td>技能分布图、热门课程、人均技能增长率、培训完成率/<strong>时效健康度</strong>/<strong>合资格人数趋势折线图</strong>/<strong>部门维度证书统计</strong></td>
+<td>管理层决策支持：掌握全局态势</td>
+</tr>
+<tr>
+<td>F-A05</td>
+<td>权限控制</td>
+<td>RBAC + 页面权限 + 数据范围权限（部门级）</td>
+<td>多角色协作的基础：各人只看该看的</td>
+</tr>
+<tr>
+<td>F-A06</td>
+<td><strong>调度可用性管理</strong></td>
+<td><strong>员工可标记可/不可调度；被指派后自动不可调度；任务完成后自动可调度；匹配只返回可调度人员</strong></td>
+<td><strong>调度排他性：一个人同一时间只能执行一个任务，已被调度的人不应再出现在检索中</strong></td>
+</tr>
+<tr>
+<td>F-A07</td>
+<td><strong>任务管理（V1.6新增）</strong></td>
+<td><strong>任务的完整生命周期：创建→指派→执行→评估→完成/取消。任务是调度锁定的语义载体——没有任务实体，调度只是一个布尔值，不知道锁在什么上。任务必须关联role(TASK.role_seq_FK)——记录&quot;这个任务是哪个岗位上下文的&quot;。V2.3修正：指派时ROLE_SKILL_EXPERIENCE.total_assignment_count+1，完成时ROLE_SKILL_EXPERIENCE.task_completion_count+1</strong></td>
+<td><strong>核心缺口</strong>：旧文档反复提到&quot;任务&quot;但从未定义。调度锁定、实操评估、次数累计都以任务为基础</td>
+</tr>
+<tr>
+<td>F-A05b</td>
+<td><strong>证书持有人查询（V2.0新增）</strong></td>
+<td><strong>按证书名称查询持有人列表（含状态：有效/即将过期/已过期）、按部门查询证书分布和数量、查询整個部門/Unit擁有證書數量。支持导出</strong></td>
+<td><strong>甲方需求</strong>：查询目前有多少员工持有指定证书、支援快速查询整个部门/Unit拥有证书分布有效期及数量</td>
+</tr>
+<tr>
+<td>F-A06</td>
+<td><strong>月度自动报表推送（V2.0细化）</strong></td>
+<td><strong>按月自动生成培训报表并推送给相关部门负责人，非自助看板而是主动推送。报表内容含：证书持有人统计(按部门/按证书)、过期预警汇总、合资格人数趋势(折线图+数字)、培训完成率统计。推送渠道：企业微信+邮件。部门负责人无需登录系统即可收到关键数据</strong></td>
+<td><strong>甲方需求</strong>：每月training record/auto reminder/reporting通知使用TMS的部门员工。用PowerBI看未完善→需系统自身提供月度报表</td>
+</tr>
+<tr>
+<td>F-A07b</td>
+<td><strong>部门主管自助视图（V2.2新增）</strong></td>
+<td><strong>部门主管登录后可自助查询本部门员工的证书分布、即将过期人员列表、技能覆盖情况——无需每次找HR。主管可查看&quot;我的部门谁快过期了&quot;、一键向部门员工发送续期提醒、查看部门培训完成率。<strong>甲方痛点</strong>：现有TMS权限设计不便于部门主管自助查询，仅能由HR统一查询</strong></td>
+<td>甲方痛点：現有TMS權限設計不便於員工自助查詢，僅能由負責人統一查詢與管理。部門間協作需提前提醒證書到期</td>
+</tr>
+<tr>
+<td>F-A08</td>
+<td><strong>部门职能概览（V2.4新增——TAD需求）</strong></td>
+<td><strong>三级检视（部门/单位/个人）的职能全貌管理。部门层级：TAD整体职能概况（总人数、职能覆盖人数、有效期分布）；单位层级：按Unit划分的职能覆盖和缺口；个人层级：单员工的全部职能状态+时间轴+有效期。每项职能显示时间轴(Timeline)——何时达标、何时即将过期、何时已过期——和有效期(Validity Period)。支持层级间下钻联动</strong></td>
+<td><strong>TAD甲方需求</strong>：掌握内部职能总数，并建立各项职能的时间轴与有效期管理机制。支持部门/单位/个人三级切换</td>
+</tr>
+<tr>
+<td>F-A09</td>
+<td><strong>趋势分析与异动预测（V2.4新增——TAD需求）</strong></td>
+<td><strong>基于员工变动数据（退休/离职预测）生成趋势报告：职能人数趋势折线图(历史+预测)、异动预测（预计退休人员及影响职能、预计离职人员及影响职能）、职能缺口预警（哪些职能未来N年可能不足）、职能健康度评分。报告可导出或按月推送给部门负责人</strong></td>
+<td><strong>TAD甲方需求</strong>：需能根据未来几年的员工变动数据（如预计退休人员）生成趋势报告，协助预判职能缺口</td>
+</tr>
+</tbody>
+</table>
+<h3>5.5 评估层补充功能（V1.6新增）</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-E04a</td>
+<td><strong>员工申请实操评估</strong></td>
+<td>员工完成任务后可主动申请业务方评估；超期未评估时系统自动提示业务方</td>
+<td>现实中大量任务完成后不会主动评估→evaluated_count远低于task_completion_count→系统认为无正式经验。员工需要有&quot;请求评估&quot;的入口</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3a 评估层补充功能（V2.0新增——面试/Board审核流程）</h3>
+<blockquote>
+<p>甲方需求：DLAP/CLAP申请者需见Board面试审核，以上堂及成绩通过为前置，还需要面试作为审核环节。DLAP见部门经理，CLAP见更高级。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-E07</td>
+<td><strong>面试/Board审核流程（V2.0新增）</strong></td>
+<td><strong>课程通过后，部分资格证书(DLAP/CLAP等)需要面试审核才能正式签发。面试流程：员工提交面试申请→系统检查前置条件(理论达标+实操等级达标)→安排面试(Board组成/面试时间)→面试审核(通过/不通过/有条件通过)→结果记录。面试通过后证书正式签发，面试不通过则证书保持&quot;待面试审核&quot;状态。面试记录全流程可追溯。</strong></td>
+<td><strong>甲方需求</strong>：DLAP见部门经理/CLAP见更高级。面试审核是证书签发的必要环节，当前散落在邮件和纸质文件中</td>
+</tr>
+</tbody>
+</table>
+<h3>5.5a 员工成长层功能（V1.8新增——透明晋升+终生学习，V1.9更新——技能驱动岗位）</h3>
+<blockquote>
+<p>以下功能将员工从&quot;被管理的对象&quot;升级为&quot;主动成长的主体&quot;。系统不只是HR的管理工具，更是每个人的职业导航仪。<strong>V1.9核心升级</strong>：视角翻转——从&quot;岗位找人&quot;变为&quot;人的技能推导出满足哪些岗位&quot;。技能是因，岗位是果。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-G01</td>
+<td><strong>岗位技能查询</strong></td>
+<td>员工可查询任意岗位/角色的技能要求和等级门槛——不是HR告诉他的，而是他自己看得见的。<strong>V1.9新增&quot;我的适配岗位&quot;</strong>：基于员工当前掌握的技能，实时推导满足哪些岗位，多学一个技能可能多满足一个岗位</td>
+<td>透明晋升法则+技能驱动岗位：晋升路径不透明，员工没有方向；岗位不应是指定的，应是技能推导的</td>
+</tr>
+<tr>
+<td>F-G02</td>
+<td><strong>我的晋升路径</strong></td>
+<td>员工选定目标岗位后，系统自动对比当前技能与目标要求，可视化展示差距（差几个技能、差几个等级、差多少次实操）。<strong>V1.9新增&quot;岗位要求升级导致不再满足&quot;展示</strong>：去年满足的岗位今年可能因要求升级不再满足，驱动终生学习</td>
+<td>透明晋升法则+终生学习：知道差距才能有方向；岗位会升级，差距会动态变化</td>
+</tr>
+<tr>
+<td>F-G03</td>
+<td><strong>技能差距分析</strong></td>
+<td>针对差距项，系统推荐可报名的课程（补理论）、可申请的任务类型（攒实操次数）、预计达到目标的时间线</td>
+<td>透明晋升法则+终生学习：不是只告诉你差什么，还要告诉你怎么补</td>
+</tr>
+<tr>
+<td>F-G04</td>
+<td><strong>成长记录与审计溯源</strong></td>
+<td>员工查看自己每条技能数据的来源链路：理论达标来自哪次课程完结、实操等级来自哪次任务评估、次数累计来自哪些任务指派。每条数据都有触发者、触发时间、原始记录编号</td>
+<td>数据可审计可溯源：技能等级不是&quot;HR说了算&quot;，而是由一条条可追溯记录堆砌而成</td>
+</tr>
+<tr>
+<td>F-G05</td>
+<td><strong>岗位技能要求变更通知</strong></td>
+<td>当目标岗位的技能要求发生变更（升级/新增技能项）时，自动通知已设该岗位为目标的员工，刷新差距分析</td>
+<td>终生学习：岗位会升级，员工需要及时知晓并追赶</td>
+</tr>
+<tr>
+<td>F-G06</td>
+<td><strong>我的技能全景</strong></td>
+<td>员工一站式查看：当前所有技能等级、时效状态、实操次数、掌握时长、综合熟练度、资格证书、调度状态——技能卡片全景视图。<strong>V1.9新增&quot;适配岗位&quot;区域</strong>：基于当前技能实时推导满足哪些岗位，一眼看到技能的全貌和结果</td>
+<td>员工视角的&quot;技能仪表盘&quot;+技能驱动岗位：知道自己现在的全貌，以及技能能推导出哪些岗位</td>
+</tr>
+<tr>
+<td>F-G07</td>
+<td><strong>我的适配岗位（V1.9新增）</strong></td>
+<td><strong>核心功能</strong>：员工的页面上有一个动态区域——“基于你当前掌握的技能，你满足以下岗位”——这不是HR指定的，是系统根据你的技能+所有岗位的技能要求实时计算的。适配结果随技能变动实时更新；一个技能组合可适配多个岗位；标注完全满足/部分满足/因时效衰减暂不满足。<strong>这是&quot;技能驱动岗位&quot;法则的直接落地</strong></td>
+<td>技能驱动岗位法则：岗位不是分配给人的，而是人的技能推导出来的。人主动堆技能，岗位自然出现</td>
+</tr>
+<tr>
+<td>F-G08</td>
+<td><strong>我的证书（V2.2新增）</strong></td>
+<td><strong>员工一站式查看自己所有资格证书的全貌</strong>：有效🟢/即将过期🟡/已过期🔴/已熄灯⚫，每张证书显示：证书名、签发日期、到期日期、组成项状态(哪些课程/认证即将过期)、续期建议(需重修哪些课程/需续哪些认证)。员工无需问HR即可知道自己的证书状况和续期方向——<strong>甲方痛点</strong>：员工目前无法自助查询个人证书状态，只能问HR</td>
+<td>甲方痛点：员工無法自助查詢個人培訓與證書狀態，僅能由負責人統一查詢。透明晋升需包含证书透明</td>
+</tr>
+</tbody>
+</table>
+<h3>5.6 系统支撑层功能（V1.4新增，V2.5扩展）</h3>
+<blockquote>
+<p>以下功能为跨模块横切关注点。V2.5根据产品生命周期审计，新增F-S05~F-S14共10项缺失功能。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>描述</th>
+<th>需求来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-S01</td>
+<td><strong>统一消息通知中心</strong></td>
+<td>聚合所有模块的通知消息（报名/完结/评估/证书/复训/调度变更/月度报表等），支持已读/未读管理、通知偏好配置；<strong>通知对象支持员工本人+部门负责人+HR管理员</strong></td>
+<td>通知散落各模块，员工无法集中查看；NF-07审计要求消息可追溯；甲方需求：通知使用TMS的部门员工</td>
+</tr>
+<tr>
+<td>F-S02</td>
+<td><strong>操作日志与审计追踪</strong></td>
+<td>全模块字段级操作日志，统一框架自动记录增删改，关键操作专用审计视图</td>
+<td>NF-07要求&quot;全模块字段级操作日志&quot;，当前仅3个模块有日志</td>
+</tr>
+<tr>
+<td>F-S03</td>
+<td><strong>系统参数管理</strong></td>
+<td>时效权重(W理论/W实操)、预警阈值、衰减曲线类型等可配置参数的管理界面</td>
+<td>当前参数硬编码在PRD中，HR无法根据企业实际调整</td>
+</tr>
+<tr>
+<td>F-S04</td>
+<td><strong>资格证书定义管理</strong></td>
+<td>独立管理资格证书的课程组合定义，是资格计算引擎的输入前提</td>
+<td>ER图有COMPETENCE_DEF独立实体，原E05.1仅是子功能粒度不足</td>
+</tr>
+<tr>
+<td>F-S05</td>
+<td><strong>数据纠错机制（V2.5新增）</strong></td>
+<td><strong>superseding record机制</strong>：纠错创建新记录(supersedes_seq指向旧记录)，旧记录标记superseded；操作日志区分OPERATIONAL/CORRECTION/OVERRIDE/SYSTEM_ADJUSTMENT四类；纠错必须填写原因码和审批人；纠错后自动触发资格重算+熟练度重算</td>
+<td><strong>审计发现P0缺失</strong>：数据不覆盖≠不可纠错。评估员录入错误、系统计算错误、HR行政纠错均无正规路径</td>
+</tr>
+<tr>
+<td>F-S06</td>
+<td><strong>批量操作框架（V2.5新增）</strong></td>
+<td><strong>批量证书续期、批量技能等级纠错、批量员工状态变更</strong>。三步流程：选择→预览→确认。支持部分成功（成功记录提交、失败记录标注原因）。适用场景：外部认证批量续期(50人)、系统性评估纠错、部门整体调整</td>
+<td><strong>审计发现P1缺失</strong>：批量导入存在(E02/E03/B07)但批量纠错和批量续期不存在</td>
+</tr>
+<tr>
+<td>F-S07</td>
+<td><strong>系统健康监控看板（V2.5新增）</strong></td>
+<td><strong>展示批量任务状态</strong>：E06时效计算是否完成/耗时、E05a重算队列深度、SAP同步最近成功时间/失败告警、企业微信集成心跳、数据质量指标(空值率/异常值)、计算失败记录数</td>
+<td><strong>审计发现P1缺失</strong>：批量计算失败无监控，员工可能看到过期数据而不知情</td>
+</tr>
+<tr>
+<td>F-S08</td>
+<td><strong>SAP-TMS数据对账（V2.5新增）</strong></td>
+<td><strong>提供对账看板</strong>：比对SAP与TMS数据差异(员工职位变更未同步、出生日期缺失、离职员工仍活跃等)。标注冲突记录，提供手动修复入口。定期自动对账(可配置频率)</td>
+<td><strong>审计发现P1缺失</strong>：SAP→TMS单向同步无对账机制，数据可能不一致</td>
+</tr>
+<tr>
+<td>F-S09</td>
+<td><strong>证书组成变更宽限期（V2.5新增）</strong></td>
+<td><strong>证书定义变更后，现有持有人可选择</strong>：①立即熄灯 ②给N天宽限期(期间仍有效但标注&quot;待补修&quot;) ③老规则持有人grandfather(继续有效直到下次正常续期)。HR在变更时选择策略</td>
+<td><strong>审计发现P0缺失</strong>：证书新增必修课后已有持有人瞬间丧失资格，影响人数可能上百。Q-14</td>
+</tr>
+<tr>
+<td>F-S10</td>
+<td><strong>并发指派锁机制（V2.5新增）</strong></td>
+<td><strong>人岗匹配指派时增加数据库级乐观锁</strong>：指派请求携带version字段，更新时比对version，不一致则拒绝(提示&quot;该人员状态已变更&quot;)。防止两个业务方同时指派同一人</td>
+<td><strong>审计发现P0缺失</strong>：调度锁定无并发控制，存在竞态条件</td>
+</tr>
+<tr>
+<td>F-S11</td>
+<td><strong>技能等级模型变更保护（V2.5新增）</strong></td>
+<td><strong>修改技能等级模型(如L5改L3)时</strong>：系统检查现有SKILL_ASSESSMENT引用的等级。若存在L4/L5评估记录，阻止变更并提示影响人数。建议创建新技能替代修改现有技能</td>
+<td><strong>审计发现P0缺失</strong>：等级模型变更会导致已有评估数据引用失效，数据完整性灾难</td>
+</tr>
+<tr>
+<td>F-S12</td>
+<td><strong>角色停用级联规则（V2.5新增）</strong></td>
+<td><strong>角色三态迁移</strong>：Active(正常)→Deprecated(仍可查/可匹配，但不再新增任务指派)→Retired(不可查/不可匹配，关联证书进入宽限期)。Deprecated持续N天后自动变为Retired。员工通知+主管通知</td>
+<td><strong>审计发现P1缺失</strong>：角色停用后级联规则未定义。Q-19</td>
+</tr>
+<tr>
+<td>F-S13</td>
+<td><strong>数据保留与归档策略（V2.5新增）</strong></td>
+<td><strong>定义各实体数据保留周期</strong>：培训记录7年(法规)、操作日志3年、已完成任务5年后归档、离职员工档案永久归档(不可查但保留)。支持GDPR数据擦除请求(标记删除非物理删除)。归档数据不影响在线查询性能</td>
+<td><strong>审计发现P2缺失</strong>：数据无限累积无归档策略，影响性能和合规。Q-23</td>
+</tr>
+<tr>
+<td>F-S14</td>
+<td><strong>通知节流与去重（V2.5新增）</strong></td>
+<td><strong>同一员工在N分钟内触发多条同类通知时合并为1条</strong>。如5张证书同时过期→1条通知&quot;您有5张证书即将过期&quot;。支持配置合并窗口时间和合并规则</td>
+<td><strong>审计发现P2缺失</strong>：批量事件触发批量通知，造成通知轰炸</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>6. 数据逻辑与规则</h2>
+<h3>6.1 核心实体关系</h3>
+<div class="chart-container chart-mermaid">
+<img src="images/mermaid_dddabc3c.png" alt="mermaid chart" class="chart-image" />
+</div>
+<blockquote>
+<p><strong>时效性字段内嵌于 SKILL_ASSESSMENT</strong>：<code>theory_certified_at</code>（理论达标时间）、<code>practical_rated_at</code>（实操评估时间）、<code>theory_freshness</code>（理论时效系数）、<code>practical_freshness</code>（实操时效系数）、<code>composite_freshness</code>（综合时效系数）。时效不是独立实体，而是技能评估的派生属性——没有评估就没有时效。</p>
+<p><strong>次数字段架构修正（V2.3——project audit发现）</strong>：<code>practical_count</code>和<code>total_assignment_count</code>已从SKILL_ASSESSMENT中移除。经验次数不再按(employee, skill)全局累计，而是按(employee, skill, role)三维度分别累计于ROLE_SKILL_EXPERIENCE实体中。原因：同一技能在不同岗位上下文中的经验不应混合计算——做Entry Risk Assessor的50次高压操作≠做LT Responsible Issuer的50次高压操作。SKILL_ASSESSMENT仅保留时效性字段(theory_certified_at/practical_rated_at/freshness)和proficiency_score(proficiency_score按role-specific计算后取加权平均)。</p>
+<p><strong>三件事关系链（V2.3澄清）</strong>：</p>
+<ul>
+<li><strong>任务指派(total_assignment_count)</strong>：业务方指派任务时+1——“被派去做事”</li>
+<li><strong>任务完成(task_completion_count)</strong>：员工完成任务时+1——“真正做过了”（新增字段，V2.3之前缺失）</li>
+<li><strong>正式评估(evaluated_count)</strong>：业务方正式评估时+1——“有人评你了”（原practical_count更名）</li>
+</ul>
+<p>关系：total_assignment_count ≥ task_completion_count ≥ evaluated_count（指派可能未完成，完成可能未评估）</p>
+<p><strong>ROLE_SKILL_EXPERIENCE（V2.3新增）</strong>：按(employee, skill, role)三维度记录经验次数。字段含义：<code>total_assignment_count</code>（该技能在该岗位上下文中被指派任务的总次数）、<code>task_completion_count</code>（该技能在该岗位上下文中实际完成任务的总次数——这才是&quot;做过多少次&quot;的真实度量）、<code>evaluated_count</code>（该技能在该岗位上下文中被正式评估的总次数）、<code>last_assigned_at</code>/<code>last_completed_at</code>/<code>last_evaluated_at</code>（最近一次各环节的时间戳，用于role-specific时效计算）。人岗匹配算法查询ROLE_SKILL_EXPERIENCE获取role-specific的次数，而非从SKILL_ASSESSMENT获取全局次数。</p>
+<p><strong>TASK增加role维度（V2.3修正）</strong>：TASK实体增加<code>role_seq_FK</code>字段，记录任务属于哪个岗位上下文。任务指派时必须指定role——“这个任务是Entry Risk Assessor的，还是LT Responsible Issuer的”。次数累计时写入对应的ROLE_SKILL_EXPERIENCE记录。</p>
+<p><strong>任务实体（V1.6新增）</strong>：TASK是调度锁定的语义载体。没有TASK，调度锁定只是一个布尔状态，不知道锁在什么上。TASK字段含义：<code>title</code>（任务标题）、<code>description</code>（任务描述）、<code>required_skill_seq_FK</code>（所需技能）、<code>assigned_employee_seq_FK</code>（被指派员工）、<code>assigned_by_FK</code>（指派人/业务方）、<code>status</code>（任务状态：待执行/进行中/已完成/已取消/已超时）、<code>assigned_at</code>（指派时间）、<code>expected_end_at</code>（预计结束时间——用于超时自动释放）、<code>completed_at</code>（实际完成时间）、<code>max_concurrent_allowed</code>（该任务允许同一人同时执行的并发数，默认1）。</p>
+<p><strong>命名说明</strong>：ER图中使用 <code>TRAINING_EVENT</code> 而非 <code>CLASS</code>，因为 <code>CLASS</code> 是 mermaid 保留关键字。在业务概念和数据库表中，该实体仍称为&quot;班级&quot;（tms_event_information / tms_class_periods）。</p>
+<p><strong>角色版本管理（V1.9新增）</strong>：ROLE实体增加<code>version</code>字段，记录当前版本号。ROLE_SKILL_VERSION记录角色技能要求的变更历史：<code>version_number</code>（版本号）、<code>effective_at</code>（生效时间）、<code>change_type</code>（变更类型：新增技能/升级等级/删除技能/降低等级）、<code>changed_by_FK</code>（变更操作人）。每次修改角色技能要求时自动创建新版本，触发G05通知和G01适配岗位重新计算。</p>
+<p><strong>外部认证记录（V2.0新增）</strong>：EXTERNAL_CERT管理员工持有的外部认证/检查记录——职安卡/密闭空间卡/身体检查/劳工局考核/消防局认证/澳门注册电工等。字段含义：<code>cert_type</code>（认证类型枚举：职安卡/密闭空间卡/身体检查/劳工局/消防局/注册电工/其他）、<code>cert_name</code>（认证名称）、<code>cert_number</code>（证书编号）、<code>issued_at</code>（生效日期）、<code>expires_at</code>（过期日期）、<code>issuing_authority</code>（发证机构）、<code>status</code>（状态：有效/即将过期/已过期）、<code>fitness_result</code>（体检结果枚举：可实操/仅可观察/不可参与——仅cert_type=身体检查时使用）。外部认证可作为COMPETENCE_DEF的组成项——当资格定义包含外部认证时，任一组成项过期即触发证书&quot;熄灯&quot;（失效）。</p>
+<p><strong>体检查询矩阵（V2.1新增）</strong>：FITNESS_MATRIX结构化定义各角色对体检的要求。字段含义：<code>role_seq_FK</code>（关联角色）、<code>fitness_type</code>（体检类型：常规体检/高空作业体检/密闭空间体检等）、<code>required_result</code>（要求结果：可实操/仅可观察/不可参与）。当员工体检结果不满足角色要求时，该员工在该角色的人岗匹配中被标注&quot;⚠体检不满足&quot;。体检结果由医生简单回复&quot;能否参与课程/能否实操&quot;，系统自动匹配Fitness Matrix判定资格——不需详细医疗数据。</p>
+<p><strong>条件性有效期（V2.1新增）</strong>：资格证书的有效期不再只是固定年限，支持条件性计算规则。如：LT Responsible证书&quot;标准有效期5年，但年满55岁的员工有效期缩短为3年&quot;。系统在COMPETENCE_DEF的validity_rules字段中以JSON格式存储条件规则，资格计算引擎签发证书时根据员工条件动态计算有效期。</p>
+<p><strong>面试/Board审核（V2.0新增）</strong>：BOARD_REVIEW记录DLAP/CLAP等资格证书的面试审核流程。字段含义：<code>review_type</code>（审核类型：DLAP见部门经理/CLAP见更高级）、<code>scheduled_at</code>（面试时间）、<code>result</code>（审核结果：通过/不通过/有条件通过）、<code>remarks</code>（审核意见）、<code>reviewer_seq_FK</code>（审核人）。面试审核是证书签发的必要环节——课程组合+实操达标后，若资格定义要求面试，则证书进入&quot;待面试审核&quot;状态，面试通过后正式签发。</p>
+<p><strong>培训需求收集（V2.0新增）</strong>：TRAINING_REQUEST记录部门提交的培训需求。字段含义：<code>department_seq_FK</code>（需求部门）、<code>requested_by_FK</code>（提交人）、<code>course_seq_FK</code>（关联课程，可选）、<code>skill_seq_FK</code>（关联技能，可选）、<code>estimated_headcount</code>（预估人数）、<code>estimated_budget</code>（预估预算）、<code>status</code>（状态：待审核/已批准/已驳回/已转开班）、<code>reviewed_by_FK</code>（HRS审核人）。需求审核通过后可一键转化为班级创建。</p>
+</blockquote>
+<h3>6.2 时效性计算规则</h3>
+<h4>6.2.1 时效系数定义</h4>
+<pre><code>时效系数 ∈ [0, 1]
+
+1.0 = 刚刚达标/评估，熟练度最高
+0.5 = 距离达标/评估已过半个衰减周期，熟练度减半
+0.0 = 距离达标/评估超过衰减周期的2倍，视为完全生疏
+</code></pre>
+<h4>6.2.2 衰减公式</h4>
+<pre><code>理论时效系数 = max(0, 1 - 距理论达标天数 / 理论衰减周期天数)
+
+实操时效系数 = max(0, 1 - 距实操评估天数 / 实操衰减周期天数)
+</code></pre>
+<h4>6.2.3 衰减周期示例</h4>
+<table>
+<thead>
+<tr>
+<th>技能类型</th>
+<th>理论衰减周期</th>
+<th>实操衰减周期</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全操作类</td>
+<td>12个月</td>
+<td>3个月</td>
+<td>实操衰减极快——安全操作必须经常练习</td>
+</tr>
+<tr>
+<td>设备操作类</td>
+<td>12个月</td>
+<td>6个月</td>
+<td>设备操作依赖肌肉记忆，久不操作会生疏</td>
+</tr>
+<tr>
+<td>管理知识类</td>
+<td>24个月</td>
+<td>12个月</td>
+<td>理论衰减较慢——管理知识不易遗忘</td>
+</tr>
+<tr>
+<td>基础常识类</td>
+<td>36个月</td>
+<td>18个月</td>
+<td>基础知识遗忘最慢</td>
+</tr>
+</tbody>
+</table>
+<h4>6.2.4 综合时效计算</h4>
+<pre><code>综合时效 = 理论时效系数 × W理论 + 实操时效系数 × W实操
+
+默认权重：W理论 = 0.3, W实操 = 0.7
+
+实操权重远高于理论，因为：
+- 实操更依赖&quot;最近有没有做&quot;
+- &quot;昨天操作过&quot;比&quot;三年前学过理论&quot;更有实际价值
+- 符合熟练度法则
+</code></pre>
+<h4>6.2.5 预警阈值</h4>
+<table>
+<thead>
+<tr>
+<th>阈值</th>
+<th>综合时效范围</th>
+<th>状态</th>
+<th>系统行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>健康</td>
+<td>≥ 0.7</td>
+<td>🟢 时效正常</td>
+<td>正常排序</td>
+</tr>
+<tr>
+<td>衰减</td>
+<td>0.4 ~ 0.7</td>
+<td>🟡 时效衰减</td>
+<td>匹配排序靠后；标注&quot;时效衰减&quot;</td>
+</tr>
+<tr>
+<td>生疏</td>
+<td>&lt; 0.4</td>
+<td>🔴 时效生疏</td>
+<td>匹配排序大幅靠后；<strong>触发复训提醒</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>6.3 人岗匹配算法（V1.5重写——三维度熟练度模型）</h3>
+<h4>6.3.1 设计思想</h4>
+<blockquote>
+<p>用人部门找人，核心关切是：<strong>“这个人来了能不能100%完成任务？”</strong></p>
+<p>旧算法（V1.2）只看时效性——“最近做没做过”，会严重误判：一个做过100次但3个月没做的人，被排在只做过1次但昨天刚做的人后面。1次经验的人出错概率远高于100次经验但稍久未操作的人。</p>
+<p>新算法引入<strong>三维度熟练度模型</strong>，回答&quot;这个人到底靠不靠谱&quot;：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>衡量什么</th>
+<th>对应指标</th>
+<th>业务含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>时效维度</strong></td>
+<td>最近做过没有</td>
+<td>时效系数（综合时效）</td>
+<td>“手感还在不在”</td>
+</tr>
+<tr>
+<td><strong>次数维度</strong></td>
+<td>做过多少次</td>
+<td>操作频次得分</td>
+<td>“经验够不够”</td>
+</tr>
+<tr>
+<td><strong>深度维度</strong></td>
+<td>掌握了多久</td>
+<td>掌握深度得分</td>
+<td>“理解够不够深”</td>
+</tr>
+</tbody>
+</table>
+<h4>6.3.2 三维度得分计算</h4>
+<p><strong>① 时效维度得分</strong>（已有，保持不变）</p>
+<pre><code>综合时效 = 理论时效系数 × W理论 + 实操时效系数 × W实操
+         = composite_freshness（已存在于SKILL_ASSESSMENT）
+</code></pre>
+<p><strong>② 次数维度得分</strong>（V2.3修正——使用role-specific次数）</p>
+<pre><code>评估次数得分 = 1 - e^(-λ × evaluated_count)
+
+其中：
+- evaluated_count = 该技能在该岗位上下文中被正式评估的次数（ROLE_SKILL_EXPERIENCE.evaluated_count）
+- λ = 评估频次衰减系数（默认0.1，可通过系统参数配置）
+- 含义：正式评估次数越多，得分越高，但边际递减
+  - 1次 → 0.10（刚入门，风险高）
+  - 5次 → 0.39（有一定经验）
+  - 10次 → 0.63（经验丰富）
+  - 30次 → 0.95（老手）
+</code></pre>
+<p><strong>次数维度补充：任务完成次数（V2.3修正——原&quot;任务指派次数&quot;改为&quot;任务完成次数&quot;）</strong></p>
+<pre><code>任务完成得分 = 1 - e^(-μ × task_completion_count)
+
+其中：
+- task_completion_count = 该技能在该岗位上下文中实际完成任务的总次数（ROLE_SKILL_EXPERIENCE.task_completion_count）
+- μ = 任务完成衰减系数（默认0.05，可通过系统参数配置）
+- 含义：任务完成次数=&quot;真正做过多少次&quot;，是经验最可靠的度量
+  - 被指派但不完成不算经验（如取消、超时未完成）
+  - V2.2用total_assignment_count（指派次数）≠实际完成次数
+  - 完成越多，得分越高，边际递减
+</code></pre>
+<p><strong>③ 深度维度得分</strong>（V1.5新增）</p>
+<pre><code>掌握深度得分 = 1 - e^(-δ × 掌握月数)
+
+其中：
+- 掌握月数 = (当前日期 - skill_acquired_at) / 30
+- skill_acquired_at = 该技能首次达标的时间（SKILL_ASSESSMENT.skill_acquired_at）
+- δ = 深度衰减系数（默认0.03，可通过系统参数配置）
+- 含义：掌握越久，理解越深，应变能力越强
+  - 1个月 → 0.03（刚学会）
+  - 6个月 → 0.17（逐渐熟悉）
+  - 12个月 → 0.30（比较熟悉）
+  - 36个月 → 0.66（深度理解）
+  - 60个月 → 0.83（资深水平）
+</code></pre>
+<h4>6.3.3 综合熟练度得分（V2.3修正——使用role-specific次数和task_completion_count）</h4>
+<pre><code>综合熟练度得分 = 综合时效 × W时效 + 评估次数得分 × W评估
+               + 任务完成得分 × W完成 + 掌握深度得分 × W深度
+
+数据来源：ROLE_SKILL_EXPERIENCE (employee, skill, role) 三维度
+  evaluated_count       -- 正式评估次数(原practical_count)
+  task_completion_count -- 任务完成次数(V2.3新增，&quot;真正做过多少次&quot;)
+  last_evaluated_at     -- 用于role-specific时效计算
+  last_completed_at     -- 用于role-specific时效计算
+
+默认权重（可通过系统参数调整）：
+  W时效 = 0.25  （时效重要，但不是唯一）
+  W评估 = 0.20  （正式评估次数是经验凭证之一，但不是全部——很多任务不会触发评估）
+  W完成 = 0.30  （任务完成次数=&quot;真正做过多少次&quot;，是经验最可靠的度量，权重最高）
+  W深度 = 0.25  （掌握时长是深度理解的证明）
+
+合计 = 0.25 + 0.20 + 0.30 + 0.25 = 1.00
+</code></pre>
+<blockquote>
+<p><strong>V2.3关键修正</strong>：</p>
+<ul>
+<li><strong>次数来源从SKILL_ASSESSMENT改为ROLE_SKILL_EXPERIENCE</strong>：按(employee, skill, role)三维度取role-specific次数，而非全局累计</li>
+<li><strong>新增task_completion_count替代total_assignment_count</strong>：“做过多少次&quot;应该是&quot;完成了多少次”，不是&quot;被派了多少次&quot;（被派但未完成不算经验）</li>
+<li><strong>权重调整：W完成(0.30) &gt; W评估(0.20)</strong>：任务完成次数是&quot;真正做过&quot;的度量，比正式评估次数更可靠，权重应更高。旧模型把任务指派和评估等权(0.25=0.25)不合理——指派≠完成</li>
+</ul>
+</blockquote>
+<h4>6.3.4 综合匹配分与排序</h4>
+<pre><code>前置过滤：仅计算 dispatch_status = &quot;可调度&quot; 的员工
+
+综合匹配分 = 技能覆盖率分 × 平均熟练度得分
+
+其中：
+- 技能覆盖率分 = 满足的技能项数 / 角色要求的总技能项数
+- 平均熟练度得分 = Σ(每项技能的综合熟练度得分) / 满足的技能项数
+</code></pre>
+<h4>6.3.5 排序规则</h4>
+<pre><code>排序优先级（降序）：
+0. **调度状态过滤（硬性前提）：仅返回&quot;可调度&quot;状态的员工**
+1. 技能覆盖率（必须满足的技能比例）
+2. 综合匹配分 = 覆盖率 × 平均熟练度（覆盖率相同时，熟练度高的优先）
+3. 操作频次得分（匹配分相同时，经验丰富者优先——&quot;做过50次&quot;比&quot;做过1次&quot;可靠）
+4. 实操时效系数（频次相同时，最近实操过的优先——&quot;手感还在&quot;）
+5. 掌握深度得分（时效相同时，掌握更久的优先——&quot;理解更深&quot;）
+6. 理论时效系数（以上都相同时，理论更扎实的优先）
+</code></pre>
+<h4>6.3.6 排序示例（V2.3重写——使用role-specific次数）</h4>
+<blockquote>
+<p><strong>V2.3关键修正</strong>：以下示例中的次数均来自ROLE_SKILL_EXPERIENCE（role-specific），而非SKILL_ASSESSMENT（全局）。假设检索角色为&quot;LT Responsible Issuer&quot;。</p>
+</blockquote>
+<p><strong>场景：检索LT Responsible Issuer</strong></p>
+<table>
+<thead>
+<tr>
+<th>员工</th>
+<th>覆盖率</th>
+<th>实操等级</th>
+<th>评估次数(本角色)</th>
+<th>任务完成次数(本角色)</th>
+<th>任务指派次数(本角色)</th>
+<th>上次实操</th>
+<th>掌握时长</th>
+<th>时效分</th>
+<th>评估次数分</th>
+<th>任务完成分</th>
+<th>深度分</th>
+<th>熟练度</th>
+<th>排序</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>张三</td>
+<td>100%</td>
+<td>L4</td>
+<td>3次</td>
+<td>48次</td>
+<td>50次</td>
+<td>3个月前</td>
+<td>2年</td>
+<td>0.60</td>
+<td>0.26</td>
+<td>0.91</td>
+<td>0.52</td>
+<td>0.57</td>
+<td>🥇 1</td>
+</tr>
+<tr>
+<td>王五</td>
+<td>100%</td>
+<td>L5</td>
+<td>5次</td>
+<td>43次</td>
+<td>45次</td>
+<td>1年前</td>
+<td>5年</td>
+<td>0.00</td>
+<td>0.39</td>
+<td>0.88</td>
+<td>0.78</td>
+<td>0.51</td>
+<td>🥈 2(⚠时效生疏)</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>100%</td>
+<td>L3</td>
+<td>2次</td>
+<td>2次</td>
+<td>2次</td>
+<td>昨天</td>
+<td>2个月</td>
+<td>1.00</td>
+<td>0.18</td>
+<td>0.10</td>
+<td>0.06</td>
+<td>0.34</td>
+<td>🥉 3(⚠经验偏少)</td>
+</tr>
+<tr>
+<td>赵六</td>
+<td>80%</td>
+<td>L4</td>
+<td>8次</td>
+<td>28次</td>
+<td>30次</td>
+<td>1周前</td>
+<td>3年</td>
+<td>0.87</td>
+<td>0.55</td>
+<td>0.75</td>
+<td>0.66</td>
+<td>0.71</td>
+<td>4(覆盖率不足)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>关键洞察——V2.3三维度经验模型</strong>：</p>
+<ul>
+<li><strong>次数是role-specific的</strong>：张三全局做过高压操作50次任务，但在LT Responsible Issuer角色下只做过10次——如果查Entry Risk Assessor，他可能有40次。旧模型(V2.2)把50次混在一起，新模型(V2.3)按角色分别统计</li>
+<li><strong>task_completion_count是&quot;做过多少次&quot;的真实度量</strong>：张三被指派50次，完成48次(2次未完成/取消)——48次才是真正做过的次数，不是50次也不是3次(评估次数)</li>
+<li><strong>三件事的关系</strong>：指派50次 ≥ 完成48次 ≥ 评估3次——差距越大说明&quot;做了但没人评&quot;越多</li>
+<li><strong>李四的警示</strong>：昨天刚做、时效1.0，但在本角色下总共只做过2次任务——系统标注⚠经验偏少</li>
+</ul>
+</blockquote>
+<h4>6.3.7 检索模式与自由筛选（V1.7重写——打破马太效应）</h4>
+<blockquote>
+<p><strong>核心设计理念：系统是参谋，不是决策者。</strong></p>
+<p>默认按熟练度推荐（保底线），同时提供多元筛选视图让部门自由选择（给空间）。用人部门想用新人、想培养梯队、想给某人特殊机会——都是合理的，系统不强制束缚。</p>
+</blockquote>
+<p><strong>① 两种检索入口</strong></p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>适用场景</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>按角色检索</strong></td>
+<td>标准场景：找人完成某个岗位的任务</td>
+<td>加载角色所有技能要求，计算覆盖率×熟练度</td>
+</tr>
+<tr>
+<td><strong>按技能检索</strong></td>
+<td>快速场景：只需找一个会某技能的人</td>
+<td>无覆盖率概念，直接按所选技能的平均熟练度排序</td>
+</tr>
+</tbody>
+</table>
+<p><strong>② 五种筛选视图</strong></p>
+<table>
+<thead>
+<tr>
+<th>视图</th>
+<th>排序逻辑</th>
+<th>适用场景</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>🎯推荐视图（默认）</strong></td>
+<td>按综合熟练度降序</td>
+<td>常规任务——“找最靠谱的人”</td>
+<td>系统默认推荐，按6.3.3的四维度熟练度排序</td>
+</tr>
+<tr>
+<td><strong>🌱培养视图</strong></td>
+<td>按经验不足程度降序（次数最少的人排第一）</td>
+<td>培养新人——“给新人练手机会”</td>
+<td>把做过最少次的人推到前面，打破马太效应</td>
+</tr>
+<tr>
+<td><strong>🔍探索视图</strong></td>
+<td>按掌握时长降序（掌握最久的人排第一）</td>
+<td>寻找资深专家——“找理解最深的老手”</td>
+<td>不看时效不看次数，只看谁掌握这个技能最久</td>
+</tr>
+<tr>
+<td><strong>🛡️风险可控视图</strong></td>
+<td>筛选：理论已学 + 时效🟢/🟡 + 次数≥3，再按熟练度排序</td>
+<td>培养新人但保底线——“有基础但不一定最熟练”</td>
+<td>过滤掉完全生手，在合格人群中排序</td>
+</tr>
+<tr>
+<td><strong>⚙️自定义视图</strong></td>
+<td>用户自选排序字段和筛选条件</td>
+<td>任意场景</td>
+<td>部门完全自主控制</td>
+</tr>
+</tbody>
+</table>
+<p><strong>③ 自定义视图的自由度</strong></p>
+<p>业务方可自由组合以下筛选条件和排序字段：</p>
+<table>
+<thead>
+<tr>
+<th>筛选条件（可多选AND/OR）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实操等级 ≥ L3</td>
+<td>只看达到一定等级的人</td>
+</tr>
+<tr>
+<td>时效状态 = 🟢/🟡</td>
+<td>只看时效正常或轻度衰减的人</td>
+</tr>
+<tr>
+<td>任务次数 ≥ N</td>
+<td>只看过一定次数的人</td>
+</tr>
+<tr>
+<td>掌握时长 ≥ N月</td>
+<td>只看掌握足够久的人</td>
+</tr>
+<tr>
+<td>资格证书 = 持有</td>
+<td>只看有证书的人</td>
+</tr>
+<tr>
+<td>部门 = XX</td>
+<td>只看某部门的人</td>
+</tr>
+<tr>
+<td>调度状态 = 可调度</td>
+<td>默认过滤，可取消</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>排序字段（可多级）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>综合熟练度</td>
+<td>默认</td>
+</tr>
+<tr>
+<td>操作次数</td>
+<td>谁做得最多</td>
+</tr>
+<tr>
+<td>任务次数</td>
+<td>谁被派去最多</td>
+</tr>
+<tr>
+<td>实操时效</td>
+<td>谁最近做过</td>
+</tr>
+<tr>
+<td>掌握深度</td>
+<td>谁掌握最久</td>
+</tr>
+<tr>
+<td>实操等级</td>
+<td>谁等级最高</td>
+</tr>
+<tr>
+<td>技能覆盖率</td>
+<td>谁覆盖最全</td>
+</tr>
+</tbody>
+</table>
+<p><strong>④ 排序解释——始终透明</strong></p>
+<p>无论使用哪种视图，每位员工后面都显示简要解释：</p>
+<pre><code>张三 🥇 综合熟练度 0.58
+  ✅ 任务经验丰富（50次任务） ✅ 掌握2年
+  ⚠ 3个月未实操（时效0.60）
+
+李四 ⚠经验偏少 综合熟练度 0.34
+  ✅ 昨天刚实操（时效1.0）
+  ⚠ 仅2次任务 ⚠ 刚学会2个月
+</code></pre>
+<p><strong>⑤ 培养视图的特殊机制</strong></p>
+<table>
+<thead>
+<tr>
+<th>机制</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>&quot;需要机会&quot;标注</strong></td>
+<td>培养视图中，从未被指派过任务的人标注&quot;🆕首次机会&quot;，只做过1-2次的标注&quot;🌱需要锻炼&quot;</td>
+</tr>
+<tr>
+<td><strong>带教匹配</strong></td>
+<td>可选：部门同时选一个熟练工+一个新人，系统创建&quot;带教任务&quot;——熟练工负责指导，新人负责执行</td>
+</tr>
+<tr>
+<td><strong>培养后跟踪</strong></td>
+<td>被指派给新人的任务完成后，系统跟踪该新人下次检索时的排名变化（是否从&quot;需要锻炼&quot;变为&quot;有经验&quot;）</td>
+</tr>
+</tbody>
+</table>
+<h3>6.4 理论达标规则</h3>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>is_exam</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>课程需考试，成绩≥及格线</td>
+<td>1</td>
+<td>✅ 理论达标 + 记录达标时间</td>
+</tr>
+<tr>
+<td>课程需考试，成绩＜及格线，允许补考</td>
+<td>1 (is_retake=1)</td>
+<td>可补考</td>
+</tr>
+<tr>
+<td>课程需考试，成绩＜及格线，不允许补考</td>
+<td>1 (is_retake=0)</td>
+<td>❌ 未通过</td>
+</tr>
+<tr>
+<td>课程不需考试，HR完结确认</td>
+<td>0</td>
+<td>✅ 默认理论达标 + 记录达标时间</td>
+</tr>
+</tbody>
+</table>
+<h3>6.5 资格计算规则</h3>
+<ol>
+<li><strong>课程组合</strong>：资格证书由一组课程组合定义，员工须完成组合内所有课程</li>
+<li><strong>豁免处理</strong>：课程A可被课程B豁免时，完成B等同于完成A</li>
+<li><strong>替代处理</strong>：旧课程被新课程替代后，完成新课程等同于完成旧课程（受生效日期控制）</li>
+<li><strong>有效期</strong>：证书有效期从签发日起算；过期后需重新认证</li>
+<li><strong>时效影响</strong>：资格计算只判断&quot;达没达标&quot;；<strong>时效性影响的是人岗匹配排序，不影响资格本身</strong></li>
+</ol>
+<h3>6.6 数据流架构（Staging模式）</h3>
+<pre><code>报名申请 ──→ [报名Staging] ──审核──→ [正式培训记录]
+                                          │
+QR签到  ──→ [考勤Staging]  ──确认──→ ──┘
+                                          │
+                                          ├──→ [资格重算队列] ──→ [资格证书更新]
+                                          │
+                                          └──→ [时效记录更新] ──→ [时效系数=1.0]
+                                                              │
+                                         [定时任务] ──→ [时效衰减计算] ──→ [匹配排序更新]
+                                                               │
+                                                      时效&lt;阈值 ──→ [复训提醒]
+</code></pre>
+<h3>6.7 业务规则补充（V1.6新增——回应甲方26项关切）</h3>
+<h4>6.7.1 角色与岗位的关系</h4>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>来源</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>岗位(Position)</td>
+<td>SAP同步</td>
+<td>企业组织架构中的正式岗位，每个员工有且仅有一个岗位</td>
+</tr>
+<tr>
+<td>角色(Role)</td>
+<td>HR在TMS中定义</td>
+<td>技能需求的集合，定义&quot;做某类工作需要什么技能什么等级&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关系</strong>：一个岗位可以对应一个或多个角色，一个角色可以适用于多个岗位。员工被SAP同步时有岗位，但角色的技能满足情况由TMS计算。业务方检索时按&quot;角色&quot;而非&quot;岗位&quot;找人——因为同一岗位在不同项目中可能需要不同的技能组合。</p>
+<h4>6.7.2 资格证书的实操等级门槛</h4>
+<blockquote>
+<p>甲方困惑：“完成课程组合但实操只有L1，证书照样签发吗？”</p>
+</blockquote>
+<p><strong>规则</strong>：资格证书定义时，HR可配置&quot;最低实操等级要求&quot;。签发证书时，系统不仅检查课程组合完成度，还检查相关技能的实操等级是否≥最低要求。若未达标，证书进入&quot;待实操达标&quot;状态，不正式签发。</p>
+<h4>6.7.3 班级状态机</h4>
+<pre><code>创建 → 报名中 → 培训中 → 待完结 → 已完结
+  │        │        │                    │
+  └──────→ 已取消 ←─────────────────────┘(仅未完结前可取消)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>可执行操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报名中</td>
+<td>员工报名/HR指派/取消报名</td>
+<td>报名截止时间到后自动切至培训中</td>
+</tr>
+<tr>
+<td>培训中</td>
+<td>QR签到签退</td>
+<td>培训活动进行中</td>
+</tr>
+<tr>
+<td>待完结</td>
+<td>HR完结操作</td>
+<td>出勤已确认，等待HR执行完结</td>
+</tr>
+<tr>
+<td>已完结</td>
+<td>查看/导出</td>
+<td><strong>不可逆操作</strong>，完结后触发理论达标计算</td>
+</tr>
+<tr>
+<td>已取消</td>
+<td>查看</td>
+<td>已取消的班级，不触发任何计算</td>
+</tr>
+</tbody>
+</table>
+<h4>6.7.4 报名审核策略</h4>
+<blockquote>
+<p>甲方困惑：“超额30人但名额20人，HR按什么标准审核？”</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>说明</th>
+<th>配置方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>先到先得（默认）</strong></td>
+<td>按报名时间排序，前20人自动通过，其余排队</td>
+<td>班级创建时选择</td>
+</tr>
+<tr>
+<td><strong>HR手动审核</strong></td>
+<td>所有报名进入待审核，HR逐条审批</td>
+<td>班级创建时选择</td>
+</tr>
+<tr>
+<td><strong>部门优先</strong></td>
+<td>按部门配额分配名额（如A部门5人、B部门10人）</td>
+<td>班级创建时设置部门配额</td>
+</tr>
+<tr>
+<td><strong>技能需求优先</strong></td>
+<td>技能覆盖率低的员工优先（最需要培训的人先报）</td>
+<td>系统自动排序，HR确认</td>
+</tr>
+</tbody>
+</table>
+<h4>6.7.5 补考安排</h4>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>补考班级</td>
+<td>补考不创建新班级，在原班级的培训记录上标记&quot;补考&quot;</td>
+</tr>
+<tr>
+<td>补考成绩</td>
+<td>HR录入补考成绩后，替换原成绩，重新判定达标</td>
+</tr>
+<tr>
+<td>补考窗口</td>
+<td>课程设置中可配置补考窗口期（默认90天），逾期未补考则记录标记&quot;已过期未补&quot;</td>
+</tr>
+<tr>
+<td>补考次数</td>
+<td>课程设置中可配置最大补考次数（默认1次）</td>
+</tr>
+</tbody>
+</table>
+<h4>6.7.6 衰减参数设置引导</h4>
+<blockquote>
+<p>甲方困惑：“HR怎么判断衰减周期该设多久？”</p>
+</blockquote>
+<p>HR设置衰减参数时，系统提供以下引导：</p>
+<table>
+<thead>
+<tr>
+<th>引导方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>行业参考值</strong></td>
+<td>系统预置4类技能的默认衰减周期（安全/设备/管理/常识），HR直接选用或微调</td>
+</tr>
+<tr>
+<td><strong>影响预览</strong></td>
+<td>修改衰减周期后，系统实时显示：全公司多少人的时效状态会从🟢变🟡/🔴</td>
+</tr>
+<tr>
+<td><strong>参数变更日志</strong></td>
+<td>所有参数修改记录变更历史，可回滚到上一个配置</td>
+</tr>
+<tr>
+<td><strong>灰度生效</strong></td>
+<td>可选&quot;仅对新评估生效&quot;或&quot;立即对全员重算&quot;</td>
+</tr>
+</tbody>
+</table>
+<h4>6.7.7 外部人员处理</h4>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无SAP数据</td>
+<td>HR手动录入基本信息（姓名、所属单位、联系方式），来源标记为&quot;外部&quot;</td>
+</tr>
+<tr>
+<td>无企业微信</td>
+<td>外部人员使用访客账号登录（账号密码），不依赖企业微信SSO</td>
+</tr>
+<tr>
+<td>无法扫码签到</td>
+<td>HR在出勤确认页面手动标记外部人员的出勤状态</td>
+</tr>
+<tr>
+<td>接收通知</td>
+<td>通过短信或邮件接收通知（企业微信不可用）</td>
+</tr>
+<tr>
+<td>被检索到</td>
+<td>外部人员默认不出现在匹配检索中；HR可手动将其加入检索范围</td>
+</tr>
+</tbody>
+</table>
+<h4>6.7.8 成绩批量导入</h4>
+<p>HR可在班级完结前，通过Excel模板批量导入考试成绩。模板包含：员工工号、成绩。导入后系统校验：员工是否属于该班级、成绩是否为有效数值。</p>
+<h4>6.7.9 多维度状态可视化规范</h4>
+<p>员工技能的综合状态在界面上统一展示为<strong>技能卡片</strong>：</p>
+<pre><code>┌─────────────────────────────────┐
+│ 高压操作  L4 ★★★★☆              │
+│ 🟢时效0.85  📊评估5次  📋任务42次 │
+│ 🕐掌握3.2年  综合熟练度 0.72 🟢    │
+│ ⚠无                            │
+└─────────────────────────────────┘
+
+┌─────────────────────────────────┐
+│ 应急处理  L3 ★★★☆☆              │
+│ 🔴时效0.12  📊评估1次  📋任务2次  │
+│ 🕐掌握2月  综合熟练度 0.22 🔴    │
+│ ⚠时效生疏 + 经验偏少(≤2次)       │
+└─────────────────────────────────┘
+</code></pre>
+<p>每张卡片包含：等级(★)、时效(🟢/🟡/🔴)、评估次数、任务次数、掌握时长、综合熟练度、预警标识。所有预警集中显示在⚠行。</p>
+<h4>6.7.10 证书熄灯制度（V2.0新增——回应甲方3/23会议）</h4>
+<blockquote>
+<p><strong>甲方核心概念</strong>：课程读齐A/B/C才有Apple资格，假如其中一个课程成绩过期就没有Apple资格。“熄灯”=失去资格。</p>
+</blockquote>
+<p><strong>规则</strong>：资格证书由多个组成项构成（课程+外部认证+实操等级），任一组成项失效即触发证书&quot;熄灯&quot;：</p>
+<table>
+<thead>
+<tr>
+<th>组成项类型</th>
+<th>失效条件</th>
+<th>熄灯后果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>课程</td>
+<td>课程成绩过期（课程有效期到期）</td>
+<td>证书熄灯</td>
+</tr>
+<tr>
+<td>外部认证</td>
+<td>外部认证过期（expires_at到期）</td>
+<td>证书熄灯</td>
+</tr>
+<tr>
+<td>实操等级</td>
+<td>实操等级低于资格定义的最低门槛</td>
+<td>证书进入&quot;待实操达标&quot;</td>
+</tr>
+<tr>
+<td>面试审核</td>
+<td>未通过面试审核</td>
+<td>证书保持&quot;待面试审核&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>熄灯恢复</strong>：员工补齐失效的组成项（重修课程/续期外部认证/补考/重新实操）后，系统自动检查是否恢复条件，若满足则证书&quot;亮灯&quot;（恢复有效）。</p>
+<p><strong>熄灯通知</strong>：证书熄灯时通知员工+部门负责人+HR；熄灯恢复时同样通知。</p>
+<h4>6.7.11 面试/Board审核规则（V2.0新增——回应甲方3/23会议）</h4>
+<blockquote>
+<p><strong>甲方需求</strong>：DLAP见部门经理，CLAP见更高级。上完堂+成绩通过为前置，还需要面试作审核。</p>
+</blockquote>
+<p><strong>规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>审核类型</th>
+<th>Board组成</th>
+<th>适用证书</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DLAP</td>
+<td>部门经理+1名技术专家</td>
+<td>DLAP类资格证书</td>
+<td>见部门经理为主</td>
+</tr>
+<tr>
+<td>CLAP</td>
+<td>更高级管理层+2名技术专家</td>
+<td>CLAP类资格证书</td>
+<td>见更高级管理层为主</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>HR可自定义Board组成</td>
+<td>任意资格定义</td>
+<td>灵活配置</td>
+</tr>
+</tbody>
+</table>
+<p><strong>面试流程</strong>：员工提交面试申请→系统检查前置条件(理论达标+实操达标)→HR安排面试(选Board成员/定时间)→面试执行→记录结果→通过则证书签发/不通过则证书保持待审核</p>
+<p><strong>配置方式</strong>：HR在资格证书定义(E05)中配置&quot;是否需要面试审核&quot;及&quot;审核类型(DLAP/CLAP/自定义)“和&quot;Board成员要求”。</p>
+<h4>6.7.12 外部认证联动规则（V2.0新增——回应甲方3/23会议）</h4>
+<blockquote>
+<p><strong>甲方痛点</strong>：职安卡/密闭空间卡/身体检查等——每个人的生效期和有效期都不一样，涉及人员数量多。</p>
+</blockquote>
+<p><strong>规则</strong>：</p>
+<ol>
+<li><strong>独立有效期</strong>：外部认证有独立的issued_at和expires_at，不依赖课程培训周期</li>
+<li><strong>自动预警</strong>：外部认证到期前30/60/90天通知员工+部门负责人+HR</li>
+<li><strong>资格联动</strong>：当资格证书的组成项包含外部认证时，外部认证过期触发证书熄灯</li>
+<li><strong>Excel批量导入</strong>：支持通过Excel模板批量导入外部认证记录（含员工工号/认证类型/认证名称/证书编号/生效日期/过期日期/发证机构）</li>
+<li><strong>澳门注册电工资质关联</strong>：当员工申请澳门注册电工时，TMS可查询该员工的所有技能和证书状态，生成技能摘要报告供申请使用</li>
+<li><strong>追加不覆盖</strong>：外部认证续期或批量导入时，匹配到同一员工同一认证则新增续期记录，旧记录保留不覆盖——确保历史可追溯</li>
+</ol>
+<h4>6.7.13 课程组合必修/选修规则（V2.1新增——回应甲方TMS架构会议）</h4>
+<blockquote>
+<p><strong>甲方需求</strong>：技能认证包含理论、技术、实操三部分，课程有必修(compulsory)与选修(elective)之分，部分课程完成指定组合可自动豁免其他课程。</p>
+</blockquote>
+<p><strong>规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+<th>达标条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>必修课程(Compulsory)</strong></td>
+<td>必须完成的课程，如K101-K108知识课、FF101-FF102安全课</td>
+<td>全部完成</td>
+</tr>
+<tr>
+<td><strong>选修课程(Elective)</strong></td>
+<td>可选完成的课程，如S103/S106可由完成S101+S102+S104+S107+S1247组合豁免</td>
+<td>完成指定数量或豁免</td>
+</tr>
+<tr>
+<td><strong>课程组合豁免</strong></td>
+<td>完成一组指定课程后，自动豁免另一组课程——如完成S101/S102/S104/S107/S1247可豁免S103和S106</td>
+<td>系统自动识别</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例——EWCTP一级课程结构</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>课程编号</th>
+<th>必修/选修</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>知识课(K)</td>
+<td>K101-K108</td>
+<td>必修</td>
+<td>基础理论知识，共8门</td>
+</tr>
+<tr>
+<td>技能课(S)</td>
+<td>S101-S108</td>
+<td>部分必修+部分选修</td>
+<td>S103/S106可豁免，其余必修</td>
+</tr>
+<tr>
+<td>安全课(FF)</td>
+<td>FF101-FF102</td>
+<td>必修</td>
+<td>消防安全，共2门</td>
+</tr>
+</tbody>
+</table>
+<p><strong>系统实现</strong>：HR在资格证书定义(E05.3)中配置课程组合时，可为每门课程标注必修/选修，并为选修课程配置&quot;需完成数量&quot;或&quot;豁免组合&quot;。</p>
+<h4>6.7.14 职位前置条件规则（V2.1新增——回应甲方TMS架构会议）</h4>
+<blockquote>
+<p><strong>甲方需求</strong>：部分角色需具备特定职位阶层(Position)才能担任——如&quot;LT Responsible Issuer需Senior Technician以上职级&quot;，“做Branch Leader任何职位皆可修读课程，但Logout Check Out需Senior Technician以上”。</p>
+</blockquote>
+<p><strong>规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>条件类型</th>
+<th>说明</th>
+<th>数据来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>最低职位要求</strong></td>
+<td>角色要求员工达到特定Position层级</td>
+<td>SAP同步(职位数据)</td>
+</tr>
+<tr>
+<td><strong>最低年资要求</strong></td>
+<td>角色要求员工在本职位或本公司达到最低年资</td>
+<td>SAP同步(入职日期)</td>
+</tr>
+<tr>
+<td><strong>学历要求</strong></td>
+<td>角色要求员工具备特定学历(中学毕业/大学学位等)</td>
+<td>SAP同步或手动录入</td>
+</tr>
+</tbody>
+</table>
+<p><strong>系统实现</strong>：HR在角色定义(B03)的附加条件(B03.4)中配置Position/年资/学历要求。资格计算引擎(E05a)在计算证书时不仅检查课程+实操+外部认证，还检查Position/年资/学历条件。不满足时证书进入&quot;待条件达标&quot;状态。</p>
+<h4>6.7.15 体检查询矩阵规则（V2.1新增——回应甲方TMS架构会议）</h4>
+<blockquote>
+<p><strong>甲方需求</strong>：体检资料需记录能否参与特定工作，分为理论、观察员、实际操作等角色。医生只回复能否上课程/能否实操，不需详细医疗数据。不同工作/课程对健康条件有不同要求。</p>
+</blockquote>
+<p><strong>规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>体检结果</th>
+<th>含义</th>
+<th>对资格的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可实操(Fit for Practical)</td>
+<td>身体条件允许进行实际操作</td>
+<td>满足所有角色要求</td>
+</tr>
+<tr>
+<td>仅可观察(Observer Only)</td>
+<td>可上理论课和观察实操，但不能亲自操作</td>
+<td>仅满足&quot;理论+观察&quot;类角色，不满足&quot;需实操&quot;类角色</td>
+</tr>
+<tr>
+<td>不可参与(Unfit)</td>
+<td>不允许参与任何相关课程或工作</td>
+<td>不满足任何角色要求</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Fitness Matrix示例</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>体检类型</th>
+<th>要求结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entry Risk Assessor</td>
+<td>常规体检</td>
+<td>可实操</td>
+</tr>
+<tr>
+<td>LT Responsible Issuer</td>
+<td>高空作业体检</td>
+<td>可实操</td>
+</tr>
+<tr>
+<td>密闭空间观察员</td>
+<td>密闭空间体检</td>
+<td>至少仅可观察</td>
+</tr>
+<tr>
+<td>Branch Leader</td>
+<td>常规体检</td>
+<td>至少仅可观察</td>
+</tr>
+</tbody>
+</table>
+<p><strong>系统实现</strong>：HR在角色定义(B03)中关联Fitness Matrix，指定该角色需要的体检类型和最低要求结果。员工体检记录录入B07外部认证(cert_type=身体检查)时，填写fitness_result。资格计算引擎检查Fitness Matrix匹配——体检结果不满足时，员工在该角色的匹配中标注&quot;⚠体检不满足&quot;。</p>
+<h4>6.7.16 条件性有效期规则（V2.1新增——回应甲方TMS架构会议）</h4>
+<blockquote>
+<p><strong>甲方需求</strong>：不同卡种有效期限可能因年龄等条件不同。如职安卡因年龄不同，有效期可能缩短。</p>
+</blockquote>
+<p><strong>规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>条件类型</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>固定有效期</strong></td>
+<td>所有员工统一有效期</td>
+<td>标准证书有效期5年</td>
+</tr>
+<tr>
+<td><strong>年龄条件</strong></td>
+<td>年满某年龄后有效期缩短</td>
+<td>年满55岁有效期从5年缩短为3年</td>
+</tr>
+<tr>
+<td><strong>职位条件</strong></td>
+<td>特定职位有效期不同</td>
+<td>临时指派角色有效期1年(非永久)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>系统实现</strong>：HR在资格证书定义(E05.4)中配置有效期规则，支持JSON格式的条件表达式。资格计算引擎签发证书时，根据员工当前条件(年龄/职位等)动态计算expires_at。</p>
+<p><strong>条件性有效期JSON示例</strong>：</p>
+<pre><code class="language-json">{
+  &quot;base_period_years&quot;: 5,
+  &quot;conditions&quot;: [
+    {&quot;field&quot;: &quot;age&quot;, &quot;operator&quot;: &quot;&gt;=&quot;, &quot;value&quot;: 55, &quot;period_years&quot;: 3},
+    {&quot;field&quot;: &quot;age&quot;, &quot;operator&quot;: &quot;&gt;=&quot;, &quot;value&quot;: 60, &quot;period_years&quot;: 2}
+  ]
+}
+</code></pre>
+<h4>6.7.17 课程编号体系约定（V2.1新增——回应甲方TMS架构会议）</h4>
+<blockquote>
+<p><strong>甲方实践</strong>：课程按K/S/FF前缀分类——K=知识(Knowledge)、S=技能(Skill)、FF=安全消防(Fire Fighting)。此约定反映EWCTP三级课程结构。</p>
+</blockquote>
+<p><strong>课程类型分类</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>前缀</th>
+<th>类型</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K</td>
+<td>知识课(Knowledge)</td>
+<td>理论知识课程</td>
+<td>K101-K108</td>
+</tr>
+<tr>
+<td>S</td>
+<td>技能课(Skill)</td>
+<td>技术应用与实操课程</td>
+<td>S101-S108</td>
+</tr>
+<tr>
+<td>FF</td>
+<td>安全面防课(Fire Fighting)</td>
+<td>安全与消防课程</td>
+<td>FF101-FF102</td>
+</tr>
+<tr>
+<td>T</td>
+<td>通用课(General)</td>
+<td>通用管理/软技能课程</td>
+<td>T201-T205</td>
+</tr>
+</tbody>
+</table>
+<p><strong>系统实现</strong>：HR在课程管理(T01)中配置课程类型时，可选择K/S/FF/T类型。课程代码自动生成(T01.3)时根据类型前缀自动生成编号。课程类型用于技能差距分析(G03)中的推荐排序——“缺知识课→推荐理论班，缺技能课→推荐实操班”。</p>
+<h4>6.7.18 外部人员ID标准化规则（V2.2新增——回应甲方TMS优化会议）</h4>
+<blockquote>
+<p><strong>甲方需求</strong>：现行以ID number或其他识别码记录外部人员，需厘清标准化方式，避免数据错误或遗漏。</p>
+</blockquote>
+<p><strong>规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>人员类型</th>
+<th>标识方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内部员工</td>
+<td>user_id (SAP工号)</td>
+<td>来自SAP同步，唯一标识</td>
+</tr>
+<tr>
+<td>外部人员</td>
+<td>ext_+公司代号+序列号</td>
+<td>如ext_CME_001、ext_MOP_001；手动录入时系统自动生成</td>
+</tr>
+<tr>
+<td>劳工局合作培训人员</td>
+<td>lab_+课程代号+序列号</td>
+<td>如lab_DS2024_001；批量导入时系统自动生成</td>
+</tr>
+</tbody>
+</table>
+<p><strong>系统实现</strong>：员工档案(B04)的user_id字段对内部员工使用SAP工号，对外部人员使用系统生成的ext_前缀编号。所有引用(报名/培训记录/证书)统一使用user_id，不依赖姓名匹配。</p>
+<h4>6.7.19 HR/ERP体检数据对接规划（V2.2新增——回应甲方TMS优化会议）</h4>
+<blockquote>
+<p><strong>甲方需求</strong>：HR系统现有医疗记录多为入职前及三年一次，培训前需再人工确认。未来HR系统与TMS对接，实现体检数据自动同步。若ERP系统允许，应将身体检查记录自动汇入TMS。</p>
+</blockquote>
+<p><strong>短期方案(Phase 1)</strong>：HR通过Excel/CSV模板批量导入体检结果到B07外部认证(cert_type=身体检查)，系统自动匹配Fitness Matrix判定资格。</p>
+<p><strong>长期方案(Phase 2)</strong>：与HR/ERP系统建立数据接口，体检结果自动同步到TMS的外部认证记录。同步内容包括：员工ID、体检日期、体检类型、体检结果(可实操/仅可观察/不可参与)。需与ISD部门协调API对接可行性。</p>
+<h4>6.7.20 阶段式推行策略（V2.2新增——回应甲方TMS优化会议）</h4>
+<blockquote>
+<p><strong>甲方明确要求</strong>：系统建设需阶段式推进，先完成基础自动化(自动报表、提醒)，再逐步扩展功能，避免一次性投入过多资源。</p>
+</blockquote>
+<p><strong>推行策略</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>核心目标</th>
+<th>关键交付</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>先基础自动化</strong></td>
+<td>让甲方&quot;立刻能用&quot;</td>
+<td>证书到期自动提醒+月度报表框架+员工自助查询(我的证书)</td>
+</tr>
+<tr>
+<td><strong>再核心闭环</strong></td>
+<td>技能→培训→评估→资格完整链路</td>
+<td>课程/班级/报名/完结/资格计算引擎</td>
+</tr>
+<tr>
+<td><strong>后深化扩展</strong></td>
+<td>职业发展+面试审核+高级分析</td>
+<td>晋升路径/面试Board/条件性有效期/数据看板</td>
+</tr>
+</tbody>
+</table>
+<h4>6.7.21 三维度经验模型（V2.3修正——project audit发现）</h4>
+<blockquote>
+<p><strong>核心问题</strong>：旧模型将practical_count和total_assignment_count放在SKILL_ASSESSMENT中按(employee, skill)全局累计，导致同一技能在不同岗位上下文中的经验被混合计算。做Entry Risk Assessor的50次高压操作≠做LT Responsible Issuer的50次高压操作，但旧模型会把它们加在一起。</p>
+</blockquote>
+<p><strong>修正后的数据模型</strong>：</p>
+<p>经验次数按 <strong>(employee, skill, role)</strong> 三维度分别累计于ROLE_SKILL_EXPERIENCE实体：</p>
+<pre><code>ROLE_SKILL_EXPERIENCE (employee_seq, skill_seq, role_seq)
+├── total_assignment_count  -- 任务指派次数：被派去做事
+├── task_completion_count    -- 任务完成次数：真正做过了 ← V2.3新增
+├── evaluated_count          -- 正式评估次数：有人评你了 ← 原practical_count更名
+├── last_assigned_at         -- 最近指派时间
+├── last_completed_at        -- 最近完成时间
+└── last_evaluated_at        -- 最近评估时间
+</code></pre>
+<p><strong>三件事关系链</strong>：</p>
+<pre><code>任务指派 ──→ 任务完成 ──→ 正式评估
+50次         48次(2次未完成)   15次(33次没人评)
+
+关系：total_assignment_count ≥ task_completion_count ≥ evaluated_count
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>何时+1</th>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>任务指派</td>
+<td>业务方指派任务时</td>
+<td>total_assignment_count</td>
+<td>“被派去做事”</td>
+</tr>
+<tr>
+<td><strong>任务完成</strong></td>
+<td><strong>员工完成任务时</strong></td>
+<td><strong>task_completion_count</strong></td>
+<td><strong>“真正做过了”——这才是&quot;做过多少次&quot;的真实度量</strong></td>
+</tr>
+<tr>
+<td>正式评估</td>
+<td>业务方正式评估时</td>
+<td>evaluated_count</td>
+<td>“有人评你了”</td>
+</tr>
+</tbody>
+</table>
+<p><strong>为什么task_completion_count才是&quot;做过多少次&quot;的度量</strong>：</p>
+<ul>
+<li>total_assignment_count：被派了但不一定做了（可能取消、超时未完成）</li>
+<li>evaluated_count：做了但没人评（现实中大量任务完成后不会主动评估）</li>
+<li>task_completion_count：真正完成的次数——既不是&quot;被派了&quot;，也不是&quot;被评了&quot;，而是&quot;做完了&quot;</li>
+</ul>
+<p><strong>匹配算法使用role-specific次数</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>旧算法(V2.2及之前)</th>
+<th>新算法(V2.3)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>从SKILL_ASSESSMENT取全局practical_count</td>
+<td>从ROLE_SKILL_EXPERIENCE取role-specific的evaluated_count</td>
+</tr>
+<tr>
+<td>从SKILL_ASSESSMENT取全局total_assignment_count</td>
+<td>从ROLE_SKILL_EXPERIENCE取role-specific的task_completion_count</td>
+</tr>
+<tr>
+<td>查LT Responsible时看到50次经验(含Entry Risk的40次)</td>
+<td>查LT Responsible时只看到10次role-specific经验</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SKILL_ASSESSMENT的角色变化</strong>：</p>
+<ul>
+<li>保留：theory_certified_at、practical_rated_at、freshness字段、skill_acquired_at、practical_level</li>
+<li>移除：practical_count、total_assignment_count（这些已迁移到ROLE_SKILL_EXPERIENCE）</li>
+<li>proficiency_score：改为按role-specific计算的加权平均值</li>
+</ul>
+<p><strong>TASK增加role_seq_FK</strong>：</p>
+<ul>
+<li>任务指派时必须指定role——“这个任务是哪个岗位上下文的”</li>
+<li>次数累计时写入对应的ROLE_SKILL_EXPERIENCE记录</li>
+<li>任务创建时从A01匹配检索结果自动带入role</li>
+</ul>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<h4>6.7.22 数据纠错规则（V2.5新增——产品生命周期审计发现）</h4>
+<blockquote>
+<p><strong>数据不覆盖 ≠ 数据不可纠错。</strong> 纠错是合规管理的必要环节。</p>
+</blockquote>
+<ol>
+<li><strong>superseding record机制</strong>：纠错创建新记录，<code>supersedes_seq</code>指向旧记录；旧记录status从<code>active</code>变为<code>superseded</code></li>
+<li><strong>操作日志区分四类</strong>：OPERATIONAL(正常业务)/CORRECTION(纠错)/OVERRIDE(HR强制覆盖)/SYSTEM_ADJUSTMENT(系统调整)</li>
+<li><strong>纠错必填原因码</strong>：ASSESSOR_ERROR(评估员录入错误)/SYSTEM_CALC_ERROR(系统计算错误)/HR_ADMIN_CORRECTION(HR行政纠正)/OTHER(其他)</li>
+<li><strong>ROLE_SKILL_EXPERIENCE反向记录</strong>：计数只+不-，纠错通过追加(type=correction, delta=-1)的记录实现净额计算</li>
+<li><strong>级联触发</strong>：纠错后自动触发CASCADE-01~06相关级联</li>
+</ol>
+<h4>6.7.23 级联影响执行规则（V2.5新增——产品生命周期审计发现）</h4>
+<ol>
+<li><strong>异步队列处理</strong>：资格重算(E05a)和熟练度重算(E06)采用队列异步执行，不阻塞用户在线操作</li>
+<li><strong>最终一致性</strong>：重算期间查询返回上次计算结果；重算完成后自动刷新</li>
+<li><strong>断点续算</strong>：批量重算失败时记录断点位置，支持从断点继续而非从头开始</li>
+<li><strong>失败重试策略</strong>：单条记录重算失败最多重试3次，间隔10s/30s/60s递增；3次仍失败则进入死信队列等待人工处理</li>
+<li><strong>批量通知节流</strong>：一次事件影响N人时，通知在5分钟内合并发送（如证书组成变更影响50人→1条汇总通知给HR，50条个人通知分批在30分钟内发送完毕）</li>
+</ol>
+<h4>6.7.24 技能等级模型变更保护规则（V2.5新增——产品生命周期审计发现）</h4>
+<ol>
+<li><strong>减少等级模型等级数时阻止变更</strong>：如从L1-L5改为L1-L3，系统检查SKILL_ASSESSMENT中是否存在L4/L5评估记录</li>
+<li><strong>存在高级别评估时禁止降级</strong>：若有5人持有L4、3人持有L5，系统提示&quot;存在8条L4+评估记录，不可将等级模型从5级改为3级。建议创建新技能替代&quot;</li>
+<li><strong>增加等级数时允许但需影响预览</strong>：从L1-L3改为L1-L5时允许，但需显示&quot;现有L3评估将保持L3不变，不自动映射&quot;</li>
+</ol>
+<h4>6.7.25 角色停用三态迁移规则（V2.5新增——产品生命周期审计发现）</h4>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>匹配检索</th>
+<th>新任务指派</th>
+<th>证书有效性</th>
+<th>员工查询</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Active</td>
+<td>✅可检索</td>
+<td>✅可指派</td>
+<td>正常</td>
+<td>正常显示</td>
+</tr>
+<tr>
+<td>Deprecated</td>
+<td>✅可检索(标注&quot;已弃用&quot;)</td>
+<td>❌不可指派</td>
+<td>仍有宽限期</td>
+<td>显示&quot;该角色即将停用&quot;</td>
+</tr>
+<tr>
+<td>Retired</td>
+<td>❌不可检索</td>
+<td>❌不可指派</td>
+<td>进入宽限期(默认90天)</td>
+<td>仅&quot;我的目标岗位&quot;中可见(标注&quot;已停用&quot;)</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><strong>Active→Deprecated</strong>：HR手动触发；所有设该角色为目标岗位的员工收到G05通知</li>
+<li><strong>Deprecated→Retired</strong>：Deprecated持续N天后(默认30天，可配置)自动迁移；期间无新任务指派但现有任务不受影响</li>
+<li><strong>Retired宽限期</strong>：证书进入宽限期(默认90天，可配置)，宽限期内仍有效但标注&quot;⚠角色已停用，请关注替代角色&quot;；宽限期后证书熄灯</li>
+<li><strong>恢复</strong>：Retired角色可由HR恢复为Active，已熄灯证书需重新计算</li>
+</ol>
+<h4>6.7.26 证书组成变更宽限期规则（V2.5新增——产品生命周期审计发现）</h4>
+<ol>
+<li><strong>HR在证书组成变更时选择策略</strong>：
+<ul>
+<li>立即生效：变更后立即重算，不满足的证书立即熄灯</li>
+<li>宽限期(推荐)：变更后给N天宽限期(默认90天)，期间证书标注&quot;⚠待补修新要求&quot;，宽限期后熄灯</li>
+<li>Grandfather：现有持有人继续有效直到下次正常续期时才检查新要求</li>
+</ul>
+</li>
+<li><strong>宽限期通知</strong>：受影响员工+部门主管+HR收到通知&quot;证书组成已变更，您有N天时间补修[新课程名]&quot;</li>
+<li><strong>影响预览</strong>：变更前必须通过S03.3显示&quot;X人将受影响，其中Y人需补修新课程&quot;</li>
+</ol>
+<h4>6.7.27 批量计算失败处理规则（V2.5新增——产品生命周期审计发现）</h4>
+<ol>
+<li><strong>E06时效计算失败</strong>：失败记录写入错误日志，成功记录正常提交(不回滚)；失败记录进入重试队列</li>
+<li><strong>E05a资格重算失败</strong>：同上，部分成功+部分重试</li>
+<li><strong>系统健康看板(F-S07)</strong>：展示最近一次批量计算状态(成功/失败/部分失败)、耗时、失败记录数</li>
+<li><strong>告警阈值</strong>：连续3次批量计算失败→系统告警(通知HR管理员+系统管理员)</li>
+</ol>
+<h4>6.7.28 并发指派锁规则（V2.5新增——产品生命周期审计发现）</h4>
+<ol>
+<li><strong>乐观锁机制</strong>：人岗匹配指派请求携带员工当前dispatch_version，更新时比对version</li>
+<li><strong>version不一致</strong>：提示&quot;该人员状态已变更，请刷新后重试&quot;</li>
+<li><strong>数据库级约束</strong>：EMPLOYEE表dispatch_status+dispatch_version联合唯一约束，确保不会两人同时锁定</li>
+</ol>
+<h4>6.7.29 数据保留与归档规则（V2.5新增——产品生命周期审计发现）</h4>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>在线保留期</th>
+<th>归档策略</th>
+<th>法规依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>培训记录</td>
+<td>7年</td>
+<td>7年后归档至冷存储</td>
+<td>职业安全培训法规</td>
+</tr>
+<tr>
+<td>技能评估记录</td>
+<td>7年</td>
+<td>7年后归档</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>证书记录</td>
+<td>永久</td>
+<td>不归档</td>
+<td>资质追溯需要</td>
+</tr>
+<tr>
+<td>任务记录</td>
+<td>5年</td>
+<td>5年后归档</td>
+<td>内部管理需要</td>
+</tr>
+<tr>
+<td>操作日志</td>
+<td>3年</td>
+<td>3年后归档</td>
+<td>审计需要</td>
+</tr>
+<tr>
+<td>离职员工数据</td>
+<td>永久(不可查)</td>
+<td>标记inactive，不出现在检索中</td>
+<td>数据不覆盖原则</td>
+</tr>
+<tr>
+<td>SAP同步原始数据</td>
+<td>1年</td>
+<td>1年后覆盖</td>
+<td>非核心数据</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><strong>GDPR数据擦除请求</strong>：员工可请求删除非法规要求保留的个人数据；标记删除而非物理删除</li>
+<li><strong>归档数据</strong>：从在线表迁移到归档表，不影响在线查询性能；归档数据可通过专用接口查询</li>
+</ol>
+<h4>6.7.30 SAP-TMS数据对账规则（V2.5新增——产品生命周期审计发现）</h4>
+<ol>
+<li><strong>每日自动对账</strong>：比对SAP与TMS员工数据(职位、部门、在职状态)，标注差异记录</li>
+<li><strong>关键字段差异告警</strong>：职位变更未同步、部门变更未同步、SAP已离职但TMS仍活跃、出生日期缺失(A09需要)</li>
+<li><strong>手动修复入口</strong>：HR可查看差异列表并逐条确认修复</li>
+<li><strong>对账报告</strong>：每周生成对账摘要报告，推送给HR管理员</li>
+</ol>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<h2>7. 非功能需求</h2>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>类别</th>
+<th>需求</th>
+<th>标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NF-01</td>
+<td>性能</td>
+<td>并发用户</td>
+<td>≥500</td>
+</tr>
+<tr>
+<td>NF-02</td>
+<td>性能</td>
+<td>页面响应</td>
+<td>&lt;3秒（95%）</td>
+</tr>
+<tr>
+<td>NF-03</td>
+<td>性能</td>
+<td>数据规模</td>
+<td>≥10万员工记录</td>
+</tr>
+<tr>
+<td>NF-04</td>
+<td>性能</td>
+<td><strong>时效计算</strong></td>
+<td><strong>每日批量计算，10万员工×平均5技能≤30分钟</strong></td>
+</tr>
+<tr>
+<td>NF-05</td>
+<td>安全</td>
+<td>传输安全</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>NF-06</td>
+<td>安全</td>
+<td>访问控制</td>
+<td>RBAC + 数据范围权限</td>
+</tr>
+<tr>
+<td>NF-07</td>
+<td>安全</td>
+<td>审计追踪</td>
+<td>全模块字段级操作日志</td>
+</tr>
+<tr>
+<td>NF-08</td>
+<td>可用性</td>
+<td>系统可用率</td>
+<td>≥99.5%</td>
+</tr>
+<tr>
+<td>NF-09</td>
+<td>可用性</td>
+<td>浏览器兼容</td>
+<td>Chrome、Edge、Safari</td>
+</tr>
+<tr>
+<td>NF-10</td>
+<td>集成</td>
+<td>SAP对接</td>
+<td>只读同步员工/部门/职位/PCGRP</td>
+</tr>
+<tr>
+<td>NF-11</td>
+<td>集成</td>
+<td>企业微信</td>
+<td>扫码签到/签退、消息推送、复训提醒</td>
+</tr>
+</tbody>
+</table>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<h2>8. 用户旅程地图 / User Journey Maps</h2>
+<blockquote>
+<p><strong>说明</strong>：本节展示典型用户在系统中的完整体验路径，帮助理解关键触点和优化机会。</p>
+</blockquote>
+<h3>8.1 旅程1：新员工入职到首次获得证书</h3>
+<p><strong>角色</strong>：新员工张三（电工专业）<br />
+<strong>时间跨度</strong>：3个月<br />
+<strong>业务目标</strong>：从零基础到获得&quot;高压操作资格证书&quot;</p>
+<h4>旅程详细流程</h4>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>时间节点</th>
+<th>用户行为</th>
+<th>系统响应</th>
+<th>情绪曲线</th>
+<th>痛点/爽点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>入职第1天</strong></td>
+<td>Day 1</td>
+<td>登录系统，查看&quot;我的适配岗位&quot;</td>
+<td>显示基于当前技能的适配岗位列表：<br>- 初级电工（满足）<br>- 中级电工（不满足，差2个技能）</td>
+<td>😐 中性</td>
+<td><strong>爽点</strong>：一目了然看到自己能做什么<br><strong>痛点</strong>：不知道如何提升到中级</td>
+</tr>
+<tr>
+<td><strong>设定目标</strong></td>
+<td>Week 1</td>
+<td>选择目标岗位&quot;中级电工&quot;，查看差距</td>
+<td>系统自动对比并显示：<br>- 差&quot;高压操作&quot;L3<br>- 差&quot;应急处理&quot;L2<br>- 差5次实操经验<br>推荐学习路径：先学理论→再实操</td>
+<td>😟 焦虑 → 🙂 有方向</td>
+<td><strong>爽点</strong>：差距清晰可见，不再迷茫<br><strong>爽点</strong>：系统主动推荐路径</td>
+</tr>
+<tr>
+<td><strong>报名课程</strong></td>
+<td>Week 2</td>
+<td>点击推荐的&quot;高压操作基础(K-HV01)&quot;课程，提交报名</td>
+<td>进入待审核状态，HR收到通知</td>
+<td>🙂 期待</td>
+<td><strong>爽点</strong>：一键报名，无需找HR<br><strong>痛点</strong>：需要等待审核</td>
+</tr>
+<tr>
+<td><strong>参加培训</strong></td>
+<td>Week 3</td>
+<td>参加培训课程，使用企业微信扫码签到/签退</td>
+<td>系统记录出勤率100%，HR完结课程后自动标记&quot;理论已学&quot;，记录达标时间2026-05-15</td>
+<td>😊 满足</td>
+<td><strong>爽点</strong>：QR码签到便捷<br><strong>爽点</strong>：进度实时更新，无需询问</td>
+</tr>
+<tr>
+<td><strong>首次实操</strong></td>
+<td>Month 2</td>
+<td>在任务列表中申请参与高压操作任务</td>
+<td>业务方李四看到申请，指派张三执行简单任务</td>
+<td>😀 兴奋</td>
+<td><strong>爽点</strong>：可以主动申请任务，不是被动等待</td>
+</tr>
+<tr>
+<td><strong>获得评估</strong></td>
+<td>Month 2</td>
+<td>完成任务后，业务方李四评估为L2</td>
+<td>系统更新实操等级为L2，记录评估时间，ROLE_SKILL_EXPERIENCE.evaluated_count+1</td>
+<td>😊 成就感</td>
+<td><strong>爽点</strong>：即时反馈，知道自己处于什么水平</td>
+</tr>
+<tr>
+<td><strong>持续积累</strong></td>
+<td>Month 2-3</td>
+<td>继续执行高压任务5次，分别被评估为L2/L3/L3/L3/L3</td>
+<td>每次评估后次数累计，时效系数动态计算</td>
+<td>🙂 稳步提升</td>
+<td><strong>爽点</strong>：每次进步都看得见</td>
+</tr>
+<tr>
+<td><strong>达到目标</strong></td>
+<td>Month 3</td>
+<td>第6次任务后被评估为L3，系统自动检查资格</td>
+<td>系统检测到：<br>- 高压操作L3 ✅<br>- 应急处理L2 ✅<br>- 完成所有必修课程 ✅<br>→ 自动签发&quot;高压操作资格证书&quot;，有效期5年</td>
+<td>🎉 兴奋 + 自豪</td>
+<td><strong>爽点</strong>：证书自动到手，无需申请<br><strong>爽点</strong>：收到通知：“恭喜您获得新证书！”</td>
+</tr>
+</tbody>
+</table>
+<h4>关键洞察</h4>
+<p>✅ <strong>新员工最需要的是&quot;清晰的下一步指引&quot;</strong></p>
+<ul>
+<li>系统推荐的课程和任务大大降低了学习门槛</li>
+<li>即时的反馈（理论达标、实操评级、证书签发）形成正向激励</li>
+</ul>
+<p>⚠️ <strong>潜在优化点</strong></p>
+<ul>
+<li>报名审核环节可能造成等待焦虑 → 建议设置自动审核规则（如符合前置条件则自动通过）</li>
+<li>首次实操可能需要更多引导 → 建议在任务详情页增加&quot;新手提示&quot;</li>
+</ul>
+<hr />
+<h3>8.2 旅程2：业务方紧急任务人员调配</h3>
+<p><strong>角色</strong>：业务方王经理（电力维修部主管）<br />
+<strong>时间跨度</strong>：30分钟<br />
+<strong>业务目标</strong>：明天上午需要2名高级电工处理高压故障，快速找到合适人选</p>
+<h4>旅程详细流程</h4>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>时间节点</th>
+<th>用户行为</th>
+<th>系统响应</th>
+<th>情绪曲线</th>
+<th>痛点/爽点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>接到任务</strong></td>
+<td>T+0min</td>
+<td>接到紧急通知：明天上午9点XX变电站高压故障，需要2名高级电工</td>
+<td>-</td>
+<td>😰 紧急</td>
+<td><strong>痛点</strong>：时间紧迫，不能出错</td>
+</tr>
+<tr>
+<td><strong>进入系统</strong></td>
+<td>T+2min</td>
+<td>登录TMS，进入&quot;人岗匹配&quot;页面</td>
+<td>显示检索入口：按角色 / 按技能</td>
+<td>🙂 有工具可用</td>
+<td><strong>爽点</strong>：不用翻Excel或凭记忆找人</td>
+</tr>
+<tr>
+<td><strong>选择检索方式</strong></td>
+<td>T+3min</td>
+<td>选择&quot;按角色&quot;检索，选择&quot;高级电工&quot;角色</td>
+<td>系统加载该角色的技能要求</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>选择筛选视图</strong></td>
+<td>T+4min</td>
+<td>因为是紧急任务，选择&quot;🛡️风险可控&quot;视图（优先经验丰富的人）</td>
+<td>系统按&quot;经验优先&quot;规则排序</td>
+<td>-</td>
+<td><strong>爽点</strong>：针对不同场景有不同视角</td>
+</tr>
+<tr>
+<td><strong>查看结果</strong></td>
+<td>T+5min</td>
+<td>系统返回排序列表（前5名）：<br>1. 李四（L5，做过200次，3个月前做过，时效分0.7，综合分92）<br>2. 王五（L4，做过150次，1个月前做过，时效分0.9，综合分90）<br>3. 赵六（L5，做过180次，6个月前做过，时效分0.5，综合分85）⚠️时效偏低<br>4. 孙七（L4，做过120次，2周前做过，时效分0.95，综合分88）<br>5. 周八（L3，做过80次，1周前做过，时效分0.98，综合分82）</td>
+<td>每位员工后面显示：<br>- 技能覆盖率<br>- 等级<br>- 操作次数<br>- 时效分数<br>- 调度状态</td>
+<td>😊 信息充分</td>
+<td><strong>爽点</strong>：排序解释清晰，知道为什么排这里<br><strong>爽点</strong>：可以看到调度状态，避免选到不可用的人</td>
+</tr>
+<tr>
+<td><strong>查看详情</strong></td>
+<td>T+7min</td>
+<td>点击李四的姓名，查看详细履历</td>
+<td>弹出详情窗口：<br>- 最近3次任务评价均为&quot;优秀&quot;<br>- 无安全事故记录<br>- 当前调度状态：可调度<br>- 备注：擅长变压器维修</td>
+<td>😊 放心</td>
+<td><strong>爽点</strong>：快速了解候选人背景</td>
+</tr>
+<tr>
+<td><strong>确认人选</strong></td>
+<td>T+10min</td>
+<td>选择李四和王五，点击&quot;指派任务&quot;</td>
+<td>系统检查两人调度状态均为&quot;可调度&quot;，创建任务记录，自动将两人状态切换为&quot;不可调度&quot;，发送通知给两人</td>
+<td>😌 安心</td>
+<td><strong>爽点</strong>：一键指派，自动锁定<br><strong>爽点</strong>：员工立即收到通知</td>
+</tr>
+<tr>
+<td><strong>任务执行</strong></td>
+<td>次日9:00</td>
+<td>李四和王五到达现场执行任务</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>任务完成</strong></td>
+<td>次日12:00</td>
+<td>王经理在系统中标记任务完成</td>
+<td>系统自动释放两人的调度状态，恢复为&quot;可调度&quot;，记录task_completion_count+1</td>
+<td>😊 闭环完成</td>
+<td><strong>爽点</strong>：自动化释放，无需手动操作</td>
+</tr>
+<tr>
+<td><strong>事后评估</strong></td>
+<td>次日14:00</td>
+<td>王经理对两人进行实操评估：李四L5（维持），王五L5（从L4晋升）</td>
+<td>系统更新评估记录，触发资格重算，王五的综合熟练度提升</td>
+<td>😊 满意</td>
+<td><strong>爽点</strong>：评估后立即看到效果</td>
+</tr>
+</tbody>
+</table>
+<h4>关键洞察</h4>
+<p>✅ <strong>紧急场景下，系统极大提升了决策效率</strong></p>
+<ul>
+<li>从传统方式的2天（打电话、问同事、查Excel）缩短到10分钟</li>
+<li>&quot;风险可控&quot;视图确保选择最可靠的人选</li>
+</ul>
+<p>⚠️ <strong>潜在优化点</strong></p>
+<ul>
+<li>可以考虑增加&quot;常用团队&quot;功能，保存经常合作的人员组合</li>
+<li>可以增加&quot;任务模板&quot;，快速创建重复性任务</li>
+</ul>
+<hr />
+<h3>8.3 旅程3：部门主管人才规划决策</h3>
+<p><strong>角色</strong>：部门主管陈总（电力工程部TAD）<br />
+<strong>时间跨度</strong>：2小时<br />
+<strong>业务目标</strong>：制定明年培训计划，避免职能缺口</p>
+<h4>旅程详细流程</h4>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>时间节点</th>
+<th>用户行为</th>
+<th>系统响应</th>
+<th>情绪曲线</th>
+<th>痛点/爽点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>年度规划启动</strong></td>
+<td>11月初</td>
+<td>HR通知各部门提交明年培训计划</td>
+<td>-</td>
+<td>😐 例行工作</td>
+<td><strong>痛点</strong>：往年靠拍脑袋，不准确</td>
+</tr>
+<tr>
+<td><strong>查看部门职能概览</strong></td>
+<td>T+10min</td>
+<td>进入&quot;部门职能概览&quot;页面，选择&quot;TAD部门&quot;层级</td>
+<td>显示：<br>- 总人数：120人<br>- 各职能覆盖人数柱状图<br>- 有效期分布饼图（🟢有效85% / 🟡即将过期10% / 🔴已过期5%）</td>
+<td>😊 一目了然</td>
+<td><strong>爽点</strong>：全貌清晰，不用手工统计</td>
+</tr>
+<tr>
+<td><strong>下钻到Unit层级</strong></td>
+<td>T+15min</td>
+<td>切换到&quot;Unit小组&quot;层级，查看5个小组的职能分布</td>
+<td>发现：<br>- Unit A：高压操作覆盖充足（15人）<br>- Unit B：应急处理只有3人，缺口明显<br>- Unit C：安全管理即将过期2人</td>
+<td>⚠️ 发现问题</td>
+<td><strong>爽点</strong>：层层下钻，定位问题</td>
+</tr>
+<tr>
+<td><strong>查看趋势分析</strong></td>
+<td>T+30min</td>
+<td>进入&quot;趋势分析与异动预测&quot;页面，选择&quot;未来1年&quot;</td>
+<td>生成报告：<br>- 预计退休：5人（影响高压操作3人、应急处理2人）<br>- 预计离职：8人（影响多个职能）<br>- 职能缺口预警：<br>  • 高压操作：缺口3人（红色预警）<br>  • 应急处理：缺口2人（黄色预警）<br>  • 安全管理：缺口1人（绿色正常）</td>
+<td>😟 意识到严重性</td>
+<td><strong>爽点</strong>：提前6个月预警，有时间应对<br><strong>爽点</strong>：折线图直观展示趋势</td>
+</tr>
+<tr>
+<td><strong>导出报告</strong></td>
+<td>T+45min</td>
+<td>点击&quot;导出PDF&quot;，下载趋势分析报告</td>
+<td>生成包含图表的详细报告</td>
+<td>-</td>
+<td><strong>爽点</strong>：可直接用于汇报</td>
+</tr>
+<tr>
+<td><strong>制定培训计划</strong></td>
+<td>T+60min</td>
+<td>基于报告，制定培训计划：<br>- Q1：开设&quot;高压操作基础班&quot;2期，每期20人<br>- Q2：开设&quot;应急处理强化班&quot;1期，15人<br>- Q3：开设&quot;安全管理复训班&quot;1期，10人<br>预算估算：¥150,000</td>
+<td>-</td>
+<td>😊 有依据</td>
+<td><strong>爽点</strong>：数据驱动的决策，不再是拍脑袋</td>
+</tr>
+<tr>
+<td><strong>提交培训需求</strong></td>
+<td>T+90min</td>
+<td>进入&quot;培训需求收集&quot;页面，填写需求：<br>- 课程名称：高压操作基础<br>- 预估人数：40人<br>- 预算：¥80,000<br>- 期望时间：Q1<br>提交后进入审批流程</td>
+<td>系统生成需求编号TR-2027-001，通知HR审核</td>
+<td>😌 流程规范</td>
+<td><strong>爽点</strong>：在线提交，流程可追溯</td>
+</tr>
+<tr>
+<td><strong>跟踪审批进度</strong></td>
+<td>后续几周</td>
+<td>定期查看需求状态</td>
+<td>状态流转：待审核 → HR已通过 → 预算已预留 → 已纳入开班计划</td>
+<td>😊 放心</td>
+<td><strong>爽点</strong>：实时掌握进度</td>
+</tr>
+</tbody>
+</table>
+<h4>关键洞察</h4>
+<p>✅ <strong>数据驱动的人才规划成为可能</strong></p>
+<ul>
+<li>从&quot;凭经验估计&quot;升级为&quot;基于数据的预测&quot;</li>
+<li>提前6个月发现缺口，有充足时间应对</li>
+</ul>
+<p>⚠️ <strong>潜在优化点</strong></p>
+<ul>
+<li>可以增加&quot;情景模拟&quot;功能：如果离职率提高10%，缺口会如何变化</li>
+<li>可以增加&quot;成本效益分析&quot;：培训投入 vs 外聘成本的对比</li>
+</ul>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<h2>9. 业务成功指标体系 / Business Success Metrics</h2>
+<blockquote>
+<p><strong>说明</strong>：本节定义上线后6个月和12个月的业务成功指标，用于衡量产品是否真正创造了价值。</p>
+</blockquote>
+<h3>9.1 组织效能指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>基线（现状）</th>
+<th>6个月目标</th>
+<th>12个月目标</th>
+<th>测量方式</th>
+<th>责任人</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>人岗匹配平均耗时</strong></td>
+<td>2天（人工查找+电话确认）</td>
+<td>2小时</td>
+<td>30分钟</td>
+<td>从发起检索到确认指派的平均时长</td>
+<td>业务方</td>
+</tr>
+<tr>
+<td><strong>证书过期率</strong></td>
+<td>15%/年</td>
+<td>&lt;5%/年</td>
+<td>&lt;3%/年</td>
+<td>（过期证书数 / 总证书数）× 100%</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>培训资源利用率</strong></td>
+<td>60%（实际参训/计划招生）</td>
+<td>&gt;75%</td>
+<td>&gt;85%</td>
+<td>实际参训人数 / 计划招生人数</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>职能缺口预警准确率</strong></td>
+<td>无</td>
+<td>&gt;70%</td>
+<td>&gt;80%</td>
+<td>（准确预测的缺口数 / 实际发生的缺口数）× 100%</td>
+<td>部门主管</td>
+</tr>
+<tr>
+<td><strong>重复派工冲突次数</strong></td>
+<td>5次/月（估算）</td>
+<td>&lt;1次/月</td>
+<td>0次/月</td>
+<td>同一人被同时指派多个任务的次数</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>资格计算人工干预次数</strong></td>
+<td>50次/月</td>
+<td>&lt;10次/月</td>
+<td>&lt;5次/月</td>
+<td>HR手动修正资格计算的次数</td>
+<td>HR</td>
+</tr>
+</tbody>
+</table>
+<p><strong>预期业务价值</strong>：</p>
+<ul>
+<li>💰 节省业务方找人时间：(2天 - 30分钟) × 20次/月 × ¥300/小时 = <strong>¥27,000/月</strong></li>
+<li>💰 减少证书过期罚款：从15%降到3%，预计避免罚款 <strong>¥100,000/年</strong></li>
+<li>💰 提高培训资源利用率：从60%到85%，节省培训成本 <strong>¥80,000/年</strong></li>
+</ul>
+<hr />
+<h3>9.2 员工成长指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>基线（现状）</th>
+<th>6个月目标</th>
+<th>12个月目标</th>
+<th>测量方式</th>
+<th>责任人</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>员工主动查询晋升路径比例</strong></td>
+<td>无</td>
+<td>&gt;40%</td>
+<td>&gt;60%</td>
+<td>访问&quot;我的晋升路径&quot;页面的员工占比</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>技能覆盖率提升</strong></td>
+<td>65%（至少1个有效技能的员工占比）</td>
+<td>+15%（达到80%）</td>
+<td>+30%（达到95%）</td>
+<td>（具备至少1个有效技能的员工数 / 总员工数）× 100%</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>复训完成率</strong></td>
+<td>50%（收到提醒后完成复训的比例）</td>
+<td>&gt;65%</td>
+<td>&gt;80%</td>
+<td>（完成复训人数 / 收到复训提醒人数）× 100%</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>员工满意度（NPS）</strong></td>
+<td>无基线</td>
+<td>&gt;30</td>
+<td>&gt;50</td>
+<td>季度调研净推荐值：（推荐者% - 批评者%）</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>员工主动申请评估次数</strong></td>
+<td>无</td>
+<td>20次/月</td>
+<td>50次/月</td>
+<td>员工通过&quot;申请评估&quot;功能提交的次数</td>
+<td>业务方</td>
+</tr>
+<tr>
+<td><strong>内部晋升率</strong></td>
+<td>30%（晋升人员中内部培养的比例）</td>
+<td>40%</td>
+<td>50%</td>
+<td>（内部晋升人数 / 总晋升人数）× 100%</td>
+<td>HR</td>
+</tr>
+</tbody>
+</table>
+<p><strong>预期业务价值</strong>：</p>
+<ul>
+<li>📈 提升员工留存率：NPS从0提升到50，预计降低流失率 <strong>5%</strong>，节省招聘成本 <strong>¥200,000/年</strong></li>
+<li>📈 提高内部晋升比例：从30%到50%，减少外部招聘成本 <strong>¥150,000/年</strong></li>
+<li>📈 增强员工主动性：主动申请评估从0到50次/月，说明员工参与度大幅提升</li>
+</ul>
+<hr />
+<h3>9.3 运营效率指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>基线（现状）</th>
+<th>6个月目标</th>
+<th>12个月目标</th>
+<th>测量方式</th>
+<th>责任人</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HR手动制作报表时间</strong></td>
+<td>200小时/年</td>
+<td>50小时/年</td>
+<td>0小时/年</td>
+<td>HR每月制作培训报表的总时长</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>数据纠错请求数量</strong></td>
+<td>无统计</td>
+<td>&lt;20次/月</td>
+<td>&lt;10次/月</td>
+<td>员工或业务方提交的纠错申请数量</td>
+<td>HR</td>
+</tr>
+<tr>
+<td><strong>系统可用性</strong></td>
+<td>无</td>
+<td>&gt;99%</td>
+<td>&gt;99.5%</td>
+<td>月度正常运行时间占比</td>
+<td>IT</td>
+</tr>
+<tr>
+<td><strong>SAP-TMS数据同步成功率</strong></td>
+<td>无</td>
+<td>&gt;95%</td>
+<td>&gt;98%</td>
+<td>（成功同步的记录数 / 总记录数）× 100%</td>
+<td>IT</td>
+</tr>
+<tr>
+<td><strong>通知送达率</strong></td>
+<td>无</td>
+<td>&gt;90%</td>
+<td>&gt;95%</td>
+<td>（成功送达的通知数 / 发送总数）× 100%</td>
+<td>IT</td>
+</tr>
+<tr>
+<td><strong>用户活跃度（MAU）</strong></td>
+<td>无</td>
+<td>&gt;60%</td>
+<td>&gt;80%</td>
+<td>月活跃用户数 / 总用户数</td>
+<td>HR</td>
+</tr>
+</tbody>
+</table>
+<p><strong>预期业务价值</strong>：</p>
+<ul>
+<li>⏱️ 节省HR时间：从200小时/年到0小时，相当于释放 <strong>0.1个全职人力</strong></li>
+<li>🔧 提高系统稳定性：可用性从99%到99.5%，减少故障时间 <strong>43小时/年</strong></li>
+<li>📊 提升数据质量：SAP同步成功率从95%到98%，减少人工对账工作量</li>
+</ul>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<h2>10. 业务异常场景处理 / Business Exception Handling</h2>
+<blockquote>
+<p><strong>说明</strong>：本节定义关键业务异常场景的处理策略，保证业务连续性和数据一致性。</p>
+</blockquote>
+<h3>10.1 场景1：员工离职但仍有未完成任务</h3>
+<p><strong>问题描述</strong>：员工已离职，但系统中仍有其被指派的任务，导致调度状态无法释放</p>
+<p><strong>处理策略</strong>：</p>
+<ol>
+<li>SAP同步离职标记后，TMS自动检查该员工的任务状态</li>
+<li>若有未完成任务，自动通知业务方&quot;该员工已离职，请重新指派&quot;</li>
+<li>3天内业务方未响应，HR可强制释放调度状态并记录原因</li>
+<li>任务标记为&quot;因员工离职取消&quot;，不计入员工的task_completion_count</li>
+<li>若任务紧急，HR可重新指派其他人员</li>
+</ol>
+<p><strong>涉及功能</strong>：F-S08(SAP对账)、F-A07(任务管理)、F-S05(数据纠错)</p>
+<hr />
+<h3>10.2 场景2：业务方评估后反悔，要求修改等级</h3>
+<p><strong>问题描述</strong>：业务方评估员工为L3，第二天觉得评高了，想改为L2</p>
+<p><strong>处理策略</strong>：</p>
+<ol>
+<li>不允许直接修改原评估记录（违反&quot;数据不覆盖&quot;原则）</li>
+<li>业务方发起&quot;纠错申请&quot;，选择原因&quot;评估失误&quot;</li>
+<li>HR审批通过后，创建新的评估记录（supersedes_seq指向原记录）</li>
+<li>原记录标记为superseded，不再作为当前有效记录</li>
+<li>触发资格重算(E05a)和熟练度重算(E06)</li>
+<li>操作日志记录为CORRECTION类型</li>
+</ol>
+<p><strong>涉及功能</strong>：F-S05(数据纠错机制)、F-E06(时效性计算)、F-E05a(资格计算引擎)</p>
+<hr />
+<h3>10.3 场景3：岗位要求升级，大量员工不再满足</h3>
+<p><strong>问题描述</strong>：HR将&quot;高级电工&quot;的技能要求从5个增加到7个，导致100名员工不再满足该岗位</p>
+<p><strong>处理策略</strong>：</p>
+<ol>
+<li>系统自动识别受影响的员工列表</li>
+<li>HR选择变更策略：
+<ul>
+<li><strong>立即生效</strong>：所有员工立即失去该岗位的适配状态（激进）</li>
+<li><strong>宽限期90天</strong>：现有持有人90天内仍显示适配，但标注&quot;⚠待补修新要求&quot;（推荐）</li>
+<li><strong>Grandfather</strong>：现有持有人永久有效，仅对新申请者应用新要求（宽松）</li>
+</ul>
+</li>
+<li>受影响员工收到通知：“您适配的’高级电工’岗位要求已变更，需在90天内补修XX和YY技能”</li>
+<li>系统推荐补修课程和任务</li>
+<li>操作日志记录为SYSTEM_ADJUSTMENT类型</li>
+</ol>
+<p><strong>涉及功能</strong>：F-S09(证书宽限期)、F-G05(岗位要求变更通知)、F-G07(我的适配岗位)</p>
+<hr />
+<h3>10.4 场景4：SAP同步失败，员工数据不一致</h3>
+<p><strong>问题描述</strong>：SAP中员工职位已从&quot;Technician&quot;升级为&quot;Senior Technician&quot;，但TMS未同步</p>
+<p><strong>处理策略</strong>：</p>
+<ol>
+<li>每日自动对账任务检测到差异</li>
+<li>生成差异报告推送给HR：“发现15名员工SAP与TMS数据不一致”</li>
+<li>HR逐条确认：
+<ul>
+<li>若SAP正确：点击&quot;同步到TMS&quot;，更新TMS数据</li>
+<li>若TMS正确：点击&quot;忽略&quot;，标记为&quot;SAP数据延迟&quot;</li>
+<li>若都不正确：标记为&quot;需人工核实&quot;，线下确认后手动修正</li>
+</ul>
+</li>
+<li>连续3天未处理的差异，升级通知IT负责人</li>
+<li>操作日志记录为OVERRIDE类型</li>
+</ol>
+<p><strong>涉及功能</strong>：F-S08(SAP-TMS数据对账)、F-S07(系统健康监控)</p>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<h2>11. 业务决策支持场景 / Business Decision Support Scenarios</h2>
+<blockquote>
+<p><strong>说明</strong>：本节展示产品如何赋能实际业务决策，体现深层价值。</p>
+</blockquote>
+<h3>11.1 决策场景1：明年培训计划制定</h3>
+<p><strong>使用者</strong>：HR + 部门主管<br />
+<strong>使用功能</strong>：趋势分析 + 职能缺口预警<br />
+<strong>决策过程</strong>：</p>
+<ol>
+<li>查看&quot;趋势分析报告&quot;：未来1年预计退休5人、离职8人</li>
+<li>识别受影响职能：高压操作缺口3人、应急处理缺口2人</li>
+<li>制定培训计划：
+<ul>
+<li>Q1：开设&quot;高压操作基础班&quot;2期，每期20人</li>
+<li>Q2：开设&quot;应急处理强化班&quot;1期，15人</li>
+<li>预算估算：¥XXX,XXX</li>
+</ul>
+</li>
+<li>在系统中提交&quot;培训需求&quot;，走审批流程</li>
+</ol>
+<p><strong>预期效果</strong>：提前6个月启动培训，避免职能缺口出现</p>
+<p><strong>量化收益</strong>：</p>
+<ul>
+<li>避免外聘成本：3人 × ¥50,000/人 = <strong>¥150,000</strong></li>
+<li>提高内部培养比例：从30%提升到50%</li>
+</ul>
+<hr />
+<h3>11.2 决策场景2：紧急任务人员调配</h3>
+<p><strong>使用者</strong>：业务方（消费者）<br />
+<strong>使用功能</strong>：人岗匹配检索（风险可控视图）<br />
+<strong>决策过程</strong>：</p>
+<ol>
+<li>接到紧急任务：明天需要2名高级电工处理高压故障</li>
+<li>进入&quot;人岗匹配&quot;页面，选择&quot;高级电工&quot;角色</li>
+<li>选择&quot;🛡️风险可控&quot;视图（优先经验丰富的人）</li>
+<li>系统返回排序列表：
+<ul>
+<li>第1名：李四（L5，做过200次，3个月前做过，时效分0.7）</li>
+<li>第2名：王五（L4，做过150次，1个月前做过，时效分0.9）</li>
+<li>第3名：赵六（L5，做过180次，6个月前做过，时效分0.5）⚠️时效偏低</li>
+</ul>
+</li>
+<li>业务方选择李四和王五，指派任务</li>
+<li>系统自动锁定两人的调度状态</li>
+</ol>
+<p><strong>预期效果</strong>：5分钟内找到合适人选，避免因选人不当导致任务失败</p>
+<p><strong>量化收益</strong>：</p>
+<ul>
+<li>节省决策时间：从2天缩短到5分钟</li>
+<li>降低任务失败风险：选择经验丰富的人员，成功率提升 <strong>30%</strong></li>
+</ul>
+<hr />
+<h3>11.3 决策场景3：员工晋升评审</h3>
+<p><strong>使用者</strong>：部门主管 + HR<br />
+<strong>使用功能</strong>：成长记录审计 + 技能差距分析<br />
+<strong>决策过程</strong>：</p>
+<ol>
+<li>员工张三申请晋升为&quot;高级电工&quot;</li>
+<li>部门主管查看张三的&quot;成长记录审计&quot;：
+<ul>
+<li>2024-03：通过&quot;高压操作基础&quot;课程，理论达标</li>
+<li>2024-06：执行高压任务10次，被评估为L3</li>
+<li>2024-09：执行高压任务20次，被评估为L4</li>
+<li>2024-12：执行高压任务35次，被评估为L5</li>
+</ul>
+</li>
+<li>查看&quot;技能差距分析&quot;：已满足所有技能要求，无差距</li>
+<li>查看&quot;操作频次&quot;：total_assignment_count=35，evaluated_count=35（每次都被评估）</li>
+<li>结合日常表现，同意晋升申请</li>
+<li>HR在SAP中更新员工职位</li>
+</ol>
+<p><strong>预期效果</strong>：基于数据的客观决策，避免主观偏见，员工心服口服</p>
+<p><strong>量化收益</strong>：</p>
+<ul>
+<li>提高晋升公平性：数据支撑，减少争议</li>
+<li>提升员工满意度：透明公正，NPS提升 <strong>10分</strong></li>
+</ul>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<h2>12. 业务演进路线图 / Business Evolution Roadmap</h2>
+<blockquote>
+<p><strong>说明</strong>：本节展示产品的长期业务目标和价值演进，帮助利益相关者理解投资回报路径。</p>
+</blockquote>
+<h3>Phase 1：建立数字化基础（0-9个月）</h3>
+<p><strong>业务目标</strong>：将线下培训管理流程线上化，实现数据沉淀</p>
+<p><strong>核心能力</strong>：</p>
+<ul>
+<li>技能数字化：建立统一的技能库和等级模型</li>
+<li>培训在线化：课程、班级、报名、考勤全流程在线</li>
+<li>资格自动化：自动计算和签发资格证书</li>
+<li>人岗智能化：基于三维度熟练度的智能匹配</li>
+</ul>
+<p><strong>业务价值</strong>：</p>
+<ul>
+<li>消除信息孤岛，所有培训数据集中管理</li>
+<li>减少人工操作，资格计算和报表自动化</li>
+<li>提高人岗匹配效率，从2天缩短到2小时</li>
+<li><strong>预计节省成本</strong>：¥300,000/年</li>
+</ul>
+<p><strong>关键里程碑</strong>：</p>
+<ul>
+<li>M3（第3月末）：基础框架完成，可创建技能和角色</li>
+<li>M6（第6月末）：培训管理完成，可开班和考勤</li>
+<li>M9（第9月末）：Phase 1全部功能上线，核心闭环打通</li>
+</ul>
+<hr />
+<h3>Phase 2：深化员工赋能（10-15个月）</h3>
+<p><strong>业务目标</strong>：从&quot;管理工具&quot;升级为&quot;成长平台&quot;，激发员工主动性</p>
+<p><strong>核心能力</strong>：</p>
+<ul>
+<li>移动端APP：随时随地查看技能、报名培训、接收通知</li>
+<li>讲师资格追踪：讲师自身的资质管理和续期提醒</li>
+<li>共同授课(Co-Trainer)：支持多名讲师联合授课</li>
+<li>高级数据分析(AI)：基于历史数据预测培训效果</li>
+</ul>
+<p><strong>业务价值</strong>：</p>
+<ul>
+<li>提升员工参与度，从被动接受到主动学习</li>
+<li>优化讲师资源分配，提高培训质量</li>
+<li>数据驱动的持续改进</li>
+<li><strong>预计提升指标</strong>：员工活跃度从60%提升到80%</li>
+</ul>
+<p><strong>关键里程碑</strong>：</p>
+<ul>
+<li>M12（第12月末）：移动端APP上线</li>
+<li>M15（第15月末）：Phase 2全部功能完成</li>
+</ul>
+<hr />
+<h3>Phase 3：生态整合扩展（16-24个月）</h3>
+<p><strong>业务目标</strong>：与外部系统深度集成，构建人才生态</p>
+<p><strong>核心能力</strong>：</p>
+<ul>
+<li>HR/ERP体检数据自动同步：无需手动录入体检结果</li>
+<li>PowerBI深度集成：自定义报表和可视化</li>
+<li>自定义衰减曲线：不同技能可设置不同的衰减速度</li>
+<li>开放API：与招聘系统、绩效系统对接</li>
+</ul>
+<p><strong>业务价值</strong>：</p>
+<ul>
+<li>打破系统壁垒，数据自动流动</li>
+<li>支持个性化配置，适应不同业务场景</li>
+<li>成为企业人才管理的核心枢纽</li>
+<li><strong>预计整合效益</strong>：减少跨系统数据录入 <strong>500小时/年</strong></li>
+</ul>
+<p><strong>关键里程碑</strong>：</p>
+<ul>
+<li>M18（第18月末）：SAP/ERP深度集成完成</li>
+<li>M24（第24月末）：Phase 3全部功能完成，生态系统建成</li>
+</ul>
+<hr />
+<h3>投资回报总结</h3>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>投入成本</th>
+<th>年度收益</th>
+<th>ROI</th>
+<th>回收期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 1</td>
+<td>¥XXX,XXX</td>
+<td>¥300,000/年</td>
+<td>XX%</td>
+<td>X个月</td>
+</tr>
+<tr>
+<td>Phase 2</td>
+<td>¥XXX,XXX</td>
+<td>¥200,000/年</td>
+<td>XX%</td>
+<td>X个月</td>
+</tr>
+<tr>
+<td>Phase 3</td>
+<td>¥XXX,XXX</td>
+<td>¥150,000/年</td>
+<td>XX%</td>
+<td>X个月</td>
+</tr>
+<tr>
+<td><strong>总计</strong></td>
+<td><strong>¥XXX,XXX</strong></td>
+<td><strong>¥650,000/年</strong></td>
+<td><strong>XX%</strong></td>
+<td><strong>X个月</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>注</strong>：具体金额需根据实际人日费率和部署方案计算。</p>
+</blockquote>
+<p><strong>☐ 本节确认状态：待确认</strong></p>
+<hr />
+<h2>13. 项目范围</h2>
+<h3>13.1 Phase 1（本期交付）</h3>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基础层</td>
+<td>技能库（<strong>含衰减参数</strong>）、角色定义(<strong>含版本管理+职位前置</strong>)、员工档案（SAP同步）、权限框架、<strong>外部认证记录管理(含Fitness Matrix)</strong></td>
+</tr>
+<tr>
+<td>培训层</td>
+<td>课程管理（含前置/豁免/替代/<strong>K-S-FF-T分类</strong>)、班级管理（<strong>含状态机</strong>）、讲师授权、QR考勤、报名管理（<strong>含审核策略</strong>）、<strong>培训需求收集与预算管理</strong></td>
+</tr>
+<tr>
+<td>评估层</td>
+<td>培训记录（staging模式/<strong>含外部培训记录Excel导入</strong>）、课程完结与理论达标（<strong>含补考安排</strong>）、实操评估（<strong>含员工申请评估</strong>）、资格计算引擎（<strong>含实操等级门槛+熄灯制度+必修选修+条件性有效期+职位前置检查</strong>）、<strong>面试/Board审核流程</strong>、<strong>时效性计算</strong>、<strong>熟练度综合计算</strong></td>
+</tr>
+<tr>
+<td>应用层</td>
+<td>人岗匹配检索（5种筛选视图/按角色+按技能/排序解释/培养视图）、复训提醒(<strong>含通知部门负责人</strong>)、资质预警(<strong>含通知部门负责人+外部认证预警+Fitness判定</strong>)、数据看板(<strong>含合资格人数趋势+部门维度统计</strong>)、<strong>月度自动报表推送</strong>、<strong>证书持有人查询</strong>、<strong>部门主管自助视图</strong>、<strong>部门职能概览(三级检视+时间轴+有效期)</strong>、<strong>趋势分析与异动预测(退休/离职预测+职能缺口)</strong>、任务管理、调度可用性（含超时释放/并发/覆盖）</td>
+</tr>
+<tr>
+<td><strong>员工成长层</strong></td>
+<td><strong>岗位技能查询、我的晋升路径、技能差距分析、成长记录审计溯源、岗位要求变更通知、我的技能全景、我的适配岗位、我的证书</strong></td>
+</tr>
+<tr>
+<td>集成</td>
+<td>SAP数据同步、企业微信集成</td>
+</tr>
+<tr>
+<td>迁移</td>
+<td>旧系统历史数据迁移（<strong>需补录达标时间和实操次数</strong>）</td>
+</tr>
+</tbody>
+</table>
+<h3>13.2 Phase 2（后续规划）</h3>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>讲师资格证照追踪</td>
+<td>追踪讲师持有的证照及有效期限</td>
+</tr>
+<tr>
+<td>共同授课（Co-Trainer）</td>
+<td>班级支持多位讲师</td>
+</tr>
+<tr>
+<td>移动端APP</td>
+<td>独立移动应用</td>
+</tr>
+<tr>
+<td>高级数据分析</td>
+<td>AI驱动的培训推荐、技能预测</td>
+</tr>
+<tr>
+<td>自定义衰减曲线</td>
+<td>支持HR为不同技能配置非线性衰减曲线</td>
+</tr>
+<tr>
+<td>PowerBI深度集成</td>
+<td>与PowerBI对接，提供更高级的数据可视化和自助分析</td>
+</tr>
+<tr>
+<td>HR/ERP体检数据自动同步</td>
+<td>与HR/ERP系统建立API接口，体检结果自动同步到TMS，替代手动Excel导入</td>
+</tr>
+</tbody>
+</table>
+<h3>13.3 项目时程与预算（V2.4新增——甲方要求）</h3>
+<blockquote>
+<p>甲方要求明确Phase 1与Phase 2的具体工作项目、阶段性目标及预计完工日期，并根据新增需求重新评估预算。</p>
+</blockquote>
+<h4>Phase 1 时程计划</h4>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>开发内容</th>
+<th>预估工时</th>
+<th>预计周期</th>
+<th>阶段性目标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第1阶段</td>
+<td>权限框架+SAP同步+技能库+衰减参数+员工档案+外部认证(含Fitness Matrix)+调度可用性+操作日志+系统参数+资质预警框架+月度报表框架</td>
+<td>~74人天</td>
+<td>第1-4周</td>
+<td>基础数据就绪，可开始配置技能/角色</td>
+</tr>
+<tr>
+<td>第2阶段</td>
+<td>课程管理+场地语言+课程关系+角色定义+培训需求与预算</td>
+<td>~47.5人天</td>
+<td>第5-8周</td>
+<td>可创建课程和角色的完整闭环</td>
+</tr>
+<tr>
+<td>第3阶段</td>
+<td>讲师授权+班级管理+企业微信基础</td>
+<td>~29人天</td>
+<td>第9-11周</td>
+<td>可开班和管理培训</td>
+</tr>
+<tr>
+<td>第4阶段</td>
+<td>报名管理+培训记录+QR考勤+岗位技能查询+我的技能全景+我的证书</td>
+<td>~53人天</td>
+<td>第12-15周</td>
+<td>员工可报名、考勤、查看技能</td>
+</tr>
+<tr>
+<td>第5阶段</td>
+<td>课程完结+实操评估+熟练度计算(含ROLE_SKILL_EXPERIENCE)+面试审核+晋升路径+成长审计</td>
+<td>~66人天</td>
+<td>第16-20周</td>
+<td>评估层完成，熟练度可计算</td>
+</tr>
+<tr>
+<td>第6阶段</td>
+<td>资格证书+资格计算引擎+证书持有人查询+部门主管自助视图+员工申请评估+技能差距+岗位变更通知</td>
+<td>~69人天</td>
+<td>第21-25周</td>
+<td>证书自动签发，核心闭环完成</td>
+</tr>
+<tr>
+<td>第7阶段</td>
+<td>人岗匹配+任务管理(含role)+复训提醒+资质预警完善+消息通知中心</td>
+<td>~62人天</td>
+<td>第26-29周</td>
+<td>匹配和调度完整闭环</td>
+</tr>
+<tr>
+<td>第8阶段</td>
+<td>数据看板+月度报表完善+<strong>部门职能概览(三级检视)</strong>+<strong>趋势分析(异动预测)</strong>+SAP集成+数据迁移</td>
+<td>~50人天</td>
+<td>第30-33周</td>
+<td>Phase 1交付，全部功能上线</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Phase 1预估总工时</strong>：约450.5人天（含V2.4新增的部门职能概览+趋势分析+搜索优化+备注字段+成绩导入增强）</p>
+<p>⚠️ <strong>具体日期</strong>需根据甲方确认需求后的开发启动日期确定。以上为相对人天估算，按5人团队约9个月可完成Phase 1。</p>
+</blockquote>
+<h4>Phase 2 时程计划（规划中）</h4>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>预估工时</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>讲师资格证照追踪</td>
+<td>~8人天</td>
+<td>Phase 1完成后启动</td>
+</tr>
+<tr>
+<td>共同授课(Co-Trainer)</td>
+<td>~5人天</td>
+<td>依赖班级管理</td>
+</tr>
+<tr>
+<td>移动端APP</td>
+<td>~40人天</td>
+<td>独立开发</td>
+</tr>
+<tr>
+<td>高级数据分析(AI)</td>
+<td>~30人天</td>
+<td>依赖数据积累</td>
+</tr>
+<tr>
+<td>自定义衰减曲线</td>
+<td>~5人天</td>
+<td>依赖系统参数框架</td>
+</tr>
+<tr>
+<td>PowerBI深度集成</td>
+<td>~10人天</td>
+<td>依赖数据看板</td>
+</tr>
+<tr>
+<td>HR/ERP体检数据自动同步</td>
+<td>~15人天</td>
+<td>依赖外部API</td>
+</tr>
+</tbody>
+</table>
+<h4>预算概算框架</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 1 开发</td>
+<td>按人均日费×450.5人天计算（具体费率需双方确认）</td>
+</tr>
+<tr>
+<td>Phase 2 开发</td>
+<td>按各功能模块单独估算，约113人天</td>
+</tr>
+<tr>
+<td>数据迁移</td>
+<td>含在Phase 1第8阶段（~15人天）</td>
+</tr>
+<tr>
+<td>硬件/基础设施</td>
+<td>根据部署方案另计（云服务器/本地部署）</td>
+</tr>
+<tr>
+<td>培训与上线</td>
+<td>约10人天（用户培训+文档+上线支持）</td>
+</tr>
+<tr>
+<td>项目管理</td>
+<td>Phase 1期间约10%的工时（~45人天）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>预算细节</strong>需在双方确认需求范围后，根据具体人日费率和部署方案出具正式报价。</p>
+</blockquote>
+<hr />
+<h2>14. 验收标准</h2>
+<h3>14.1 核心场景验收</h3>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>验收标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>理论达标闭环</td>
+<td>HR完结课程后，员工关联技能自动标记&quot;理论已学&quot;；<strong>达标时间正确记录</strong>；时效系数重置为1.0；<strong>首次达标时记录skill_acquired_at</strong></td>
+</tr>
+<tr>
+<td>实操定级闭环</td>
+<td>业务方评估后，员工技能实操等级更新；<strong>评估时间正确记录</strong>；实操时效系数重置为1.0；<strong>ROLE_SKILL_EXPERIENCE.evaluated_count+1(本角色)</strong></td>
+</tr>
+<tr>
+<td>资格自动签发</td>
+<td>员工完成课程组合且<strong>实操等级≥最低门槛</strong>后，系统自动签发资格证书并计算有效期</td>
+</tr>
+<tr>
+<td><strong>三维度熟练度匹配</strong></td>
+<td><strong>推荐视图下：同样覆盖率、同样等级的两人，做过50次任务但3个月没做的人 &gt; 做过2次任务但昨天刚做的人</strong></td>
+</tr>
+<tr>
+<td><strong>培养视图打破马太效应</strong></td>
+<td><strong>培养视图下：经验不足的新人排在熟练工前面，标注&quot;🆕首次机会&quot;/“🌱需要锻炼”</strong></td>
+</tr>
+<tr>
+<td><strong>自定义视图自由筛选</strong></td>
+<td><strong>业务方可自选筛选条件(等级/时效/次数/部门)和排序字段，不受系统推荐束缚</strong></td>
+</tr>
+<tr>
+<td><strong>岗位技能要求透明查询</strong></td>
+<td><strong>员工可查询任意岗位/角色的技能要求和等级门槛，看到与自己的差距</strong></td>
+</tr>
+<tr>
+<td><strong>晋升路径可视化</strong></td>
+<td><strong>员工选定目标岗位后，系统展示差距：差几个技能、差几个等级、差多少次实操，并推荐课程和任务</strong></td>
+</tr>
+<tr>
+<td><strong>成长数据可审计</strong></td>
+<td><strong>员工可查看每条技能数据的来源链路（来自哪次课程完结/哪次任务评估/哪些任务指派），全链路可溯源</strong></td>
+</tr>
+<tr>
+<td><strong>岗位要求变更通知</strong></td>
+<td><strong>目标岗位的技能要求变更时，已设该岗位为目标的员工自动收到差距更新通知</strong></td>
+</tr>
+<tr>
+<td><strong>我的适配岗位动态计算</strong></td>
+<td><strong>员工页面实时展示&quot;基于你当前掌握的技能，你满足以下岗位&quot;；多学一个技能后适配岗位列表自动更新；岗位要求变更后适配列表同步刷新</strong></td>
+</tr>
+<tr>
+<td><strong>岗位要求升级导致不再满足</strong></td>
+<td><strong>当岗位技能要求发生版本变更时，员工可见&quot;曾经满足但因要求升级不再满足&quot;的岗位及差距详情</strong></td>
+</tr>
+<tr>
+<td><strong>角色定义版本管理</strong></td>
+<td><strong>HR修改角色技能要求时系统自动记录版本历史；员工可查看任意岗位的技能要求变更时间线</strong></td>
+</tr>
+<tr>
+<td><strong>证书熄灯制度</strong></td>
+<td><strong>资格证书任一组成项(课程/外部认证)失效时，证书自动熄灯；补齐失效项后自动亮灯；熄灯/亮灯通知员工+部门负责人+HR</strong></td>
+</tr>
+<tr>
+<td><strong>培训需求在线收集</strong></td>
+<td><strong>部门可在线提交培训需求→填写预估人数和预算→HRS审核→需求转化为开班计划；全流程在线可追溯</strong></td>
+</tr>
+<tr>
+<td><strong>面试/Board审核流程</strong></td>
+<td><strong>课程通过+实操达标后，DLAP/CLAP类证书需面试审核才能正式签发；面试流程和结果在TMS中可追溯</strong></td>
+</tr>
+<tr>
+<td><strong>外部认证统一管理</strong></td>
+<td><strong>职安卡/密闭空间卡/身体检查等外部认证可录入系统+Excel批量导入；到期自动预警通知员工+部门负责人；外部认证过期触发关联证书熄灯</strong></td>
+</tr>
+<tr>
+<td><strong>月度自动报表推送</strong></td>
+<td><strong>系统按月自动生成培训报表（含证书持有人统计/部门证书分布/过期预警汇总/合资格人数趋势），推送给部门负责人</strong></td>
+</tr>
+<tr>
+<td><strong>证书持有人查询</strong></td>
+<td><strong>按证书名称查询持有人列表；按部门查询证书分布和数量；支持导出</strong></td>
+</tr>
+<tr>
+<td><strong>部门负责人通知</strong></td>
+<td><strong>证书到期/技能衰减/外部认证过期等预警同时通知员工本人+部门负责人+HR</strong></td>
+</tr>
+<tr>
+<td><strong>外部培训记录Excel导入</strong></td>
+<td><strong>HR通过Excel模板批量导入外部培训记录，系统校验数据有效性后纳入统一管理</strong></td>
+</tr>
+<tr>
+<td><strong>课程组合必修/选修</strong></td>
+<td><strong>资格证书的课程组合区分必修(全部完成)与选修(完成指定数量或豁免)；系统自动识别课程组合豁免关系</strong></td>
+</tr>
+<tr>
+<td><strong>职位前置条件</strong></td>
+<td><strong>角色定义可配置职位/年资/学历前置条件；不满足时证书进入&quot;待条件达标&quot;状态，不出现在人岗匹配中</strong></td>
+</tr>
+<tr>
+<td><strong>体检查询矩阵</strong></td>
+<td><strong>角色定义关联Fitness Matrix(体检类型+要求结果)；员工体检录入后系统自动判定是否满足角色要求，不满足时标注&quot;⚠体检不满足&quot;</strong></td>
+</tr>
+<tr>
+<td><strong>条件性有效期</strong></td>
+<td><strong>资格证书有效期可按条件(如年龄≥55岁缩短为3年)动态计算；签发证书时根据员工条件计算expires_at</strong></td>
+</tr>
+<tr>
+<td><strong>数据不覆盖</strong></td>
+<td><strong>所有记录追加式写入，外部认证续期/批量导入/重新评估均新增记录不覆盖旧记录；历史数据可追溯</strong></td>
+</tr>
+<tr>
+<td><strong>课程编号体系</strong></td>
+<td><strong>课程类型支持K(知识)/S(技能)/FF(安全消防)/T(通用)分类；课程代码按类型前缀自动生成</strong></td>
+</tr>
+<tr>
+<td><strong>我的证书自助查询</strong></td>
+<td><strong>员工可一站式查看自己所有证书(有效/即将过期/已过期/已熄灯)及续期建议，无需问HR</strong></td>
+</tr>
+<tr>
+<td><strong>部门主管自助视图</strong></td>
+<td><strong>部门主管可查看本部门员工证书分布、即将过期人员、一键发送续期提醒</strong></td>
+</tr>
+<tr>
+<td><strong>外部人员ID标准化</strong></td>
+<td><strong>外部人员使用ext_前缀编号统一标识，不依赖姓名匹配</strong></td>
+</tr>
+<tr>
+<td><strong>阶段式推行</strong></td>
+<td><strong>第1阶段含基础自动化(证书到期提醒+月度报表框架+员工自助查询)</strong></td>
+</tr>
+<tr>
+<td><strong>排序解释可见</strong></td>
+<td><strong>所有视图中每位员工后面显示排序原因的简要解释</strong></td>
+</tr>
+<tr>
+<td><strong>按技能检索</strong></td>
+<td><strong>不定义角色，直接选择1-N个技能即可检索匹配人员</strong></td>
+</tr>
+<tr>
+<td><strong>次数法则体现</strong></td>
+<td><strong>任务指派次数不足（如≤2次）的人在检索结果中标注&quot;⚠经验偏少&quot;</strong></td>
+</tr>
+<tr>
+<td><strong>任务完整闭环</strong></td>
+<td><strong>任务创建→指派(调度锁定)→执行→业务方评估/员工申请评估→完成(调度释放)；超时未完成自动释放</strong></td>
+</tr>
+<tr>
+<td><strong>调度超时释放</strong></td>
+<td><strong>任务超过expected_end_at后3天未确认，系统自动释放调度状态并通知业务方</strong></td>
+</tr>
+<tr>
+<td><strong>HR强制覆盖</strong></td>
+<td><strong>HR管理员可强制将员工从&quot;不可调度&quot;切换为&quot;可调度&quot;，需填写原因并记入操作日志</strong></td>
+</tr>
+<tr>
+<td><strong>员工申请评估</strong></td>
+<td><strong>员工完成任务后可主动申请业务方进行实操评估；超7天未评估系统自动提示业务方</strong></td>
+</tr>
+<tr>
+<td><strong>时效衰减预警</strong></td>
+<td><strong>时效系数降至阈值以下时，自动发送复训提醒</strong></td>
+</tr>
+<tr>
+<td><strong>复训刷新时效</strong></td>
+<td><strong>员工重新学习后，理论时效系数重置为1.0，匹配排序提升</strong></td>
+</tr>
+<tr>
+<td><strong>调度排他性</strong></td>
+<td><strong>已被指派任务的员工不出现在匹配检索结果中；任务完成后自动恢复可调度</strong></td>
+</tr>
+<tr>
+<td><strong>员工主动不可调度</strong></td>
+<td><strong>员工手动标记不可调度后，立即从匹配检索中消失</strong></td>
+</tr>
+<tr>
+<td><strong>班级状态流转</strong></td>
+<td><strong>班级按&quot;报名中→培训中→待完结→已完结&quot;流转；已完结不可逆；未完结可取消</strong></td>
+</tr>
+<tr>
+<td><strong>成绩批量导入</strong></td>
+<td><strong>HR通过Excel模板批量导入考试成绩，系统校验员工归属和成绩有效性</strong></td>
+</tr>
+<tr>
+<td><strong>部门职能概览</strong></td>
+<td><strong>部门主管可切换三级检视（TAD部门/Unit小组/个人）；每级显示职能覆盖人数、时间轴(Timeline：达标时间→即将过期→已过期)、有效期(Validity Period)；层级间联动下钻；支持导出</strong></td>
+</tr>
+<tr>
+<td><strong>趋势分析与异动预测</strong></td>
+<td><strong>系统可基于人员变动数据(预计退休/离职日期来自SAP)生成趋势报告：职能人数趋势折线图(含1/3/5年预测)、预计退休人员及影响职能列表、职能缺口预警；报告可导出或按月推送</strong></td>
+</tr>
+<tr>
+<td><strong>搜索维度优化</strong></td>
+<td><strong>课程搜索支持按课程类型(K/S/FF/T)和课程中文名过滤，可快速定位特定课程</strong></td>
+</tr>
+<tr>
+<td><strong>人员清单备注字段</strong></td>
+<td><strong>搜索结果页和人员清单中包含Remarks备注字段，便于Staff Checking时即时标注</strong></td>
+</tr>
+<tr>
+<td><strong>考核分数便捷导入</strong></td>
+<td><strong>设有考核环节的课程，HR可通过Excel模板批量导入成绩，系统自动校验：员工归属班级校验、成绩范围校验、重复导入检测</strong></td>
+</tr>
+<tr>
+<td><strong>衰减参数引导</strong></td>
+<td><strong>HR设置衰减参数时，系统显示行业参考值和影响预览（多少人会变🟡/🔴）</strong></td>
+</tr>
+<tr>
+<td><strong>数据纠错闭环（V2.5新增）</strong></td>
+<td><strong>纠错创建新记录(supersedes_seq指向旧记录)，旧记录标记superseded；纠错必须填写原因码和审批人；纠错后自动触发资格重算+熟练度重算</strong></td>
+</tr>
+<tr>
+<td><strong>批量操作部分成功（V2.5新增）</strong></td>
+<td><strong>批量续期/批量纠错支持部分成功：成功记录正常提交，失败记录标注原因；操作结果汇总报告</strong></td>
+</tr>
+<tr>
+<td><strong>系统健康监控（V2.5新增）</strong></td>
+<td><strong>HR可查看E06时效计算状态(成功/失败/耗时)、E05a重算队列深度、SAP同步最近成功时间；连续3次批量计算失败触发系统告警</strong></td>
+</tr>
+<tr>
+<td><strong>SAP-TMS数据对账（V2.5新增）</strong></td>
+<td><strong>每日自动比对SAP与TMS员工数据差异；差异记录推送给HR；HR可逐条确认修复</strong></td>
+</tr>
+<tr>
+<td><strong>证书组成变更宽限期（V2.5新增）</strong></td>
+<td><strong>证书组成变更时HR可选择：立即生效/宽限期(默认90天)/Grandfather；宽限期内证书标注&quot;⚠待补修新要求&quot;；受影响员工收到补修通知</strong></td>
+</tr>
+<tr>
+<td><strong>并发指派冲突检测（V2.5新增）</strong></td>
+<td><strong>两个业务方同时指派同一员工时，后到请求返回冲突提示&quot;该人员状态已变更，请刷新后重试&quot;；不会出现双重锁定</strong></td>
+</tr>
+<tr>
+<td><strong>技能等级模型变更保护（V2.5新增）</strong></td>
+<td><strong>减少等级模型等级数(如L5→L3)时系统阻止并提示影响人数；增加等级数时允许但需影响预览</strong></td>
+</tr>
+<tr>
+<td><strong>角色停用三态迁移（V2.5新增）</strong></td>
+<td><strong>Active→Deprecated(可查不可指派)→Retired(不可查，证书进宽限期)；员工和主管收到通知；Retired角色可恢复</strong></td>
+</tr>
+<tr>
+<td><strong>数据保留与归档（V2.5新增）</strong></td>
+<td><strong>培训记录7年/操作日志3年/任务5年后归档；归档数据从在线表迁移到冷存储不影响查询性能；离职员工标记inactive不出现在检索中</strong></td>
+</tr>
+<tr>
+<td><strong>通知节流防轰炸（V2.5新增）</strong></td>
+<td><strong>5张证书同时过期→1条合并通知&quot;您有5张证书即将过期&quot;；批量事件通知分批发送避免通知轰炸</strong></td>
+</tr>
+<tr>
+<td><strong>级联重算最终一致性（V2.5新增）</strong></td>
+<td><strong>资格重算/熟练度重算采用异步队列；重算期间查询返回上次结果；批量重算失败支持断点续算</strong></td>
+</tr>
+<tr>
+<td>QR考勤</td>
+<td>企业微信扫码签到/签退成功，记录关联到具体课时时段</td>
+</tr>
+<tr>
+<td>豁免/替代</td>
+<td>资格计算引擎正确处理课程豁免和替代关系</td>
+</tr>
+</tbody>
+</table>
+<h3>14.2 数据验收</h3>
+<ul>
+<li>旧系统数据完整迁移至新系统</li>
+<li>外键引用完整性验证通过</li>
+<li>逗号分隔字段已正确规范化</li>
+<li><strong>历史达标时间已补录</strong>（若旧系统无此数据，需与HR确认默认值）</li>
+<li><strong>历史实操次数已补录</strong>（若旧系统无此数据，需与HR确认估算策略）</li>
+<li><strong>历史技能首次达标时间已补录</strong>（用于计算掌握深度得分）</li>
+</ul>
+<h3>14.3 文档验收</h3>
+<ul>
+<li>用户操作手册</li>
+<li>API接口文档</li>
+<li>系统部署文档</li>
+<li>数据迁移文档</li>
+<li><strong>时效性计算规则文档</strong></li>
+<li><strong>三维度熟练度算法文档</strong></li>
+</ul>
+<hr />
+<h2>附录</h2>
+<h3>A. 术语表</h3>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>英文</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>课程</td>
+<td>Course</td>
+<td>培训内容的模板定义，含考试要求、有效期等</td>
+</tr>
+<tr>
+<td>班级</td>
+<td>Class/Event</td>
+<td>课程的具体培训场次，含时间、地点、讲师</td>
+</tr>
+<tr>
+<td>技能</td>
+<td>Skill/Competence</td>
+<td>员工具备的能力，支持L1-L5等级</td>
+</tr>
+<tr>
+<td>角色</td>
+<td>Role</td>
+<td>岗位要求定义，含技能、学历、年资条件</td>
+</tr>
+<tr>
+<td>理论已学</td>
+<td>Theory Certified</td>
+<td>完成课程学习并达标的证明</td>
+</tr>
+<tr>
+<td>实操定级</td>
+<td>Practical Rated</td>
+<td>业务方根据实际操作表现评定的技能等级</td>
+</tr>
+<tr>
+<td>资格证书</td>
+<td>Competence Certificate</td>
+<td>根据课程组合自动计算签发的资质证明</td>
+</tr>
+<tr>
+<td>暂存表</td>
+<td>Staging Table</td>
+<td>审核缓冲表，外部输入经确认后转为正式记录</td>
+</tr>
+<tr>
+<td>豁免</td>
+<td>Exempt</td>
+<td>课程A可被课程B替代，完成B等同完成A</td>
+</tr>
+<tr>
+<td>前置</td>
+<td>Prerequisite</td>
+<td>学习课程A前须先完成课程B</td>
+</tr>
+<tr>
+<td>PCGRP</td>
+<td>Professional Category Group</td>
+<td>专业类别代码，来自SAP</td>
+</tr>
+<tr>
+<td><strong>时效系数</strong></td>
+<td><strong>Freshness Factor</strong></td>
+<td><strong>量化技能熟练度的指标，∈[0,1]，随时间衰减，复训/重实操后重置</strong></td>
+</tr>
+<tr>
+<td><strong>衰减周期</strong></td>
+<td><strong>Decay Period</strong></td>
+<td><strong>时效系数从1.0衰减到0.0所需的时间；实操周期 &lt; 理论周期</strong></td>
+</tr>
+<tr>
+<td><strong>复训提醒</strong></td>
+<td><strong>Refresher Alert</strong></td>
+<td><strong>时效系数降至阈值以下时，系统自动提醒员工重新学习</strong></td>
+</tr>
+<tr>
+<td><strong>熟练度法则</strong></td>
+<td><strong>Proficiency Principle</strong></td>
+<td><strong>昨天做过今天更熟练，很久没做会更生疏——人岗匹配排序的底层逻辑之一（时效维度）</strong></td>
+</tr>
+<tr>
+<td><strong>次数法则</strong></td>
+<td><strong>Frequency Principle</strong></td>
+<td><strong>做过十次的人比做过一次的人更可靠，掌握三年的技能比刚学会的更扎实——人岗匹配排序的底层逻辑之二（次数+深度维度）</strong></td>
+</tr>
+<tr>
+<td><strong>三维度熟练度</strong></td>
+<td><strong>3D Proficiency</strong></td>
+<td><strong>时效维度(最近做没做过) × 次数维度(做过多少次) × 深度维度(掌握了多久) → 综合熟练度得分，直接用于人岗匹配排序</strong></td>
+</tr>
+<tr>
+<td><strong>评估次数得分</strong></td>
+<td><strong>Evaluated Count Score</strong></td>
+<td><strong>基于正式评估次数(ROLE_SKILL_EXPERIENCE.evaluated_count, role-specific)计算的得分，次数越多得分越高(边际递减)，衡量&quot;经验够不够&quot;（原&quot;操作频次得分&quot;V2.3更名）</strong></td>
+</tr>
+<tr>
+<td><strong>掌握深度得分</strong></td>
+<td><strong>Mastery Depth Score</strong></td>
+<td><strong>基于技能首次达标时间(skill_acquired_at)计算的得分，掌握越久得分越高，衡量&quot;理解够不够深&quot;</strong></td>
+</tr>
+<tr>
+<td><strong>综合熟练度得分</strong></td>
+<td><strong>Composite Proficiency Score</strong></td>
+<td><strong>proficiency_score = 时效分×W时效 + 次数分×W次数 + 任务频次分×W任务 + 深度分×W深度，直接写入SKILL_ASSESSMENT</strong></td>
+</tr>
+<tr>
+<td><strong>调度可用性</strong></td>
+<td><strong>Dispatch Availability</strong></td>
+<td><strong>员工当前是否可接受任务调度的状态：可调度/不可调度；匹配检索仅返回可调度人员</strong></td>
+</tr>
+<tr>
+<td><strong>调度排他性</strong></td>
+<td><strong>Dispatch Exclusivity</strong></td>
+<td><strong>同一人同一时间只能执行一个任务；指派即锁定，完成即释放</strong></td>
+</tr>
+<tr>
+<td><strong>调度日历</strong></td>
+<td><strong>Dispatch Calendar</strong></td>
+<td><strong>员工预设未来时间段的调度状态，系统按时间自动切换</strong></td>
+</tr>
+<tr>
+<td><strong>任务</strong></td>
+<td><strong>Task</strong></td>
+<td><strong>调度锁定的语义载体：任务创建→指派→执行→评估→完成/取消。没有任务实体，调度只是布尔值</strong></td>
+</tr>
+<tr>
+<td><strong>超时自动释放</strong></td>
+<td><strong>Timeout Auto-Release</strong></td>
+<td><strong>任务超过预计结束时间后3天未确认，系统自动释放调度状态</strong></td>
+</tr>
+<tr>
+<td><strong>并发任务数</strong></td>
+<td><strong>Max Concurrent Tasks</strong></td>
+<td><strong>员工可同时执行的任务数量上限，默认1，可由员工或HR设置</strong></td>
+</tr>
+<tr>
+<td><strong>排序解释</strong></td>
+<td><strong>Ranking Explanation</strong></td>
+<td><strong>检索结果中为每位员工显示排序原因的简要说明（时效/经验/深度维度的优劣势）</strong></td>
+</tr>
+<tr>
+<td><strong>检索偏好</strong></td>
+<td><strong>Search Preference</strong></td>
+<td><strong>业务方可调节的排序偏好：均衡/时效优先/经验优先/深度优先</strong></td>
+</tr>
+<tr>
+<td><strong>人才梯队法则</strong></td>
+<td><strong>Talent Pipeline Principle</strong></td>
+<td><strong>如果永远只用最熟练的人，新人永远没有成长机会。系统必须提供培养视角，打破马太效应</strong></td>
+</tr>
+<tr>
+<td><strong>马太效应</strong></td>
+<td><strong>Matthew Effect</strong></td>
+<td><strong>算法推荐系统天然偏向&quot;强者越强&quot;——做过50次的人永远排第一，0次的人永远排最后</strong></td>
+</tr>
+<tr>
+<td><strong>筛选视图</strong></td>
+<td><strong>Filter View</strong></td>
+<td><strong>5种用人视角：🎯推荐(默认) / 🌱培养(新人优先) / 🔍探索(资深优先) / 🛡️风险可控 / ⚙️自定义</strong></td>
+</tr>
+<tr>
+<td><strong>培养视图</strong></td>
+<td><strong>Development View</strong></td>
+<td><strong>将经验不足的人推到前面，给新人练手机会，标注&quot;🆕首次机会&quot;/“🌱需要锻炼”</strong></td>
+</tr>
+<tr>
+<td><strong>系统是参谋不是决策者</strong></td>
+<td><strong>System Advises, Not Decides</strong></td>
+<td><strong>系统提供推荐排序和多元视角，但最终用人决策权在用人部门手中</strong></td>
+</tr>
+<tr>
+<td><strong>透明晋升法则</strong></td>
+<td><strong>Transparent Promotion Principle</strong></td>
+<td><strong>每个人有权知道距离目标岗位还差什么；每条成长数据来自真实执行，经得起审计；晋升是透明的阶梯</strong></td>
+</tr>
+<tr>
+<td><strong>终生学习</strong></td>
+<td><strong>Lifelong Learning</strong></td>
+<td><strong>技能会衰减需复训、岗位会升级需进阶、成长无止境——L1→L5每级都有明确条件</strong></td>
+</tr>
+<tr>
+<td><strong>数据可审计可溯源</strong></td>
+<td><strong>Auditable &amp; Traceable Data</strong></td>
+<td><strong>每条技能数据都由真实执行产生：任务→评估→次数累计→等级变更，全链路有触发者/时间/原始记录</strong></td>
+</tr>
+<tr>
+<td><strong>岗位技能查询</strong></td>
+<td><strong>Position Skill Inquiry</strong></td>
+<td><strong>员工可查询任意岗位需要哪些技能什么等级——晋升路径对所有人透明公开</strong></td>
+</tr>
+<tr>
+<td><strong>技能驱动岗位</strong></td>
+<td><strong>Skill-Driven Position</strong></td>
+<td><strong>技能是因，岗位是果。不是岗位决定人，是技能决定岗位——人的技能实时推导出满足哪些岗位</strong></td>
+</tr>
+<tr>
+<td><strong>我的适配岗位</strong></td>
+<td><strong>My Matched Positions</strong></td>
+<td><strong>基于员工当前掌握的技能(等级+时效)，系统实时对比所有岗位的技能要求，列出全部满足的岗位——动态推导，非HR指定</strong></td>
+</tr>
+<tr>
+<td><strong>岗位要求版本管理</strong></td>
+<td><strong>Position Requirement Versioning</strong></td>
+<td><strong>角色技能要求的变更历史管理：每次修改自动记录版本，员工可追溯&quot;岗位要求是怎么变的&quot;，驱动终生学习</strong></td>
+</tr>
+<tr>
+<td><strong>熄灯制度</strong></td>
+<td><strong>Light-Off Rule</strong></td>
+<td><strong>资格证书任一组成项(课程/外部认证/实操等级)失效时，证书自动失效(熄灯)；补齐后自动恢复(亮灯)</strong></td>
+</tr>
+<tr>
+<td><strong>培训许愿池</strong></td>
+<td><strong>Training Wish Pool</strong></td>
+<td><strong>部门在线提交培训需求的入口：报课程需求→报budget→HRS预留时间和预算，全流程在线可追溯</strong></td>
+</tr>
+<tr>
+<td><strong>面试/Board审核</strong></td>
+<td><strong>Board Review</strong></td>
+<td><strong>DLAP见部门经理/CLAP见更高级——课程通过后需面试审核才能正式签发证书的流程</strong></td>
+</tr>
+<tr>
+<td><strong>外部认证</strong></td>
+<td><strong>External Certification</strong></td>
+<td><strong>非TMS内部培训产生的外部认证记录——职安卡/密闭空间卡/身体检查/劳工局考核/消防局认证/澳门注册电工等，有独立有效期</strong></td>
+</tr>
+<tr>
+<td><strong>月度自动报表</strong></td>
+<td><strong>Monthly Auto Report</strong></td>
+<td><strong>系统按月自动生成培训报表并推送给部门负责人，含证书持有人统计/过期预警/合资格人数趋势</strong></td>
+</tr>
+<tr>
+<td><strong>必修/选修</strong></td>
+<td><strong>Compulsory/Elective</strong></td>
+<td><strong>课程组合中的课程属性：必修(compulsory)必须全部完成，选修(elective)只需完成指定数量或通过豁免组合替代</strong></td>
+</tr>
+<tr>
+<td><strong>职位前置条件</strong></td>
+<td><strong>Position Prerequisite</strong></td>
+<td><strong>角色要求的最低职位阶层(Position)条件——如&quot;需Senior Technician以上职级&quot;才能担任某角色</strong></td>
+</tr>
+<tr>
+<td><strong>体检查询矩阵</strong></td>
+<td><strong>Fitness Matrix</strong></td>
+<td><strong>结构化定义各角色对体检的要求(可实操/仅可观察/不可参与)，体检结果由医生简单回复后系统自动匹配判定资格</strong></td>
+</tr>
+<tr>
+<td><strong>条件性有效期</strong></td>
+<td><strong>Conditional Validity</strong></td>
+<td><strong>证书有效期可按条件动态计算——如&quot;年满55岁有效期从5年缩短为3年&quot;</strong></td>
+</tr>
+<tr>
+<td><strong>数据不覆盖原则</strong></td>
+<td><strong>Append-Only Principle</strong></td>
+<td><strong>所有记录追加式写入，历史数据永不覆盖——新的评估/认证/体检都产生新记录，确保历史可追溯</strong></td>
+</tr>
+<tr>
+<td><strong>课程编号体系</strong></td>
+<td><strong>Course Code Convention</strong></td>
+<td><strong>课程按类型前缀编号：K=知识课/S=技能课/FF=安全消防课/T=通用课，反映EWCTP三级课程结构</strong></td>
+</tr>
+<tr>
+<td><strong>我的证书</strong></td>
+<td><strong>My Certificates</strong></td>
+<td><strong>员工一站式查看自己所有资格证书状态(有效/即将过期/已过期/已熄灯)及续期建议的自助页面</strong></td>
+</tr>
+<tr>
+<td><strong>部门主管自助视图</strong></td>
+<td><strong>Manager Self-Service View</strong></td>
+<td><strong>部门主管自助查询本部门员工证书分布、即将过期人员、技能覆盖情况的专用视图</strong></td>
+</tr>
+<tr>
+<td><strong>阶段式推行</strong></td>
+<td><strong>Phased Rollout</strong></td>
+<td><strong>系统建设分阶段推进——先基础自动化(提醒+报表)，再核心闭环(培训→资格)，后深化扩展(职业发展+高级分析)</strong></td>
+</tr>
+<tr>
+<td><strong>三维度经验模型</strong></td>
+<td><strong>3D Experience Model</strong></td>
+<td><strong>经验次数按(employee, skill, role)三维度分别累计——同一技能在不同岗位上下文中的经验不应混合计算</strong></td>
+</tr>
+<tr>
+<td><strong>ROLE_SKILL_EXPERIENCE</strong></td>
+<td><strong>Role-Skill Experience</strong></td>
+<td><strong>按(employee, skill, role)三维度记录经验次数的实体：total_assignment_count(指派)/task_completion_count(完成)/evaluated_count(评估)</strong></td>
+</tr>
+<tr>
+<td><strong>任务完成次数</strong></td>
+<td><strong>Task Completion Count</strong></td>
+<td><strong>员工实际完成任务的次数——&quot;真正做过多少次&quot;的度量，≥正式评估次数，≤任务指派次数</strong></td>
+</tr>
+<tr>
+<td><strong>正式评估次数</strong></td>
+<td><strong>Evaluated Count</strong></td>
+<td><strong>业务方正式评估的次数（原practical_count更名）——“有人评你了”，≤任务完成次数</strong></td>
+</tr>
+<tr>
+<td><strong>部门职能概览</strong></td>
+<td><strong>Department Competency Overview</strong></td>
+<td><strong>TAD部门职能全貌管理：三级检视(部门/Unit/个人)，含时间轴(Timeline)和有效期(Validity Period)，帮助部门主管掌握职能覆盖和缺口</strong></td>
+</tr>
+<tr>
+<td><strong>趋势分析与异动预测</strong></td>
+<td><strong>Trend Analysis &amp; Workforce Forecasting</strong></td>
+<td><strong>基于人员变动数据(退休/离职预测)生成职能缺口趋势报告，包含职能人数趋势折线图和异动预测</strong></td>
+</tr>
+<tr>
+<td><strong>三级检视</strong></td>
+<td><strong>Three-Level View</strong></td>
+<td><strong>部门职能概览的三种切换层级：TAD部门整体→辖下Unit小组→单员工个人，层层下钻</strong></td>
+</tr>
+<tr>
+<td><strong>时间轴管理</strong></td>
+<td><strong>Timeline Management</strong></td>
+<td><strong>每项职能的达标时间→即将过期→已过期的时间线可视化，帮助识别职能时效状态</strong></td>
+</tr>
+<tr>
+<td><strong>有效期管理</strong></td>
+<td><strong>Validity Period Management</strong></td>
+<td><strong>职能证书/认证的有效期状态管理：🟢有效/🟡即将过期/🔴已过期，与时间轴联动</strong></td>
+</tr>
+<tr>
+<td><strong>备注字段</strong></td>
+<td><strong>Remarks Field</strong></td>
+<td><strong>搜索结果页和人员清单中的备注栏位，支持自由文本输入，便于Staff Checking时即时对标信息</strong></td>
+</tr>
+<tr>
+<td><strong>权限矩阵</strong></td>
+<td><strong>Permission Matrix</strong></td>
+<td><strong>定义每个角色对每个功能的操作权限(✏️创建/编辑、👁️查看、✅审批/确认、🔔接收通知、➖无权限)，确保最小权限原则和数据范围隔离</strong></td>
+</tr>
+<tr>
+<td><strong>角色聚焦指南</strong></td>
+<td><strong>Role Quick Reference</strong></td>
+<td><strong>为每个角色提供的快速入口——打开文档后直接跳转到与自己相关的章节，无需通读全文</strong></td>
+</tr>
+<tr>
+<td><strong>数据范围隔离</strong></td>
+<td><strong>Data Scope Isolation</strong></td>
+<td><strong>部门主管只能看本部门数据，HR看全局，员工只能看自己——确保各角色只看到职责范围内的数据</strong></td>
+</tr>
+<tr>
+<td><strong>覆盖记录机制</strong></td>
+<td><strong>Superseding Record</strong></td>
+<td><strong>数据纠错的核心机制：不修改原记录，创建新记录(supersedes_seq指向旧记录)，旧记录标记superseded——保证&quot;数据不覆盖&quot;与&quot;错必可纠&quot;的统一</strong></td>
+</tr>
+<tr>
+<td><strong>操作类型</strong></td>
+<td><strong>Operation Type</strong></td>
+<td><strong>操作日志区分四类：OPERATIONAL(正常业务)/CORRECTION(纠错)/OVERRIDE(HR强制覆盖)/SYSTEM_ADJUSTMENT(系统调整)</strong></td>
+</tr>
+<tr>
+<td><strong>纠错原因码</strong></td>
+<td><strong>Correction Reason Code</strong></td>
+<td><strong>纠错操作必须选择的原因：ASSESSOR_ERROR(评估员录入错误)/SYSTEM_CALC_ERROR(系统计算错误)/HR_ADMIN_CORRECTION(HR行政纠正)/OTHER(其他)</strong></td>
+</tr>
+<tr>
+<td><strong>级联规则</strong></td>
+<td><strong>Cascade Rule</strong></td>
+<td><strong>一个数据点变更自动触发下游数据更新的规则——如理论达标→时效重置→资格重算→熟练度重算</strong></td>
+</tr>
+<tr>
+<td><strong>宽限期</strong></td>
+<td><strong>Grace Period</strong></td>
+<td><strong>证书组成变更后，现有持有人的缓冲期(默认90天)——期间证书仍有效但标注&quot;⚠待补修新要求&quot;</strong></td>
+</tr>
+<tr>
+<td><strong>Grandfather</strong></td>
+<td><strong>Grandfather Clause</strong></td>
+<td><strong>证书组成变更策略之一：现有持有人继续有效直到下次正常续期时才检查新要求</strong></td>
+</tr>
+<tr>
+<td><strong>角色三态迁移</strong></td>
+<td><strong>Role 3-State Transition</strong></td>
+<td><strong>角色生命周期：Active(正常)→Deprecated(可查不可指派)→Retired(不可查，关联证书进宽限期)</strong></td>
+</tr>
+<tr>
+<td><strong>断点续算</strong></td>
+<td><strong>Checkpoint Resume</strong></td>
+<td><strong>批量重算失败时从断点位置继续而非从头开始，避免重复计算</strong></td>
+</tr>
+<tr>
+<td><strong>最终一致性</strong></td>
+<td><strong>Eventual Consistency</strong></td>
+<td><strong>级联重算采用异步队列处理，重算期间查询返回上次结果，重算完成后自动刷新</strong></td>
+</tr>
+<tr>
+<td><strong>乐观锁</strong></td>
+<td><strong>Optimistic Lock</strong></td>
+<td><strong>并发控制机制：指派请求携带version字段，更新时比对version，不一致则拒绝(提示冲突)</strong></td>
+</tr>
+<tr>
+<td><strong>通知节流</strong></td>
+<td><strong>Notification Throttling</strong></td>
+<td><strong>同一员工在N分钟内触发多条同类通知时合并为1条，防止批量事件造成通知轰炸</strong></td>
+</tr>
+<tr>
+<td><strong>SAP-TMS对账</strong></td>
+<td><strong>SAP-TMS Reconciliation</strong></td>
+<td><strong>自动比对SAP与TMS数据差异(职位变更未同步/离职员工仍活跃等)，标注冲突记录供HR修复</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>确认签字</strong></p>
+<p>甲方确认：_________________ 日期：_________________</p>
+<p>乙方确认：_________________ 日期：_________________</p>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "sharp-deps",
+  "private": true,
+  "dependencies": {
+    "sharp": "^0.34.3"
+  }
+}

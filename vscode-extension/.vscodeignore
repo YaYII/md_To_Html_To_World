@@ -1,0 +1,86 @@
+# VS Code 插件项目中需要忽略的文件
+
+# 开发相关文件
+.vscode/**
+.vscode-test/**
+out/**
+src/**
+**/*.ts
+**/*.map
+tsconfig.json
+.eslintrc.json
+webpack.config.js
+.gitignore
+
+# Node.js模块
+node_modules/**
+nodejs/node_modules/**
+worldtomd/node_modules/**
+nodeexcel/node_modules/**
+.pnpm-store/**
+.pnpm/**
+pnpm-lock.yaml
+
+# 测试和调试文件
+test/**
+debug_*
+test_*
+simple_*
+verify_*
+check_*
+final_*
+fix_*
+syntax_*
+*.test.js
+*.test.md
+
+# 临时文件
+temp/**
+output/**
+*.log
+.DS_Store
+.history/**
+
+# 旧版本产物
+*.vsix
+markdown-to-word-*/
+
+# 打包脚本和构建工具
+pack.sh
+docker-convert.sh
+Dockerfile
+excel-config.yaml
+
+# 测试输入/输出文件
+CME-TMS_PRD_V2.1.*
+test-convert.js
+test-word-to-markdown.md
+ai_agent_log.md
+
+# 文档报告（部署包中不需要）
+CONVERSION_GUIDE.md
+DIAGNOSTIC_REPORT.md
+SHARP_ISSUE_SOLUTION.md
+堆栈溢出问题修复方案.md
+文档转换前内存预处理策略.md
+
+# 文档目录
+docs/**
+
+# 不要忽略的必需文件（顺序重要：先排除后包含）
+# 排除 source map
+**/*.map
+
+# 包含核心产出和资源
+!dist/extension.js
+dist/*.map
+!scripts/**
+!nodejs/src/**
+!nodejs/bin/**
+!nodejs/package.json
+!nodeexcel/src/**
+!nodeexcel/bin/**
+!worldtomd/**
+# 只保留扩展图标作为必需图片
+images/**
+!images/WechatIMG15.jpg

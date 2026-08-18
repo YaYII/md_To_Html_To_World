@@ -1,0 +1,495 @@
+<html><head><style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1em;
+            border: 1px solid #dddddd;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            vertical-align: middle;
+            height: 0.95em;
+            border: 1px solid #dddddd;
+        }
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        </style></head><body><h1 id="ai">AI 工具使用培訓手冊</h1>
+<h2 id="_1">目錄</h2>
+<ol>
+<li><a href="#培訓簡介">培訓簡介</a></li>
+<li><a href="#ai-工具介紹">AI 工具介紹</a><ul>
+<li><a href="#trae">Trae</a></li>
+<li><a href="#cursor">Cursor</a></li>
+</ul>
+</li>
+<li><a href="#安裝與登錄">安裝與登錄</a><ul>
+<li><a href="#trae-安裝與登錄">Trae 安裝與登錄</a></li>
+<li><a href="#cursor-安裝與登錄">Cursor 安裝與登錄</a></li>
+</ul>
+</li>
+<li><a href="#核心功能與使用">核心功能與使用</a><ul>
+<li><a href="#trae-使用指南">Trae 使用指南</a></li>
+<li><a href="#cursor-使用指南">Cursor 使用指南</a></li>
+</ul>
+</li>
+<li><a href="#trae-與-cursor-對比">Trae 與 Cursor 對比</a></li>
+<li><a href="#常見問題">常見問題</a></li>
+</ol>
+<h2 id="_2">培訓簡介</h2>
+<p>本培訓手冊旨在幫助大家熟悉並掌握 <code>Trae</code> 和 <code>Cursor</code> 兩款 AI 輔助工具的使用方法，從而提高處理文字、文案等工作的效率。</p>
+<h3 id="_3">學習目標</h3>
+<ul>
+<li>瞭解 <code>Trae</code> 和 <code>Cursor</code> 的基本功能與應用場景。</li>
+<li>掌握 <code>Trae</code> 和 <code>Cursor</code> 的安裝、登錄及基本操作流程。</li>
+<li>理解兩款工具的主要區別，並能根據需求選擇合適的工具。</li>
+<li>能夠運用所學工具輔助完成日常的文字處理和文案撰寫工作。</li>
+</ul>
+<h2 id="ai_1">AI 工具介紹</h2>
+<h3 id="trae">Trae</h3>
+<p>Trae 是由字節跳動開發的新一代 AI 驅動的代碼編輯器，基於 Microsoft Visual Studio Code 構建。它提供了強大的 AI 輔助功能，包括免費訪問 Claude 3.5 Sonnet 和 GPT-4o 模型，幫助開發者更高效地編寫、調試和優化代碼。</p>
+<p><strong>主要特點：</strong></p>
+<ul>
+<li>基於 Visual Studio Code，提供熟悉的開發環境</li>
+<li>內置強大的 AI 輔助功能</li>
+<li>支持中英雙語界面</li>
+<li>完全免費使用</li>
+<li>支持從 VS Code 或 Cursor 遷移配置</li>
+</ul>
+<p><strong>適用場景：</strong></p>
+<ul>
+<li>代碼開發與調試</li>
+<li>AI 輔助編程</li>
+<li>項目構建與管理</li>
+<li>團隊協作開發</li>
+</ul>
+<h3 id="cursor">Cursor</h3>
+<p>Cursor 是一款專爲提高編程效率而設計的 <strong>AI 驅動的代碼編輯器</strong>。它基於流行的 VS Code 構建，因此界面和操作邏輯對許多開發者來說非常熟悉，並且可以輕鬆導入現有的 VS Code 設置（如擴展、主題、快捷鍵）。Cursor 的核心目標是讓 AI 深度融入編碼流程，成爲開發者的智能"結對程序員"。</p>
+<p><strong>主要功能與特點：</strong></p>
+<ul>
+<li><strong>強大的代碼庫理解:</strong> Cursor 能夠理解整個項目的代碼結構和內容。通過 <code>@Codebase</code> 或 <code>Ctrl+Enter</code> 快捷鍵，你可以直接向 AI 提問關於項目的問題（例如，"這個函數在哪裏被調用了？"），AI 會智能地查找相關代碼作爲上下文進行回答。</li>
+<li><strong>自然語言驅動的開發:</strong> 使用 <code>Ctrl+K</code> 快捷鍵，你可以用自然語言描述需求來生成新代碼，或者選中現有代碼塊讓 AI 進行修改、重構或解釋。</li>
+<li><strong>智能預測與補全:</strong> Cursor 的自動補全功能 (<code>Tab</code> 鍵) 非常強大，它不僅能補全單行代碼，還能根據上下文和你的編輯歷史預測並建議多行代碼的修改，極大地提高了編碼速度。</li>
+<li><strong>集成 AI 聊天:</strong> 內置的聊天窗口允許你隨時與 AI 交流。AI 能看到你當前打開的文件和光標位置，方便你進行提問、討論代碼邏輯、請求代碼示例等。聊天中生成的代碼可以一鍵應用到編輯器中。</li>
+<li><strong>上下文引用:</strong> 在聊天或使用 <code>Ctrl+K</code> 時，可以通過 <code>@</code> 符號輕鬆引用項目中的其他文件、代碼片段、文檔（<code>@Docs</code>）、甚至進行網絡搜索（<code>@Web</code>）來爲 AI 提供更豐富的上下文信息。</li>
+<li><strong>錯誤檢測與修復:</strong> AI 可以自動檢測代碼中的 lint 錯誤，並嘗試提供修復建議。</li>
+<li><strong>終端智能:</strong> 在集成的終端裏，也可以使用 <code>Ctrl+K</code>，用自然語言描述你想要執行的操作，AI 會幫你生成對應的終端命令。</li>
+<li><strong>隱私與安全:</strong> 提供"隱私模式"，啓用後代碼不會被髮送到雲端進行處理，並通過了 SOC 2 安全認證。</li>
+</ul>
+<p><strong>適用場景：</strong></p>
+<p>Cursor 特別適合需要處理複雜代碼庫、希望通過 AI 加速編碼、重構、調試過程，或者想要更自然地與 AI 交互來輔助編程的開發者。對於文字工作者來說，雖然它主要面向代碼，但其強大的自然語言理解和生成能力，以及與文檔交互的功能，也可能在處理結構化文本、生成模板化內容等方面提供幫助。</p>
+<h2 id="_4">安裝與登錄</h2>
+<h3 id="trae_1">Trae 安裝與登錄</h3>
+<ol>
+<li><strong>系統要求</strong></li>
+<li>操作系統：macOS（Windows 版本即將推出）</li>
+<li>
+<p>網絡連接：需要穩定的互聯網連接</p>
+</li>
+<li>
+<p><strong>安裝步驟</strong></p>
+</li>
+<li>前往 <a href="https://www.trae.com.cn/">Trae 官網</a>，下載安裝包</li>
+<li>運行安裝程序</li>
+<li>首次啓動 Trae，點擊"開始"按鈕</li>
+<li>
+<p>選擇主題（暗色、亮色、深藍）和顯示語言（簡體中文和 English）</p>
+</li>
+<li>
+<p><strong>配置遷移</strong></p>
+</li>
+<li>若已安裝 VS Code 或 Cursor，可點擊"從 VS Code 導入"或"從 Cursor 導入"按鈕</li>
+<li>
+<p>一鍵導入插件、IDE 設置、快捷鍵設置等信息</p>
+</li>
+<li>
+<p><strong>登錄授權</strong></p>
+</li>
+<li>點擊"安裝 trae 命令"按鈕</li>
+<li>完成授權流程</li>
+<li>使用手機號或稀土掘金賬號登錄，以便使用 AI 服務</li>
+</ol>
+<h3 id="cursor_1">Cursor 安裝與登錄</h3>
+<p><em>在此處添加 Cursor 的詳細安裝步驟和登錄流程說明，可以配上截圖（資源放在 assets 目錄下）。</em></p>
+<h2 id="_5">核心功能與使用</h2>
+<h3 id="trae_2">Trae 使用指南</h3>
+<h4 id="1-builder">1. Builder 模式</h4>
+<p>Builder 模式是 Trae 的核心功能之一，用於從頭開始構建項目或進行大規模代碼生成。</p>
+<p><strong>Windows 系統配置：</strong>
+- 需安裝 PowerShell 6 或更高版本
+- 在 Trae 中打開"終端"面板
+- 點擊右上方區域的"+"&gt;"選擇默認配置文件"
+- 選擇帶有"\PowerShell{版本號}\xxx"字樣的配置文件</p>
+<p><strong>使用步驟：</strong>
+1. <strong>啓用 Builder 模式</strong>
+   - 快捷鍵：macOS（Command + U）或 Windows（Ctrl + U）
+   - 打開側邊對話框，點擊左上角"Builder"
+   - 點擊"啓用 Builder"按鈕，選擇想使用的大語言模型</p>
+<ol>
+<li><strong>代碼變更處理</strong></li>
+<li>批量處理項目變更：點擊輸入框上方待審查文件列表中的"全部接受"或"全部拒絕"</li>
+<li>處理單個文件：在編輯器內打開文件，點擊上方提示條中的"接受"或"拒絕"</li>
+<li>
+<p>處理單處變更：將鼠標懸浮至代碼變更處，點擊右上角的"^Y"或"^N"按鈕</p>
+</li>
+<li>
+<p><strong>預覽功能</strong></p>
+</li>
+<li>點擊"預覽"按鈕，在 Webview 窗口查看開發成果</li>
+<li>
+<p>點擊 Webview 窗口右上角的"在瀏覽器中打開"按鈕，可在瀏覽器中預覽</p>
+</li>
+<li>
+<p><strong>版本回退</strong></p>
+</li>
+<li>找到目標對話氣泡，點擊左側的"回退"按鈕</li>
+<li>注意：回退操作不可撤銷</li>
+<li>僅支持在最近活躍的 Builder 窗口中回退</li>
+<li>僅支持回退至最近 10 輪會話內的版本</li>
+</ol>
+<h4 id="2-ai">2. AI 聊天功能</h4>
+<p>Trae 提供兩種 AI 交互模式：</p>
+<p><strong>側邊對話（Chat 模式）：</strong>
+- 快捷鍵：macOS（Command + U）或 Windows（Ctrl + U）
+- 打開側邊對話框，點擊左上角"Chat"
+- 默認使用"Doubao-1.5-pro"模型
+- 可切換至 DeepSeek - Reasoner (R1) 或 DeepSeek - Chat (V3) 模型
+- AI 助手會自動創建或編輯文件並保存代碼</p>
+<p><strong>內嵌對話（Inline Chat）：</strong>
+- 快捷鍵：macOS（Command + I）或 Windows（Ctrl + I）
+- 使用方式：
+  - 在光標處使用快捷鍵
+  - 選中代碼後使用快捷鍵或點擊懸浮菜單中的"編輯"按鈕
+- 如需重新生成，可點擊對話框左下方的"重試"按鈕</p>
+<h4 id="3-ai">3. AI 代碼補全</h4>
+<p>Trae 內置原生 AI 代碼補全功能：</p>
+<ul>
+<li><strong>自動補全觸發：</strong></li>
+<li>敲擊回車鍵換行時，AI 自動分析並補全後續代碼</li>
+<li>
+<p>添加註釋後換行，AI 根據註釋生成相關代碼</p>
+</li>
+<li>
+<p><strong>接受補全建議：</strong></p>
+</li>
+<li>按下 Tab 鍵：接受所有自動補全的代碼</li>
+<li>使用 Ctrl + → 快捷鍵：逐字接受代碼</li>
+</ul>
+<h4 id="4">4. 插件管理</h4>
+<p><strong>安裝插件：</strong>
+1. <strong>從 Trae 插件市場安裝：</strong>
+   - 點擊左側導航欄"插件市場"圖標
+   - 搜索並選擇插件
+   - 點擊"安裝"</p>
+<ol>
+<li><strong>從 VS Code 插件市場安裝：</strong></li>
+<li>前往 VS Code 插件市場</li>
+<li>獲取插件詳情頁信息</li>
+<li>修改特定 URL 並下載 .vsix 文件</li>
+<li>將文件拖拽至 Trae 插件市場面板</li>
+</ol>
+<p><strong>禁用插件：</strong>
+- 在"已安裝"列表中找到目標插件
+- 方式一：鼠標懸浮，點擊"設置"&gt;"禁用"
+- 方式二：打開詳情窗口，點擊"禁用"</p>
+<p><strong>卸載插件：</strong>
+- 在"已安裝"列表中找到目標插件
+- 方式一：鼠標懸浮，點擊"卸載"
+- 方式二：打開詳情窗口，點擊"卸載"</p>
+<h3 id="cursor_2">Cursor 使用指南</h3>
+<p>以下是 Cursor 主要 AI 功能的詳細使用方法和技巧：</p>
+<p><strong>1. AI 聊天 (Chat Panel - <code>Cmd+L</code>)</strong></p>
+<p>這是與 AI 交互的核心區域。默認情況下，聊天面板會顯示在編輯器的側邊。</p>
+<ul>
+<li><strong>提問關於當前文件:</strong> 直接在聊天輸入框中提問，AI 會基於你當前打開的文件和光標位置進行回答。例如："解釋一下這個函數的作用" 或 "這附近代碼有 bug 嗎？"。</li>
+<li><strong>提問關於整個項目 (<code>@Codebase</code> 或 <code>Cmd+Enter</code>):</strong><ul>
+<li>在聊天輸入框輸入 <code>@Codebase</code> 或直接按 <code>Cmd+Enter</code>，然後輸入你的問題，例如："項目中哪裏定義了用戶認證邏輯？" AI 會搜索整個代碼庫尋找答案。</li>
+<li>Cursor 會自動分析並引用相關的代碼文件作爲上下文，並在回答中展示。</li>
+</ul>
+</li>
+<li><strong>引用特定代碼 (<code>Cmd+Shift+L</code>):</strong><ul>
+<li>在編輯器中選中你想要討論的代碼塊。</li>
+<li>按下 <code>Cmd+Shift+L</code>，選中的代碼會自動添加到聊天輸入框中作爲上下文，然後你可以輸入你的問題。</li>
+</ul>
+</li>
+<li><strong>引用文件/符號 (<code>@</code>):</strong><ul>
+<li>在聊天輸入框中輸入 <code>@</code> 符號，會彈出一個列表，顯示項目中的文件和代碼符號（如函數、類名）。選擇一個或多個，它們將被用作 AI 回答的上下文。</li>
+</ul>
+</li>
+<li><strong>引用文檔 (<code>@Docs</code>):</strong><ul>
+<li>輸入 <code>@</code> 後選擇 <code>Docs</code>，可以搜索並引用已添加的外部文檔（例如庫的 API 文檔），或者添加新的文檔鏈接。</li>
+</ul>
+</li>
+<li><strong>網絡搜索 (<code>@Web</code>):</strong><ul>
+<li>輸入 <code>@Web</code> 後跟上你的搜索查詢，AI 會進行網絡搜索並將結果作爲信息來源來回答你的問題，適合獲取最新的信息或外部知識。</li>
+</ul>
+</li>
+<li><strong>使用圖片:</strong> 點擊聊天輸入框下方的圖片按鈕或直接拖拽圖片到輸入框，可以將圖片作爲視覺上下文提供給 AI。</li>
+<li><strong>應用代碼建議:</strong> AI 回答中的代碼塊上方通常會有一個"播放"按鈕或類似選項，點擊即可將該代碼片段應用（插入或替換）到你當前光標位置或選區。</li>
+<li><strong>新建/切換聊天:</strong> 使用 <code>Cmd+N</code> 或 <code>Cmd+R</code> 創建新的聊天會話。使用 <code>Cmd+[</code> 和 <code>Cmd+]</code> 在不同的聊天會話間切換。</li>
+</ul>
+<p><strong>2. AI 編輯與生成 (<code>Cmd+K</code>)</strong></p>
+<p>這是快速調用 AI 進行代碼修改或生成的主要方式。</p>
+<ul>
+<li><strong>編輯現有代碼:</strong><ul>
+<li>在編輯器中選中你想要修改的代碼。</li>
+<li>按下 <code>Cmd+K</code>，會彈出一個輸入框。</li>
+<li>在輸入框中用自然語言描述你的修改要求，例如："將這段代碼重構爲一個可複用的函數"，"給這段代碼添加 JSDoc 註釋"，"修復這裏的潛在錯誤"。</li>
+<li>AI 會生成修改建議，通常以差異對比（diff）的形式展示。你可以按 <code>Cmd+Y</code> 接受修改，或 <code>Cmd+N</code> 拒絕。</li>
+</ul>
+</li>
+<li><strong>生成新代碼:</strong><ul>
+<li>將光標置於你想要插入新代碼的位置。</li>
+<li>按下 <code>Cmd+K</code>。</li>
+<li>在輸入框中描述你想要生成的代碼，例如："生成一個發送 HTTP POST 請求的函數，接受 URL 和 data 參數"，"創建一個 React 組件，包含一個輸入框和一個按鈕"。</li>
+<li>同樣可以通過 <code>@</code> 引用文件或文檔來提供上下文。</li>
+</ul>
+</li>
+<li><strong>快速提問 (<code>Option+Enter</code>):</strong> 在 <code>Cmd+K</code> 輸入框中，輸入問題後按 <code>Option+Enter</code> (macOS) 可以快速就選中的代碼或當前上下文提問，答案會直接顯示，而不是進行代碼修改。</li>
+</ul>
+<p><strong>3. 智能自動補全 (<code>Tab</code>)</strong></p>
+<p>Cursor 的 Tab 補全功能是默認開啓的，並且會持續學習你的編碼習慣。</p>
+<ul>
+<li><strong>接受建議:</strong> 當編輯器中出現灰色字體的 AI 代碼建議時（可能是單行或多行），按下 <code>Tab</code> 鍵即可接受建議。</li>
+<li><strong>逐詞接受 (<code>Cmd+→</code>):</strong> 如果你只想接受建議中的一部分，可以按 <code>Cmd+→</code> (右箭頭) 來逐個單詞地接受建議。</li>
+<li><strong>預測性編輯:</strong> Cursor 會嘗試預測你接下來可能要做的修改，並主動提供建議。例如，如果你在一個地方修改了某個變量名，它可能會自動建議在其他相關地方也進行修改。</li>
+</ul>
+<p><strong>4. 終端中的 AI (<code>Cmd+K</code> in Terminal)</strong></p>
+<ul>
+<li>在 Cursor 內置的終端中，按下 <code>Cmd+K</code>。</li>
+<li>在彈出的輸入框中用自然語言描述你想要執行的命令，例如："查找當前目錄下所有大於 1MB 的 .log 文件"，"將遠程 main 分支的最新代碼拉取下來"。</li>
+<li>AI 會生成對應的終端命令。</li>
+<li>你可以按 <code>Enter</code> 鍵運行生成的命令，或按 <code>Esc</code> 鍵將其接受並填充到終端輸入行，以便在運行前進行修改。</li>
+</ul>
+<p><strong>5. AI Agent 模式</strong></p>
+<p>這是一個更高級的功能，旨在讓 AI 端到端地完成更復雜的任務。</p>
+<ul>
+<li>通常通過聊天面板或特定的命令觸發（具體觸發方式可能隨版本更新）。</li>
+<li>向 AI 描述一個完整的任務目標，例如："爲這個項目添加單元測試框架，併爲 user.js 文件編寫基礎測試用例"。</li>
+<li>AI Agent 會嘗試分解任務、查找信息、編寫代碼、運行命令、甚至根據錯誤進行迭代。它會在執行關鍵步驟前徵求你的確認。</li>
+</ul>
+<p><strong>使用技巧:</strong></p>
+<ul>
+<li><strong>提供清晰的上下文:</strong> 無論是聊天還是使用 <code>Cmd+K</code>，提供儘可能清晰和相關的上下文（通過 <code>@</code> 引用、選中代碼等）能顯著提高 AI 生成結果的質量。</li>
+<li><strong>明確指令:</strong> 使用簡潔、明確的語言描述你的需求。避免模糊不清的指令。</li>
+<li><strong>迭代優化:</strong> AI 可能不會一次就生成完美的結果。利用聊天進行追問，或使用 <code>Cmd+K</code> 對生成結果進行逐步修改。</li>
+<li><strong>善用快捷鍵:</strong> 熟練掌握上述快捷鍵能極大提升你使用 Cursor 的效率。</li>
+<li><strong>檢查與測試:</strong> AI 生成的代碼務必仔細檢查和測試，確保其正確性、安全性和性能符合要求。</li>
+</ul>
+<h2 id="trae-cursor">Trae 與 Cursor 對比</h2>
+<h3 id="_6">功能側重點</h3>
+<p><strong>Trae：</strong>
+- 更注重中文開發者體驗，提供完整的中文界面
+- 內置多箇中文大語言模型（如 Doubao-1.5-pro）
+- Builder 模式強調項目級代碼生成
+- 支持從 VS Code 和 Cursor 無縫遷移</p>
+<p><strong>Cursor：</strong>
+- 專注於英文開發環境
+- 深度集成 GPT-4 等英文模型
+- 強調代碼庫理解和智能補全
+- 提供更豐富的代碼分析功能</p>
+<h3 id="_7">交互方式</h3>
+<p><strong>Trae：</strong>
+- 側邊對話（Side Chat）和內聯對話（Inline Chat）雙模式
+- Builder 模式支持項目級代碼生成
+- 支持多模態交互（圖片上傳、錯誤截圖分析）
+- 代碼變更批量處理機制</p>
+<p><strong>Cursor：</strong>
+- 聊天面板（Chat Panel）和內聯編輯
+- 強大的代碼庫搜索和理解能力
+- 支持網絡搜索和文檔引用
+- 智能終端命令生成</p>
+<h3 id="_8">適用人羣</h3>
+<p><strong>Trae：</strong>
+- 中文開發者
+- 需要中文 AI 助手的團隊
+- 偏好項目級代碼生成的開發者
+- VS Code 用戶尋求 AI 增強</p>
+<p><strong>Cursor：</strong>
+- 英文開發環境用戶
+- 需要深度代碼理解的開發者
+- 注重代碼質量和重構的團隊
+- 需要強大文檔集成的項目</p>
+<h3 id="_9">優缺點分析</h3>
+<p><strong>Trae 優點：</strong>
+- 完全免費，包括高級 AI 模型訪問
+- 優秀的中文支持
+- 強大的項目生成能力
+- 完善的配置遷移支持</p>
+<p><strong>Trae 缺點：</strong>
+- 目前僅支持 macOS
+- 部分功能仍在開發中
+- 插件生態相對較新</p>
+<p><strong>Cursor 優點：</strong>
+- 成熟的代碼分析能力
+- 豐富的 AI 輔助功能
+- 完善的插件生態
+- 跨平臺支持</p>
+<p><strong>Cursor 缺點：</strong>
+- 部分高級功能需付費
+- 中文支持相對較弱
+- 網絡要求較高</p>
+<h3 id="_10">選擇建議</h3>
+<ol>
+<li><strong>如果您是：</strong></li>
+<li>中文開發者</li>
+<li>需要免費使用高級 AI 功能</li>
+<li>主要使用 macOS</li>
+<li>
+<p>偏好項目級代碼生成
+   → 推薦選擇 <strong>Trae</strong></p>
+</li>
+<li>
+<p><strong>如果您是：</strong></p>
+</li>
+<li>使用英文開發環境</li>
+<li>需要深度代碼分析</li>
+<li>跨平臺開發</li>
+<li>
+<p>注重生態系統完整性
+   → 推薦選擇 <strong>Cursor</strong></p>
+</li>
+<li>
+<p><strong>混合使用場景：</strong></p>
+</li>
+<li>兩者可以並存使用</li>
+<li>Trae 適合中文項目和快速原型開發</li>
+<li>Cursor 適合深度開發和代碼維護</li>
+</ol>
+<h2 id="_11">常見問題</h2>
+<h3 id="trae_3">Trae 相關問題</h3>
+<ol>
+<li><strong>Trae 是否完全免費？</strong></li>
+<li>
+<p>是的，Trae 目前完全免費，包括訪問 Claude 3.5 Sonnet 和 GPT-4o 模型的功能。</p>
+</li>
+<li>
+<p><strong>Windows 版本何時發佈？</strong></p>
+</li>
+<li>
+<p>Windows 版本正在開發中，具體發佈時間待官方通知。</p>
+</li>
+<li>
+<p><strong>如何提高 AI 響應質量？</strong></p>
+</li>
+<li>提供清晰的上下文</li>
+<li>使用具體的示例</li>
+<li>分步驟提出需求</li>
+<li>
+<p>及時提供反饋</p>
+</li>
+<li>
+<p><strong>如何處理代碼安全問題？</strong></p>
+</li>
+<li>不要上傳敏感代碼</li>
+<li>使用環境變量管理密鑰</li>
+<li>定期檢查權限設置</li>
+<li>
+<p>遵循安全最佳實踐</p>
+</li>
+<li>
+<p><strong>如何處理 AI 生成的代碼？</strong></p>
+</li>
+<li>仔細審查生成的代碼</li>
+<li>進行必要的測試</li>
+<li>確保符合項目規範</li>
+<li>適當修改和優化</li>
+</ol>
+<h3 id="cursor_3">Cursor 相關問題</h3>
+<ol>
+<li><strong>Cursor 是否完全免費？</strong></li>
+<li>
+<p>是的，Cursor 目前完全免費，包括訪問 GPT-4 等英文模型。</p>
+</li>
+<li>
+<p><strong>如何提高 AI 響應質量？</strong></p>
+</li>
+<li>提供清晰的上下文</li>
+<li>使用具體的示例</li>
+<li>分步驟提出需求</li>
+<li>
+<p>及時提供反饋</p>
+</li>
+<li>
+<p><strong>如何處理代碼安全問題？</strong></p>
+</li>
+<li>不要上傳敏感代碼</li>
+<li>使用環境變量管理密鑰</li>
+<li>定期檢查權限設置</li>
+<li>
+<p>遵循安全最佳實踐</p>
+</li>
+<li>
+<p><strong>如何處理 AI 生成的代碼？</strong></p>
+</li>
+<li>仔細審查生成的代碼</li>
+<li>進行必要的測試</li>
+<li>確保符合項目規範</li>
+<li>
+<p>適當修改和優化</p>
+</li>
+<li>
+<p><strong>如何提高智能補全質量？</strong></p>
+</li>
+<li>提供清晰的上下文</li>
+<li>使用具體的示例</li>
+<li>分步驟提出需求</li>
+<li>
+<p>及時提供反饋</p>
+</li>
+<li>
+<p><strong>如何處理終端中的 AI 命令？</strong></p>
+</li>
+<li>仔細審查生成的命令</li>
+<li>進行必要的測試</li>
+<li>確保符合項目規範</li>
+<li>
+<p>適當修改和優化</p>
+</li>
+<li>
+<p><strong>如何提高 AI Agent 模式的效果？</strong></p>
+</li>
+<li>提供清晰的上下文</li>
+<li>使用具體的示例</li>
+<li>分步驟提出需求</li>
+<li>
+<p>及時提供反饋</p>
+</li>
+<li>
+<p><strong>如何處理 AI 生成的代碼？</strong></p>
+</li>
+<li>仔細審查生成的代碼</li>
+<li>進行必要的測試</li>
+<li>確保符合項目規範</li>
+<li>
+<p>適當修改和優化</p>
+</li>
+<li>
+<p><strong>如何提高智能補全質量？</strong></p>
+</li>
+<li>提供清晰的上下文</li>
+<li>使用具體的示例</li>
+<li>分步驟提出需求</li>
+<li>
+<p>及時提供反饋</p>
+</li>
+<li>
+<p><strong>如何處理終端中的 AI 命令？</strong></p>
+<ul>
+<li>仔細審查生成的命令</li>
+<li>進行必要的測試</li>
+<li>確保符合項目規範</li>
+<li>適當修改和優化 </li>
+</ul>
+</li>
+</ol></body></html>

@@ -1,0 +1,38 @@
+{
+  "conversion": {
+    "imageDir": "images",
+    "preserveImageFormat": true,
+    "maxConcurrency": 3,
+    "timeout": 30000,
+    "supportedFormats": ["docx", "doc"],
+    "outputFormat": "html",
+    "enableImageOptimization": false,
+    "imageQuality": 85
+  },
+  "debug": {
+    "logLevel": "info",
+    "enablePerformanceMonitoring": true,
+    "logFile": null,
+    "enableDetailedLogs": false,
+    "maxLogFileSize": "10MB",
+    "logRotation": true
+  },
+  "cache": {
+    "enabled": true,
+    "maxSize": 100,
+    "ttl": 3600000,
+    "cleanupInterval": 300000
+  },
+  "security": {
+    "allowedImageTypes": ["jpg", "jpeg", "png", "gif", "svg", "webp"],
+    "maxImageSize": "50MB",
+    "sanitizeHtml": true,
+    "allowExternalResources": false
+  },
+  "performance": {
+    "enableMetrics": true,
+    "metricsRetention": 1000,
+    "enableProfiling": false,
+    "memoryThreshold": "500MB"
+  }
+}

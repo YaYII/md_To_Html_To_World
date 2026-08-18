@@ -1,0 +1,60 @@
+# 依赖目录
+node_modules/
+
+# pnpm 本地存储
+.pnpm-store/
+
+# VS Code 本地历史记录
+.history/
+
+# 编译输出
+out/
+dist/
+
+# 图片资源目录
+images/
+
+# VS Code 扩展包
+*.vsix
+
+# 测试文件
+test-convert.js
+test-*.md
+test-*.docx
+
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE 配置
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+*.temp
+.cache/
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 测试覆盖率报告
+coverage/
+
+# TypeScript 缓存
+*.tsbuildinfo
+
+# 可选：保留示例文档，但忽略测试文档
+# 如需提交特定文档，请在下方添加例外
+# !docs/example.docx
